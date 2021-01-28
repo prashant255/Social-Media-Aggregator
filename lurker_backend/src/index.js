@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan') //For logging API calls
 const bodyParser = require('body-parser')
+const session = require('express-session');
 
 const app = express()
 
@@ -19,19 +20,19 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-// const LP1router = require('./routers/LP-1')
-// const LP2router = require('./routers/LP-2')
+app.use(session({secret: 'whatever', resave: true, saveUninitialized: true}))
+
+
+const Twitter = require('../routers/twitter')
 
 //port is provided in the environment variable.
-const port = process.env.PORT
+const port = process.env.PORT 
 
 app.use(express.json())
-// app.use('/api/Oanda', LP1router)
-// app.use('/api/ICMarket', LP2router)
-// app.use('/api/common', AllLProuter)
+app.use('/api/twitter', Twitter)
 
 app.get('/test', (req, res) => {
-    res.send("Test successful")
+    res.send("Test successful") 
 })
 
 app.get('*', (req, res) => {
