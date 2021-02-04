@@ -1,7 +1,6 @@
 const express = require('express')
 const morgan = require('morgan') //For logging API calls
 const bodyParser = require('body-parser')
-const session = require('express-session')
 
 //DB connection using sequelize
 require('./database/connection')
@@ -23,20 +22,15 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-//TODO: Add a nice secret token, and save it to the env
-app.use(session({secret: 'whatever', resave: true, saveUninitialized: true}))
-
-const Twitter = require('../routers/twitter')
+const Twitter = require('./routers/twitter')
+const Auth = require('./routers/auth')
 
 //port is provided in the environment variable.
 const port = process.env.PORT 
 
 app.use(express.json())
 app.use('/api/twitter', Twitter)
-
-app.get('/test', (req, res) => {
-    res.send("Test successful") 
-})
+app.use('/api/auth', Auth)
 
 app.get('*', (req, res) => {
     res.send('404 page not found!').status(404)    

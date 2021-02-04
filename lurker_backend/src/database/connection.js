@@ -1,12 +1,16 @@
-const Sequelize = require('sequelize')
+'use strict';
 
-const sequelize = new Sequelize('lurker', 'postgres', 'ps3dev', {
+const Sequelize = require('sequelize')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../../config/config.json')[env]
+
+const sequelize = new Sequelize(config.database, config.dialect, config.password, {
     host: 'localhost',
     dialect: 'postgres',
     operatorAliases: false
 });
 
-connectionStatus = async () => {
+const connectionStatus = async () => {
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
