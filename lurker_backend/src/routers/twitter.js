@@ -1,8 +1,9 @@
 const express = require('express')
 const router = new express.Router
 const twitterAuth = require('../service/twitterAuth')
+const authenticateUser = require('../authentication/authMiddleware')
 
-router.get('/connect', (req, res) => {
+router.get('/connect', authenticateUser, (req, res) => {
     twitterAuth.sessionConnect(req, res)
   });
 
