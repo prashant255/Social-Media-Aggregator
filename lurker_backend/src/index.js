@@ -24,12 +24,14 @@ app.use(session({secret: 'whatever', resave: true, saveUninitialized: true}))
 
 
 const Twitter = require('../routers/twitter')
+const Reddit = require('../routers/reddit')
 
 //port is provided in the environment variable.
 const port = process.env.PORT 
 
 app.use(express.json())
 app.use('/api/twitter', Twitter)
+app.use('/api/reddit', Reddit)
 
 app.get('/test', (req, res) => {
     res.send("Test successful") 
