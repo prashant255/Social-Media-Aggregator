@@ -24,7 +24,7 @@ app.use(bodyParser.json())
 
 const Twitter = require('./routers/twitter')
 const Auth = require('./routers/auth')
-const Reddit = require('../routers/reddit')
+const Reddit = require('./routers/reddit')
 
 //port is provided in the environment variable.
 const port = process.env.PORT 
