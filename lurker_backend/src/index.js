@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan') //For logging API calls
 const bodyParser = require('body-parser')
+const session = require('express-session');
 
 //DB connection using sequelize
 require('./database/connection')
@@ -18,6 +19,11 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(session(
+    {secret: process.env.SESSION_SECRET_KEY, 
+    resave: true, 
+    saveUninitialized: true}))
+
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
@@ -25,6 +31,7 @@ app.use(bodyParser.json())
 const Twitter = require('./routers/twitter')
 const Auth = require('./routers/auth')
 const Reddit = require('./routers/reddit')
+const Facebook = require('./routers/facebook')
 
 //port is provided in the environment variable.
 const port = process.env.PORT 
@@ -33,6 +40,7 @@ app.use(express.json())
 app.use('/api/twitter', Twitter)
 app.use('/api/reddit', Reddit)
 app.use('/api/auth', Auth)
+app.use('/api/facebook', Facebook)
 
 app.get('*', (req, res) => {
     res.send('404 page not found!').status(404)    

@@ -11,20 +11,24 @@ sessionConnect = (req, res) => {
         if(error)
             console.error(error)
         else{
+            req.session.oauthRequestToken = oauthToken;
+            req.session.oauthRequestTokenSecret = oauthTokenSecret;
             res.redirect("https://twitter.com/oauth/authorize?oauth_token="+oauthToken);
         }
     });
 }
 
 twitterCallback = (req, res) => {
-    consumer().getOAuthAccessToken(oauthToken, oauthTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {
-      if (error) {
+    // console.log(oauthToken)
+    consumer().getOAuthAccessToken(req.session.oauthRequestToken, req.session.oauthRequestTokenSecret, req.query.oauth_verifier, function(error, oauthAccessToken, oauthAccessTokenSecret, results) {    //   console.log(oauthToken)
+        if (error) {
         res.status(500).send("Error getting OAuth access token : " + error);
       } else {
         //TODO: Add this token to the databases
         console.log("OAuth Request Token: " + oauthAccessToken) //Access token
         console.log("Secret: " + oauthAccessTokenSecret) //Access token secret
         console.log("Verifier: " + req.query.oauth_verifier)
+        res.send()
       }
     });
 }

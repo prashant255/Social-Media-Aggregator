@@ -1,15 +1,15 @@
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const request = new XMLHttpRequest(); 
+const common = require('../common')
 
-
-formatParams = (params) => {
-    return "?" + Object
-        .keys(params)
-        .map(function (key) {
-            return key + "=" + encodeURIComponent(params[key])
-        })
-        .join("&")
-}
+// formatParams = (params) => {
+//     return "?" + Object
+//         .keys(params)
+//         .map(function (key) {
+//             return key + "=" + encodeURIComponent(params[key])
+//         })
+//         .join("&")
+// }
 
 authorizeUser = (req, res) => {
 
@@ -22,7 +22,7 @@ authorizeUser = (req, res) => {
         duration:"permanent",
         scope:"identity,edit,flair,history,modconfig,modflair,modlog,modposts,modwiki,mysubreddits,privatemessages,read,report,save,submit,subscribe,vote,wikiedit,wikiread"
     }
-    const url = endpoint +  formatParams(params);
+    const url = endpoint +  common.formatParams(params);
     res.redirect(url);
 }
 
