@@ -6,7 +6,8 @@ module.exports = {
 
       userId: {
           type: Sequelize.INTEGER,
-          allowNUll: false
+          allowNUll: false,
+          unique: true
       },
           
       twitterAccessToken: {
