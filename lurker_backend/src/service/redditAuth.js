@@ -1,6 +1,8 @@
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const request = new XMLHttpRequest(); 
 const common = require('../common')
+const Token = require('../models/tokens')
+const error = require('../error')
 
 // formatParams = (params) => {
 //     return "?" + Object
@@ -31,6 +33,9 @@ getBase64Auth = () => {
     .toString('base64');
 }
 
+//TODO:  (Discuss with Swapnil)
+//Shift this code to the frontend.
+//Frontend will send the access token and refresh token to the backend
 redditCallback = (code) => {
     
     return new Promise((resolve, reject) => {
@@ -97,9 +102,42 @@ getRefreshedAccessToken = (refreshToken) => {
     });
 }
 
+const saveToken = async (req, res) => {
+    //TODO: We will take the access token and refresh token from the request
+    //User id will be received from the jwt token
+    // await Token.create({
+    //     userId: req.user.id
+    // })
+    const {redditRefreshToken, redditAccessToken} = req.body
+    
+
+    if(redditAccessToken === undefined || redditRefreshToken === undefined)
+        throw new Error(JSON.stringify(error.BAD_REQUEST))
+
+    try{
+        if(await Token.findOne({where: {userId: req.user.id}}) !== null){
+            await Token.update(
+                { redditRefreshToken,
+                  redditAccessToken },
+                { where: { userId: req.user.id } }
+            )
+        }else{
+            await Token.create({
+                userId: req.user.id,
+                redditRefreshToken,
+                redditAccessToken
+            })
+        }
+    } catch (e) {
+        throw new Error(e)
+    }
+    
+}
+
 module.exports = {
     authorizeUser,
     redditCallback,
-    getRefreshedAccessToken
+    getRefreshedAccessToken,
+    saveToken
 }
 
