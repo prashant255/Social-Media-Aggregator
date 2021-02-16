@@ -1,8 +1,10 @@
-const Sequelize = require('sequelize')
+'use strict';
 
-Tokens = sequelize.define("tokens", {
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    queryInterface.createTable("tokens", {
 
-    userId: {
+      userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         unique: true
@@ -15,11 +17,6 @@ Tokens = sequelize.define("tokens", {
 
     twitterAccessTokenPwd: {
         type: Sequelize.STRING(50),
-        allowNull: true
-    },
-
-    twitterAnchorId: {
-        type: Sequelize.BIGINT,
         allowNull: true
     },
 
@@ -41,9 +38,16 @@ Tokens = sequelize.define("tokens", {
     redditAnchorId: {
         type: Sequelize.STRING(20),
         allowNull: true
-    }
-    
-})
-Tokens.removeAttribute('id')
+    },
+            
+    createdAt: Sequelize.DATE,
 
-module.exports = Tokens
+    updatedAt: Sequelize.DATE
+
+    })
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    queryInterface.dropTable("tokens")
+  }
+};

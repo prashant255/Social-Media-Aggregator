@@ -4,27 +4,18 @@ const common = require('../common')
 const Token = require('../models/tokens')
 const error = require('../error')
 
-// formatParams = (params) => {
-//     return "?" + Object
-//         .keys(params)
-//         .map(function (key) {
-//             return key + "=" + encodeURIComponent(params[key])
-//         })
-//         .join("&")
-// }
-
 authorizeUser = (req, res) => {
 
-    const endpoint = "https://www.reddit.com/api/v1/authorize";
-    const params = {
-        client_id:process.env.REDDIT_CLIENT_ID,
-        response_type:"code",
-        state:process.env.REDDIT_STATE,
-        redirect_uri:"http://localhost:8080/api/reddit/callback",
-        duration:"permanent",
-        scope:"identity,edit,flair,history,modconfig,modflair,modlog,modposts,modwiki,mysubreddits,privatemessages,read,report,save,submit,subscribe,vote,wikiedit,wikiread"
-    }
-    const url = endpoint +  common.formatParams(params);
+        const endpoint = "https://www.reddit.com/api/v1/authorize";
+        const params = {
+            client_id:process.env.REDDIT_CLIENT_ID,
+            response_type:"code",
+            state:process.env.REDDIT_STATE,
+            redirect_uri:"http://localhost:8080/api/reddit/callback",
+            duration:"permanent",
+            scope:"read"
+        }
+        const url = endpoint +  common.formatParams(params);
     res.redirect(url);
 }
 
@@ -112,19 +103,6 @@ const saveToken = async (req, res) => {
             redditAccessToken,
             redditRefreshToken
         })
-        // if(await Token.findOne({where: {userId: req.user.id}}) !== null){
-        //     await Token.update(
-        //         { redditRefreshToken,
-        //           redditAccessToken },
-        //         { where: { userId: req.user.id } }
-        //     )
-        // }else{
-        //     await Token.create({
-        //         userId: req.user.id,
-        //         redditRefreshToken,
-        //         redditAccessToken
-        //     })
-        // }
     } catch (e) {
         throw new Error(e)
     }

@@ -1,5 +1,19 @@
 'use strict';
 
+//Constants
+const HANDLES = {
+    FACEBOOK: 'Facebook',
+    TWITTER: 'Twitter',
+    REDDIT: 'Reddit'
+}
+
+const ALL_HANDLES = [
+    HANDLES.FACEBOOK,
+    HANDLES.TWITTER,
+    HANDLES.REDDIT
+]
+
+//Functions
 const formatParams = (params) => {
     return "?" + Object
         .keys(params)
@@ -10,5 +24,7 @@ const formatParams = (params) => {
 }
 
 module.exports = { 
-    formatParams
+    formatParams,
+    ALL_HANDLES,
+    HANDLES
 }

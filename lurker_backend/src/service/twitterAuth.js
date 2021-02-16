@@ -1,4 +1,5 @@
 const oauth = require('oauth');
+const Token = require('../models/tokens')
 
 consumer = () => {
     return new oauth.OAuth(
@@ -33,7 +34,46 @@ twitterCallback = (req, res) => {
     });
 }
 
+const twitterRequest = (oauthAccessToken, oauthAccessTokenSecret, url) => {
+    console.log("Oauth Access Token", oauthAccessToken)
+    console.log("Oauth Secret", oauthAccessTokenSecret)
+    console.log(url)
+    return new Promise((resolve, reject) => {
+        consumer().get(url, oauthAccessToken, oauthAccessTokenSecret, (error, data, response) => {
+            if (error) {
+                console.log(error)
+                reject(error)
+                // res.send("Error getting twitter screen name : " + sys.inspect(error), 500);
+            } else {
+                dataJSON = JSON.parse(data)
+                resolve(dataJSON)
+            }
+        })  
+    })
+}
+
+const saveToken = async (req, res) => {
+    const {twitterAccessToken, twitterAccessTokenPwd} = req.body
+    
+
+    if(twitterAccessToken === undefined || twitterAccessTokenPwd === undefined)
+        throw new Error(JSON.stringify(error.BAD_REQUEST))
+
+    try{
+        await Token.upsert({
+            userId: req.user.id,
+            twitterAccessToken,
+            twitterAccessTokenPwd
+        })
+    } catch (e) {
+        throw new Error(e)
+    }
+    
+}
+
 module.exports = {
     sessionConnect,
-    twitterCallback
+    twitterCallback,
+    twitterRequest,
+    saveToken
 }

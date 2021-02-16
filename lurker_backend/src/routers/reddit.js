@@ -2,20 +2,27 @@ const express = require('express')
 const router = new express.Router;
 const redditAuth = require('../service/redditAuth')
 const authenticateUser = require('../authentication/authMiddleware')
+const redditPosts = require('../service/redditPosts')
 
 router.get('/connect', (req, res) => {
     redditAuth.authorizeUser(req, res);
 });
 
 router.post('/callback', authenticateUser, async (req, res) => {
-    //TODO: We will take the access token and refresh token from the request
-    //User id will be received from the jwt token
-    // console.log(req.body)
     try{
         await redditAuth.saveToken(req, res);
         res.send()
     } catch({message}) {
         errorHandler(message, res)
+    }
+})
+
+router.post('/allPost', authenticateUser, async (req, res) => {
+    try{
+        redditPosts.getAllPosts(req.body, req.user.id)
+        res.send()
+    } catch(e){
+        res.status(500).send(e.message)
     }
 })
 
