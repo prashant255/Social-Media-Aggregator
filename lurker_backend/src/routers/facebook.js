@@ -1,6 +1,7 @@
 const express = require('express')
 const router = new express.Router
 const facebookAuth = require('../service/facebookAuth')
+const facebookPosts = require('../service/facebookPosts')
 const authenticateUser = require('../authentication/authMiddleware')
 
 router.get('/connect', authenticateUser, (req, res) => {
@@ -17,5 +18,15 @@ router.get('/callback', (req, res) => {
     res.send()
     // facebookAuth.facebookCallback(req, res)
 });
+
+router.post('/allPosts', async (req, res) => {
+
+    try{
+        facebookPosts.getAllPosts(req.body);
+        res.send();
+    } catch(e) {
+        res.status(500).send(e.message);
+    }
+})
 
 module.exports = router

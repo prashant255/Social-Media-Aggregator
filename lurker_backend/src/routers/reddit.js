@@ -17,7 +17,7 @@ router.post('/callback', authenticateUser, async (req, res) => {
     }
 })
 
-router.post('/allPost', authenticateUser, async (req, res) => {
+router.post('/allPosts', authenticateUser, async (req, res) => {
     try{
         redditPosts.getAllPosts(req.body, req.user.id)
         res.send()
