@@ -1,11 +1,12 @@
+import { BrowserRouter } from 'react-router-dom'
 import './App.css';
-import Login from './containers/authentication/login/Login';
-import Signup from './containers/authentication/signup/Signup'
+import Authentication from './containers/authentication/Authentication'
 
 function App() {
   return (
-    // <Login />
-    <Signup />
+    <BrowserRouter>
+      <Authentication />
+    </BrowserRouter>
   );
 }
 

@@ -1,0 +1,32 @@
+.Page404 {
+    margin: auto;
+    text-align: center;
+    margin-top: 10%;
+}
+
+
+.Text404 {
+    letter-spacing: 24px;
+    font-size: 200px;
+    font-weight: 200;
+    margin: 5px;
+}
+
+.TextOops {
+    font-size: 50px;
+    font-weight: 500;
+    margin: 4px ;
+}
+
+
+@media (max-width: 400px) {
+    .Page404 {
+        margin-top: 15%;
+    }
+}
+
+@media (max-width: 600px) {
+    .Page404 {
+        margin-top: 20%;
+    }
+}
