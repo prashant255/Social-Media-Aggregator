@@ -4,7 +4,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     queryInterface.createTable("tokens", {
 
-      userId: {
+    userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         unique: true
@@ -18,6 +18,11 @@ module.exports = {
     twitterAccessTokenPwd: {
         type: Sequelize.STRING(50),
         allowNull: true
+    },
+
+    twitterAnchorId: {
+      type: Sequelize.BIGINT,
+      allowNull: true
     },
 
     facebookAccessToken: {
