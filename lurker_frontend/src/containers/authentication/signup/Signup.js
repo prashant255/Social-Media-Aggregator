@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-// import classes from './Login.module.css';
 
 import Input from '../../../components/ui/input/Input'
 import Button from '../../../components/ui/button/Button'
 import classes from './Signup.module.css'
 import { checkValidity } from '../../../shared/utility'
-import axios from '../../../axios/register'
-// import axios from 'axios'
+import axios from '../../../axios/authentication'
+import { Link } from 'react-router-dom';
 
-//TODO: Add Link to instead of href
 class Signup extends Component {
 
     state = {
@@ -83,7 +81,7 @@ class Signup extends Component {
       }
       console.log(formData)
       try{
-      const response = await axios.post('/', formData)
+      const response = await axios.post('/register', formData)
       console.log(response)
     } catch (err) {
         console.log(err.response)
@@ -163,6 +161,7 @@ class Signup extends Component {
                   ))}
                   <Button btnType = "Success" disabled = {!this.state.formIsValid}>REGISTER</Button>
               </form>
+              <p>Already have an account? <Link to = "/login">Login</Link></p>
             </div>
         )
     }

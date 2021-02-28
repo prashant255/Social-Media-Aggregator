@@ -1,11 +1,11 @@
 import { BrowserRouter } from 'react-router-dom'
 import './App.css';
-import Authentication from './containers/authentication/Authentication'
+import Routing from './components/routing/Routing'
 
 function App() {
   return (
     <BrowserRouter>
-      <Authentication />
+      <Routing />
     </BrowserRouter>
   );
 }
