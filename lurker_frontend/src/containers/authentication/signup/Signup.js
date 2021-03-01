@@ -7,6 +7,8 @@ import { checkValidity } from '../../../shared/utility'
 import axios from '../../../axios/authentication'
 import { Link } from 'react-router-dom';
 
+//TODO: Mail are going to spam folder so let user know about the same.
+
 class Signup extends Component {
 
     state = {
@@ -79,7 +81,6 @@ class Signup extends Component {
           continue
         formData[formEelementIndentifier] = this.state.controls[formEelementIndentifier].value
       }
-      console.log(formData)
       try{
       const response = await axios.post('/register', formData)
       console.log(response)

@@ -96,7 +96,7 @@ class Login extends Component {
           <div className  = {classes.Login}>
               {/* //TODO: Change this heading to App logo */}
               <h1>LURKER</h1>
-              <form onSubmit = {this.signupHandler}>
+              <form onSubmit = {this.loginHandler}>
                   {formElementsArray.map(formElement => (
                     <Input 
                       key = {formElement.id}
