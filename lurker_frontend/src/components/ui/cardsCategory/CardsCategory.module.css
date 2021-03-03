@@ -1,0 +1,46 @@
+.Card {
+    z-index: 0;
+    border-top: 2px solid #333333;
+    border-right: 2px solid #333333;
+    border-left: 2px solid #333333;
+    border-bottom: 2px solid #333333;
+    background-color: #aaeeaa;
+    transition: transform .2s;
+}
+
+.Card:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+    filter: brightness(0.6);
+}
+
+.CardIcon {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: inline-block;
+    
+}
+
+.CardContent {
+    line-height: 1.5;
+    padding: 15px;
+    background: #fafafa;
+    text-align: center;
+    margin-top: 0;
+}
+
+.ThumbsUp{
+  position: relative;
+  top: 35%;
+  left: 50%;
+  font-size: 48px;
+  margin: -24px;
+  z-index: 100;
+  color: #eee;
+  display: block;
+}
+
+.CardSelected{
+  filter: brightness(40%);
+}
