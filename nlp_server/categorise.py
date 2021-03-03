@@ -10,6 +10,13 @@ import trax.layers as tl
 from sklearn.preprocessing import LabelEncoder
 import sys
 
+# for web application
+import flask
+from flask import request
+app = flask.Flask(__name__)
+app.config["DEBUG"] = True
+
+# main program
 def preprocess(text):
     url_remove = re.compile(r'https?://\S+|www\.\S+')
     text = url_remove.sub(r'', text)
@@ -68,6 +75,13 @@ def main(text):
     label_encoder = LabelEncoder()
     label_encoder.classes_ = info["label_encoder"]
     category = categorise(model, vector, label_encoder)
-    return category
+    return category[0]
 
-print(main(sys.argv[1]))
+# routing the application
+@app.route('/', methods=["POST"])
+def home():
+    if 'text' in request.args:
+        return str(main(request.args['text']))
+    return "Hungry for text!"
+
+app.run()
