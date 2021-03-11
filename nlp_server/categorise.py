@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 import re
 import contractions
-from nltk import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 import pickle
 # import trax.layers as tl
 from sklearn.preprocessing import LabelEncoder
@@ -17,6 +14,15 @@ import flask
 from flask import request
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+
+# nltk 
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 # main program
 def preprocess(text):
@@ -83,8 +89,8 @@ def main(text):
 # routing the application
 @app.route('/', methods=["POST"])
 def home():
-    if 'text' in request.args:
-        return str(main(request.args['text']))
+    if 'text' in request.json:
+        return str(main(request.json['text']))
     return "Hungry for text!"
 
 app.run()
