@@ -11,7 +11,7 @@ authorizeUser = (req, res) => {
             client_id:process.env.REDDIT_CLIENT_ID,
             response_type:"code",
             state:process.env.REDDIT_STATE,
-            redirect_uri:"http://localhost:8080/api/reddit/callback",
+            redirect_uri:"http://localhost:3000/callback/reddit",
             duration:"permanent",
             scope:"read"
         }
@@ -90,10 +90,8 @@ getRefreshedAccessToken = (refreshToken) => {
     });
 }
 
-const saveToken = async (req, res) => {
-    const {redditRefreshToken, redditAccessToken} = req.body
+const saveToken = async ({redditRefreshToken, redditAccessToken}) => {
     
-
     if(redditAccessToken === undefined || redditRefreshToken === undefined)
         throw new Error(JSON.stringify(error.BAD_REQUEST))
 

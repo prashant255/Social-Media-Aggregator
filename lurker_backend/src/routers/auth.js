@@ -30,4 +30,13 @@ router.get('/confirmation/:token', async (req, res) => {
     }
   });
 
+router.get('/status', async (req,res) => {
+  try {
+    const status = await auth.getSocialMediaLinkageStatus(req.user.id);
+    res.status(200).send(status);
+  } catch (e) {
+    res.send(e);
+  }
+});
+
 module.exports = router

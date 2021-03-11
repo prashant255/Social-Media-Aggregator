@@ -2,6 +2,7 @@
 
 const bcrypt = require('bcrypt')
 const User = require('../models/users')
+const Token = require('../models/tokens')
 const NodeMailer = require('../authentication/nodemailerConfig')
 const jwt = require('jsonwebtoken')
 const error = require('../error')
@@ -58,8 +59,21 @@ const confirmEmail = async (req, res) => {
     return(res.redirect('http://www.google.com'))
 }
 
+const getSocialMediaLinkageStatus = async (userId) => {
+    // console.log(req.user);
+
+    const token = await Token.findOne({where: { userId }});
+
+    return {
+        twitter: (token.twitterAccessToken) ? true : false,
+        reddit: (token.redditAccessToken) ? true : false,
+        facebook: (token.facebookAccessToken) ? true : false,
+    }
+}
+
 module.exports = {
     register,
     login,
-    confirmEmail
+    confirmEmail,
+    getSocialMediaLinkageStatus
 }
