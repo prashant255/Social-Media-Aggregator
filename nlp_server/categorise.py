@@ -6,9 +6,11 @@ from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import pickle
-import trax.layers as tl
+# import trax.layers as tl
 from sklearn.preprocessing import LabelEncoder
 import sys
+
+import tensorflow as tf
 
 # for web application
 import flask
@@ -45,14 +47,14 @@ def text_to_vector(text, max_len, vocab, pad_token="__PAD__", num_token="__NUM__
     vector = np.array([vector])
     return vector
 
-def get_model(vocab_size):
-    return tl.Serial(
-        tl.Embedding(vocab_size, 128),
-        tl.LSTM(128),
-        tl.Mean(axis=1),
-        tl.Dense(12),
-        tl.LogSoftmax()
-    )
+# def get_model(vocab_size):
+#     return tl.Serial(
+#         tl.Embedding(vocab_size, 128),
+#         tl.LSTM(128),
+#         tl.Mean(axis=1),
+#         tl.Dense(12),
+#         tl.LogSoftmax()
+#     )
 
 def categorise(model, vector, label_encoder):
     cat_vect = model(vector)
@@ -70,8 +72,9 @@ def main(text):
     vocab = info["vocab"]
     vector = text_to_vector(text, max_len, vocab)
     # run the model
-    model = get_model(len(vocab))
-    model.init_from_file("./model/lstm/model.pkl.gz")
+    # model = get_model(len(vocab))
+    # model.init_from_file("./model/lstm/model.pkl.gz")
+    model = tf.keras.models.load_model("./model/keras_checkpoint")
     label_encoder = LabelEncoder()
     label_encoder.classes_ = info["label_encoder"]
     category = categorise(model, vector, label_encoder)
