@@ -60,14 +60,21 @@ const confirmEmail = async (req, res) => {
 }
 
 const getSocialMediaLinkageStatus = async (userId) => {
-    // console.log(req.user);
 
     const token = await Token.findOne({where: { userId }});
 
-    return {
-        twitter: (token.twitterAccessToken) ? true : false,
-        reddit: (token.redditAccessToken) ? true : false,
-        facebook: (token.facebookAccessToken) ? true : false,
+    if(token){
+        return {
+            twitter: (token.twitterAccessToken) ? true : false,
+            reddit: (token.redditAccessToken) ? true : false,
+            facebook: (token.facebookAccessToken) ? true : false
+        }
+    }else {
+        return {
+            twitter: false,
+            reddit: false,
+            facebook: false
+        }
     }
 }
 
