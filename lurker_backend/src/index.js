@@ -32,6 +32,7 @@ const Twitter = require('./routers/twitter')
 const Auth = require('./routers/auth')
 const Reddit = require('./routers/reddit')
 const Facebook = require('./routers/facebook')
+const Settings = require('./routers/settings')
 
 //port is provided in the environment variable.
 const port = process.env.PORT 
@@ -41,6 +42,7 @@ app.use('/api/twitter', Twitter)
 app.use('/api/reddit', Reddit)
 app.use('/api/auth', Auth)
 app.use('/api/facebook', Facebook)
+app.use('/api/settings', Settings)
 
 app.get('*', (req, res) => {
     res.send('404 page not found!').status(404)    
