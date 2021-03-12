@@ -1,8 +1,10 @@
 import { BrowserRouter } from 'react-router-dom'
 import './App.css';
 import Routing from './components/routing/Routing'
+import React from 'react'
 
-function App() {
+const App = () =>{
+  console.log("App")
   return (
     <BrowserRouter>
       <Routing />
@@ -10,4 +12,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);

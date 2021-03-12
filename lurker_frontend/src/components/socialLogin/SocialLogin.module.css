@@ -1,0 +1,10 @@
+.image {
+    border-radius: 50%;
+    border: 0px solid #555;
+}
+
+.twitterStyle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
