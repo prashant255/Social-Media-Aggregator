@@ -1,8 +1,8 @@
 const express = require('express')
 const router = new express.Router
 const auth = require('../service/auth')
-const jwt = require('jsonwebtoken')
-const User = require('../models/users')
+const authenticateUser = require('../authentication/authMiddleware')
+
 
 router.post('/register', async (req, res) => {
     try {
@@ -30,7 +30,7 @@ router.get('/confirmation/:token', async (req, res) => {
     }
   });
 
-router.get('/status', async (req,res) => {
+router.get('/status', authenticateUser, async (req,res) => {
   try {
     const status = await auth.getSocialMediaLinkageStatus(req.user.id);
     res.status(200).send(status);
