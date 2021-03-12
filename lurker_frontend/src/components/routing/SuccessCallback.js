@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../axios/lurkerBackend';
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 
@@ -24,11 +24,12 @@ const successCallback = (props) => {
             const params = parseParams(props.location.search); // returns an object like:
             // console.log(props.location.search)
             console.log(params);
-            try{
-            axios.post("http://localhost:8080/api/reddit/callback", params)
-            }catch(e){
+            axios.post("/reddit/callback", params).then(
+                () => console.log("success")
+            ).catch( e =>
                 console.log("Error")
-            };
+            );
+            // TODO: Handle request going twice
             break;
         
         case "FACEBOOK":
