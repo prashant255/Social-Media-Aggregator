@@ -56,7 +56,7 @@ const confirmEmail = async (req, res) => {
         { where: { id: userId } }
     )
     // TODO:Change the redirect url when the email is confirmed
-    return(res.redirect('http://www.google.com'))
+    return(res.redirect('http://localhost:3000/login'))
 }
 
 const getSocialMediaLinkageStatus = async (userId) => {

@@ -4,7 +4,7 @@ import facebookLogo from '../../assets/facebook.png'
 import twitterLogo from '../../assets/twitter.png'
 import redditLogo from '../../assets/reddit.png'
 
-import "./SocialLogin.module.css"
+import classes from "./SocialLogin.module.css"
 import { Link, Route, Redirect } from 'react-router-dom'
 
 const SocialLogin = (props) => {
@@ -21,9 +21,21 @@ const SocialLogin = (props) => {
         iconPath=twitterLogo
     }
 
+    const renderImage = () => {
+        if(props.isLinked){
+            return <img className={classes.imgLinked} src={iconPath} alt={props.socialName}></img>
+        }else{
+            return (
+                <a href={props.loginURL}>
+                    <img className={classes.img} src={iconPath} alt={props.socialName}></img>
+                </a>
+            )
+        }
+    }
+
     return (
         <div>
-            <a href={props.loginURL}><img src={iconPath} alt={props.socialName}></img></a>
+            {renderImage()}
             <p> {props.socialName} </p>
         </div>
     )

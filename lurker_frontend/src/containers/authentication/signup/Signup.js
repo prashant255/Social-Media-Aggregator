@@ -82,8 +82,9 @@ class Signup extends Component {
         formData[formEelementIndentifier] = this.state.controls[formEelementIndentifier].value
       }
       try{
-      const response = await axios.post('/register', formData)
-      console.log(response)
+      await axios.post('/register', formData)
+      alert("Confirmation email has been sent to you. Please check your spam folder too.")
+      this.props.history.push('/login')
     } catch (err) {
         console.log(err.response)
       }
