@@ -53,6 +53,7 @@ class Login extends Component {
       try{
       const response = await axios.post('/login', formData)
       console.log(response)
+      this.props.history.push('/linksocialmedia')
     } catch (err) {
         console.log(err.response)
       }

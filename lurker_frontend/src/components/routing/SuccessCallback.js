@@ -1,7 +1,5 @@
 import axios from '../../axios/lurkerBackend';
 import React from 'react'
-import { Redirect } from 'react-router-dom'
-
 const successCallback = (props) => {
 
     console.log("SuccessCallback")
@@ -17,7 +15,6 @@ const successCallback = (props) => {
     };
     
     console.log("props : ",props);
-
     switch(props.socialMedia){
         case "REDDIT":
             console.log("reddit");
@@ -25,7 +22,9 @@ const successCallback = (props) => {
             // console.log(props.location.search)
             console.log(params);
             axios.post("/reddit/callback", params).then(
-                () => console.log("success")
+                res => {
+                    props.history.push('/linksocialmedia')
+                }
             ).catch( e =>
                 console.log("Error")
             );
