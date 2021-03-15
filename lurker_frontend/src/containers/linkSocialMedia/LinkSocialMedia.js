@@ -6,8 +6,32 @@ import GridListTile from "@material-ui/core/GridListTile";
 
 import SocialLogin from "../../components/socialLogin/SocialLogin";
 import classes from "./LinkSocialMedia.module.css";
+import axios from '../../axios/lurkerBackend';
 
 class LinkSocialMedia extends Component {
+
+    state = {
+      twitter: false,
+      reddit: false,
+      facebook: false
+    }
+
+    getSocialMediaStatus = () => {
+      axios.get("/auth/status").then(status => {
+        console.log("status : ", status.data)
+        this.setState({
+          reddit: status.data.reddit,
+          facebook: status.data.facebook,
+          twitter: status.data.twitter
+        })
+        console.log(this.state)
+      });
+    }
+
+    componentDidMount(){
+      this.getSocialMediaStatus();
+    }
+
     render() {
         return (
           <div className={classes.container}>
@@ -21,17 +45,18 @@ class LinkSocialMedia extends Component {
                 </GridListTile>
     
               <GridListTile cols={1}>
-                <SocialLogin socialName="Reddit" loginURL="http://localhost:8080/api/reddit/connect" />
+                <SocialLogin socialName="Reddit" loginURL="http://localhost:8080/api/reddit/connect" isLinked={this.state.reddit}/>
               </GridListTile>
     
               <GridListTile cols={1} className="twitterLogo">
-                <SocialLogin socialName="Twitter" loginURL="http://localhost:8080/api/twitter/connect" />
+                <SocialLogin socialName="Twitter" loginURL="http://localhost:8080/api/twitter/connect" isLinked={this.state.twitter}/>
               </GridListTile>
     
               <GridListTile cols={1}>
-                <SocialLogin socialName="Facebook" loginURL="http://localhost:8080/api/facebook/connect" />
+                <SocialLogin socialName="Facebook" loginURL="http://localhost:8080/api/facebook/connect" isLinked={this.state.facebook}/>
               </GridListTile>
-    
+
+            {/* TODO: Add conditional next */}
             </GridList>
           </div>
         );

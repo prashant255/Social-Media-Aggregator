@@ -116,14 +116,13 @@ getRefreshedAccessToken = (refreshToken) => {
     });
 }
 
-const saveToken = async ({redditRefreshToken, redditAccessToken}) => {
+const saveToken = async (userId, {redditRefreshToken, redditAccessToken}) => {
     
     if(redditAccessToken === undefined || redditRefreshToken === undefined)
         throw new Error(JSON.stringify(error.BAD_REQUEST))
-
     try{
         await Token.upsert({
-            userId: req.user.id,
+            userId,
             redditAccessToken,
             redditRefreshToken
         })

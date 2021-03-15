@@ -1,47 +1,61 @@
-import axios from 'axios';
-import React from 'react'
-import { Redirect } from 'react-router-dom'
+import axios from '../../axios/lurkerBackend'
+import React, { useEffect } from 'react'
 
-const successCallback = (props) => {
+const SuccessCallback = (props) => {
 
-    console.log("SuccessCallback")
-    //?state=redditlurker123&code=DGnCjtvcnoFDAjPF56MbcWEc9FZwwQ#_
-    const parseParams = (params = "") => {
-        const rawParams = params.replace("?", "").split("&");
-        const extractedParams = {};
-        rawParams.forEach((item) => {
-            item = item.split("=");
-            extractedParams[item[0]] = item[1];
-        });
-        return extractedParams;
-    };
-    
-    console.log("props : ",props);
+    useEffect(() => {
+        const parseParams = (params = "") => {
+            const rawParams = params.replace("?", "").split("&")
+            const extractedParams = {}
+            rawParams.forEach((item) => {
+                item = item.split("=")
+                extractedParams[item[0]] = item[1]
+            })
+            return extractedParams
+        }
+        console.log("props : ",props)
+        let params = null
+            
+        switch(props.socialMedia){
+            case "REDDIT":
+                params = parseParams(props.location.search) // returns an object like:
+                axios.post("/reddit/callback", params).then(
+                    res => {
+                        props.history.push('/linksocialmedia')
+                    }
+                ).catch( e =>
+                    console.log("Error")
+                );
+                break;
 
-    switch(props.socialMedia){
-        case "REDDIT":
-            console.log("reddit");
-            const params = parseParams(props.location.search); // returns an object like:
-            // console.log(props.location.search)
-            console.log(params);
-            try{
-            axios.post("http://localhost:8080/api/reddit/callback", params)
-            }catch(e){
-                console.log("Error")
-            };
-            break;
-        
-        case "FACEBOOK":
-            console.log("facebook");
-            break;
+            case "TWITTER":
+                params = parseParams(props.location.search) // returns an object like:
+                axios.post("/twitter/callback", params).then(
+                    res => {
+                        props.history.push('/linksocialmedia')
+                    }
+                ).catch( e =>
+                    console.error(e)
+                );
+                break;
 
-        case "TWITTER":
-            console.log("twitter");
-            break;
 
-        default:
-            console.log("Wrong props!");
-    }
+            case "FACEBOOK":
+                params = parseParams(props.location.search)
+                axios.post("/facebook/callback", params).then(
+                    res => {
+                        props.history.push('/linksocialmedia')
+                    }
+                )
+                break;
+
+            default:
+                console.log("Wrong props!");
+        }
+        return () => {
+            
+        }
+    }, [])
     
     return (
         <div>
@@ -50,4 +64,4 @@ const successCallback = (props) => {
     )
 }
 
-export default React.memo(successCallback)
+export default SuccessCallback

@@ -1,5 +1,6 @@
 const oauth = require('oauth');
 const Token = require('../models/tokens')
+const common = require('../common')
 
 consumer = () => {
     return new oauth.OAuth(
@@ -29,7 +30,15 @@ twitterCallback = (req, res) => {
         console.log("OAuth Request Token: " + oauthAccessToken) //Access token
         console.log("Secret: " + oauthAccessTokenSecret) //Access token secret
         console.log("Verifier: " + req.query.oauth_verifier)
-        res.send()
+
+        const endpoint = "http://localhost:3000/callback/twitter"
+        const params = {
+            twitterAccessToken: oauthAccessToken,
+            twitterAccessTokenPwd: oauthAccessTokenSecret
+        }
+        const url = endpoint + common.formatParams(params)
+        
+        res.redirect(url)
       }
     });
 }
@@ -52,16 +61,14 @@ const twitterRequest = (oauthAccessToken, oauthAccessTokenSecret, url) => {
     })
 }
 
-const saveToken = async (req, res) => {
-    const {twitterAccessToken, twitterAccessTokenPwd} = req.body
-    
+const saveToken = async (userId, {twitterAccessToken, twitterAccessTokenPwd}) => {
 
     if(twitterAccessToken === undefined || twitterAccessTokenPwd === undefined)
         throw new Error(JSON.stringify(error.BAD_REQUEST))
 
     try{
         await Token.upsert({
-            userId: req.user.id,
+            userId,
             twitterAccessToken,
             twitterAccessTokenPwd
         })

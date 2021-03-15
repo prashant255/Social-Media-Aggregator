@@ -8,27 +8,26 @@ router.get('/connect', (req, res) => {
     redditAuth.authorizeUser(req, res);
 });
 
-router.post('/callback', async (req, res) => {
-    console.log("HERE!");
+router.post('/callback', authenticateUser, async (req, res) => {
 
-    // const { code } = req.body;
-    console.log("code: ",code);
+    const { code } = req.body;
 
-    redditAuth.redditCallback(code).then(response => {
-        console.log('HERE2');
-        console.log(response);
-        // const redditObj = {
-        //     redditAccessToken: response.refresh_token,
-        //     redditRefreshToken: response.access_token
-        // };
-        
-        // redditAuth.saveToken();
+    try{
+        const response = await redditAuth.redditCallback(code);
+
+        if(response.refresh_token){
+            const redditObj = {
+                redditAccessToken: response.refresh_token,
+                redditRefreshToken: response.access_token
+            };
+            redditAuth.saveToken(req.user.id, redditObj);
+        }
         res.send();
 
-    }).catch(message => {
+    } catch(message) {
         // TODO: check?
         errorHandler(message, res)
-    });
+    };
 })
 
 router.post('/allPosts', authenticateUser, async (req, res) => {
@@ -39,28 +38,6 @@ router.post('/allPosts', authenticateUser, async (req, res) => {
         res.status(500).send(e.message)
     }
 })
-
-// router.get('/callback', (req, res) => {
-    
-//     // TODO: Add in try catch
-//     const code = res.req.query.code;
-//     console.log("CODE: ");
-//     console.log(code);
-
-//     res.send('Hello!');
-
-    // redditAuth.redditCallback(code)
-    //     .then(response => {
-    //         console.log(response);
-    //         // TODO: Add to Refresh Token and Access Token to DB
-
-    //         // refresh token is response.refresh_token
-    //         // access token is response.access_token
-            
-    //     }).catch(e => {
-            
-    //     });
-// });
 
 /*
 // Refer for refresh token
