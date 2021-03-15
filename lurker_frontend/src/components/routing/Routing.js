@@ -9,7 +9,6 @@ import SuccessCallback from './SuccessCallback'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
 
 const routing = () => {
-    console.log("ROUTING!");
     return (
         <Switch>
             <Route path = "/register" component = {Signup} />
