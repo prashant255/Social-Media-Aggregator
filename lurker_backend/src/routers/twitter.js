@@ -4,17 +4,17 @@ const twitterAuth = require('../service/twitterAuth')
 const authenticateUser = require('../authentication/authMiddleware')
 const twitterPosts = require('../service/twitterPosts')
 
-router.get('/connect', authenticateUser, (req, res) => {
+router.get('/connect', (req, res) => {
     twitterAuth.sessionConnect(req, res)
   });
 
-// router.get('/callback', (req, res) => {
-//     twitterAuth.twitterCallback(req, res)
-// });
+router.get('/callback', (req, res) => {
+    twitterAuth.twitterCallback(req, res)
+});
 
 router.post('/callback', authenticateUser, async (req, res) => {
   try{
-      await twitterAuth.saveToken(req, res);
+      await twitterAuth.saveToken(req.user.id, req.body);
       res.send()
   } catch({message}) {
       errorHandler(message, res)
