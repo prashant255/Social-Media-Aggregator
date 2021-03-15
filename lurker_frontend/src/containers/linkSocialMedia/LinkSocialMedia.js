@@ -49,11 +49,11 @@ class LinkSocialMedia extends Component {
               </GridListTile>
     
               <GridListTile cols={1} className="twitterLogo">
-                <SocialLogin socialName="Twitter" loginURL="http://localhost:8080/api/twitter/connect" />
+                <SocialLogin socialName="Twitter" loginURL="http://localhost:8080/api/twitter/connect" isLinked={this.state.twitter}/>
               </GridListTile>
     
               <GridListTile cols={1}>
-                <SocialLogin socialName="Facebook" loginURL="http://localhost:8080/api/facebook/connect" />
+                <SocialLogin socialName="Facebook" loginURL="http://localhost:8080/api/facebook/connect" isLinked={this.state.facebook}/>
               </GridListTile>
 
             {/* TODO: Add conditional next */}

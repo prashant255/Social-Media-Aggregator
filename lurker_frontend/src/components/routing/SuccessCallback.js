@@ -4,7 +4,6 @@ import React, { useEffect } from 'react'
 const SuccessCallback = (props) => {
 
     useEffect(() => {
-        console.log("SuccessCallback")
         const parseParams = (params = "") => {
             const rawParams = params.replace("?", "").split("&")
             const extractedParams = {}
@@ -28,19 +27,22 @@ const SuccessCallback = (props) => {
                     console.log("Error")
                 );
                 break;
-            
-            case "FACEBOOK":
-                params = parseParams(props.location.search)
-                axios.post("/facebook/callback", params).then(
+
+            case "TWITTER":
+                params = parseParams(props.location.search) // returns an object like:
+                axios.post("/twitter/callback", params).then(
                     res => {
                         props.history.push('/linksocialmedia')
                     }
-                )
+                ).catch( e =>
+                    console.error(e)
+                );
                 break;
 
-            case "TWITTER":
+
+            case "FACEBOOK":
                 params = parseParams(props.location.search)
-                axios.post("twitter/callback", params).then(
+                axios.post("/facebook/callback", params).then(
                     res => {
                         props.history.push('/linksocialmedia')
                     }

@@ -21,11 +21,11 @@ const routing = () => {
             />
             <Route 
                 path="/callback/facebook"  
-                component={(props) => <SuccessCallback socialMedia="FACEBOOK" />}
+                component={(props) => <SuccessCallback {...props} socialMedia="FACEBOOK" />}
             />
             <Route 
                 path="/callback/twitter"  
-                component={(props) => <SuccessCallback socialMedia="TWITTER" />}
+                component={(props) => <SuccessCallback {...props} socialMedia="TWITTER" />}
             />
             <Route path="/linkSocialMedia" component={LinkSocialMedia}/>
             <Route component = {Page404} />
