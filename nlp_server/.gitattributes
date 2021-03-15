@@ -1,0 +1,2 @@
+**/model.pkl.gz filter=lfs diff=lfs merge=lfs -text
+**/keras_checkpoint/** filter=lfs diff=lfs merge=lfs -text
