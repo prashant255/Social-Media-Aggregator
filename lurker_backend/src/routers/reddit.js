@@ -39,28 +39,6 @@ router.post('/allPosts', authenticateUser, async (req, res) => {
     }
 })
 
-// router.get('/callback', (req, res) => {
-    
-//     // TODO: Add in try catch
-//     const code = res.req.query.code;
-//     console.log("CODE: ");
-//     console.log(code);
-
-//     res.send('Hello!');
-
-    // redditAuth.redditCallback(code)
-    //     .then(response => {
-    //         console.log(response);
-    //         // TODO: Add to Refresh Token and Access Token to DB
-
-    //         // refresh token is response.refresh_token
-    //         // access token is response.access_token
-            
-    //     }).catch(e => {
-            
-    //     });
-// });
-
 /*
 // Refer for refresh token
 
