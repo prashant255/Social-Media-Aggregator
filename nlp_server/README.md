@@ -24,12 +24,23 @@
     * Request body
     ```javascript
     {
-        "questions": ["<question1>", "<question2>", ...]
+        "questions": [
+            "<question1>", 
+            "<question2>", 
+            ...
+        ]
     }
     ```
     * Response
     ```javascript
     {
-        "groups": [["<question1 of group1>", "<question2 of group1>", ...], ...]
+        "groups": [
+            [
+                "<question1 of group1>", 
+                "<question2 of group1>", 
+                ...
+            ], 
+            ...
+        ]
     }
     ```
