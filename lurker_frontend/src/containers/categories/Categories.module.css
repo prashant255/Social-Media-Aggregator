@@ -1,4 +1,30 @@
-.Categories {
+/* .base{
+    display: 'flex';
+    flex-wrap: 'wrap';
+    justify-content: 'space-around';
+    overflow: 'hidden';
+    background-color:
+} 
+.gridList{
+    width: 500;
+    height: 450;
+}
+.MuiGridListTile-title {
+    color: 'rgba(255, 255, 255, 0.54)';
+}
+.icon {
+    color: 'rgba(17, 53, 117, 1)';
+}
+
+.MuiGridListTile:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+    filter: brightness(0.6);
+} */
+
+/* 17, 53, 117 */
+
+/* .Categories {
     padding: 30px;
     border: 1px solid #eee;
     box-shadow: 0 2px 3px #ccc;
@@ -25,4 +51,5 @@
     justify-content: center;
     align-items: center;
     font-size: 20px;
-}
+} */
+

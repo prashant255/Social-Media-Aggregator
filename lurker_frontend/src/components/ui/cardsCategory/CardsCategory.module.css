@@ -1,4 +1,16 @@
-.Card {
+.image{
+  width: 100%;
+}
+
+.image:hover{
+  /* transform: scale(1.02); */
+  filter: opacity(0.5);
+}
+
+.selectedImage {
+  background-color: rgba(255, 148, 49, 1);
+}
+/* .Card {
     z-index: 0;
     border-top: 2px solid #333333;
     border-right: 2px solid #333333;
@@ -43,4 +55,4 @@
 
 .CardSelected{
   filter: brightness(40%);
-}
+} */
