@@ -171,7 +171,7 @@ def categorise(text):
 @app.route('/categorise', methods=["POST"])
 def cat():
     if request.json and 'text' in request.json:
-        return jsonify(category=(categorise(request.json['text'])))
+        return jsonify(category=str(categorise(request.json['text'])))
     return "Hungry for text!"
 
 @app.route('/duplicate', methods=['POST'])

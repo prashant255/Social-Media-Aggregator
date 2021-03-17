@@ -12,7 +12,7 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
         exclude_replies: true,
         include_rts: false,
         trim_user: true,
-        count: 10,
+        count: 20,
         tweet_mode: "extended",
         include_entities: false
           //TODO: Change the limit in later stage of development to 100
@@ -23,6 +23,7 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
 
     try {
         const response = await request.twitterRequest(accessToken, accessTokenPassword, url)
+        console.log(response.length)
         response.map(async (post) => {
             const dbResponse = await PostDetails.findOrCreate({
                 where: {
@@ -31,18 +32,21 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
                 }
             })  
             if(dbResponse[1]) {
-                // console.log(post.id_str)
                 const rx = /https?:\/\/\S+/g
-                // const arr = post.full_text.match(rx).pop()
+                const arr = post.full_text.match(rx).pop()
                 // console.log(arr) //All the urls in array format
                 let res = null;
                 try {
-                 res = await axios.post("http://localhost:5000", {text: post.full_text.replace((rx), "")})
+                    res = await axios.post("http://localhost:5000/categorise", {text: post.full_text.replace((rx), "")})
+                    PostDetails.update(
+                    {category: res.data.category},
+                    {where: {
+                        postId: post.id_str,
+                        handle: common.HANDLES.TWITTER
+                    }})
                 } catch (e) {
                     console.log(e)
                 }
-                console.log(post.full_text.replace((rx), ""))
-                console.log(res.data)
             }
 
             await Post.create({
