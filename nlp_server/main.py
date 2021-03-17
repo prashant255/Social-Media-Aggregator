@@ -73,7 +73,7 @@ class Categorise():
         cat_vect = model(vector)
         cat_max_ind = np.argmax(cat_vect)
         category = label_encoder.inverse_transform([cat_max_ind])
-        return np.squeeze(category)
+        return str(np.squeeze(category))
 
 # def get_model(vocab_size):
 #     return tl.Serial(
@@ -135,13 +135,17 @@ def duplicate_detection_fn(obj, model, questions, vocab):
     groups = [[questions[0]]]
     for question in questions[1:]:
         groups_len = len(groups)
+        idx = -1
+        grouped = False
         for idx in range(groups_len):
             question1 = question
             question2 = groups[idx][0]
             if obj.is_duplicate(question1, question2, model, 0.7, max_len):
                 groups[idx].append(question)
-            elif idx == groups_len-1:
-                groups.append([question])
+                grouped = True
+                break
+        if not grouped and idx == groups_len-1:
+            groups.append([question])
     
     return groups
 
