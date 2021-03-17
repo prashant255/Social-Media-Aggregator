@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import Input from '../../../components/ui/input/Input'
 import Button from '../../../components/ui/button/Button'
@@ -6,6 +7,7 @@ import classes from './Login.module.css'
 import { checkValidity } from '../../../shared/utility'
 import axios from '../../../axios/authentication'
 import { Link } from 'react-router-dom';
+import * as actionTypes from '../../../store/actions'
 
 class Login extends Component {
 
@@ -52,7 +54,7 @@ class Login extends Component {
       console.log(formData)
       try{
       const response = await axios.post('/login', formData)
-      console.log(response)
+      this.props.onSuccessfulLogin(response.data.token)
       this.props.history.push('/linksocialmedia')
     } catch (err) {
         console.log(err.response)
@@ -118,4 +120,10 @@ class Login extends Component {
     }
 }
 
-export default Login
+const mapDispatchToProps = dispatch => {
+  return {
+    onSuccessfulLogin: (jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken})
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Login)

@@ -7,6 +7,7 @@ import GridListTile from "@material-ui/core/GridListTile";
 import SocialLogin from "../../components/socialLogin/SocialLogin";
 import classes from "./LinkSocialMedia.module.css";
 import axios from '../../axios/lurkerBackend';
+import { connect } from 'react-redux'
 
 class LinkSocialMedia extends Component {
 
@@ -17,7 +18,12 @@ class LinkSocialMedia extends Component {
     }
 
     getSocialMediaStatus = () => {
-      axios.get("/auth/status").then(status => {
+      console.log(this.props.jwtToken)
+      axios.get("/auth/status", {
+        headers: {
+          'Authorization': `Bearer ${this.props.jwtToken}`
+        }
+      }).then(status => {
         console.log("status : ", status.data)
         this.setState({
           reddit: status.data.reddit,
@@ -63,5 +69,11 @@ class LinkSocialMedia extends Component {
     }
 }
 
-export default LinkSocialMedia
+const mapStateToProps = state => {
+  return {
+      jwtToken: state.jwtToken
+  }
+}
+
+export default connect(mapStateToProps, null)(LinkSocialMedia)
 

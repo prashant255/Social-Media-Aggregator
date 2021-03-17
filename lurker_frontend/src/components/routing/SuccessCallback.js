@@ -1,8 +1,11 @@
 import axios from '../../axios/lurkerBackend'
 import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 const SuccessCallback = (props) => {
 
+    const jwtToken = useSelector(state => state.jwtToken)
+    
     useEffect(() => {
         const parseParams = (params = "") => {
             const rawParams = params.replace("?", "").split("&")
@@ -19,7 +22,11 @@ const SuccessCallback = (props) => {
         switch(props.socialMedia){
             case "REDDIT":
                 params = parseParams(props.location.search) // returns an object like:
-                axios.post("/reddit/callback", params).then(
+                axios.post("/reddit/callback", params, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }).then(
                     res => {
                         props.history.push('/linksocialmedia')
                     }
