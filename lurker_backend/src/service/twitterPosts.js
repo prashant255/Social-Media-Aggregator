@@ -7,6 +7,9 @@ const request = require('./twitterAuth')
 const axios = require('axios')
 
 const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
+    const tokens = await(Token.findOne({
+        where: {userId}
+    }))
     const endpoint = "https://api.twitter.com/1.1/statuses/home_timeline.json"
     const params = {
         exclude_replies: true,
@@ -14,7 +17,8 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
         trim_user: true,
         count: 20,
         tweet_mode: "extended",
-        include_entities: false
+        include_entities: false,
+        since_id: tokens.twitterAnchorId
           //TODO: Change the limit in later stage of development to 100
     }
     const url = endpoint + common.formatParams(params);
@@ -23,7 +27,6 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
 
     try {
         const response = await request.twitterRequest(accessToken, accessTokenPassword, url)
-        console.log(response.length)
         response.map(async (post) => {
             const dbResponse = await PostDetails.findOrCreate({
                 where: {
@@ -54,7 +57,6 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
                 lurkerPostId: dbResponse[0].dataValues.id
             })
         })
-        console.log(response.length)
         
         if(response.length > 0) {
             await Token.update({
