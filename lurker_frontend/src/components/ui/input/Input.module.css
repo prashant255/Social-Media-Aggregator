@@ -12,7 +12,7 @@
 
 .InputElement {
     outline: none;
-    border: 1px solid #ccc;
+    border: 1px solid rgb(233, 243, 251);
     border-radius: 15px;
     background-color: white;
     font: inherit;
@@ -23,8 +23,13 @@
 }
 
 .InputElement:focus {
-    outline: none;
-    background-color: #ccc;
+    /* outline: none; */
+    background-color: rgb(17, 53, 116);
+    caret-color: white;
+}
+
+.InputElement:focus::placeholder{
+    color: white;
 }
 
 .Invalid {

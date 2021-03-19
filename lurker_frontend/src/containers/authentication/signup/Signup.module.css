@@ -7,10 +7,20 @@
     padding: 10px;
     box-sizing: border-box;
     border-radius: 25px;
+    background-color: rgb(223, 227, 252);
 }
 
 @media (min-width: 600px) {
     .Signup {
         width: 500px;
     }
+}
+
+body {
+    background-color: white;
+}
+
+.logo{
+    text-align: center;
+    width: 50%;
 }

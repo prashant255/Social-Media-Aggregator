@@ -146,8 +146,7 @@ class Signup extends Component {
         }
         return (
           <div className  = {classes.Signup}>
-              {/* //TODO: Change this heading to App logo */}
-              <h1>LURKER</h1>
+              <img src="./lurker-logo.png" className={classes.logo}/>
               <form onSubmit = {this.signupHandler}>
                   {formElementsArray.map(formElement => (
                     <Input 
@@ -163,7 +162,7 @@ class Signup extends Component {
                   ))}
                   <Button btnType = "Success" disabled = {!this.state.formIsValid}>REGISTER</Button>
               </form>
-              <p>Already have an account? <Link to = "/login">Login</Link></p>
+              <p style={{color: 'rgb(17, 53, 116)'}}>Already have an account? <Link to = "/login">Login</Link></p>
             </div>
         )
     }

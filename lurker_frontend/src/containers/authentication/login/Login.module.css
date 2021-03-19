@@ -6,11 +6,26 @@
     border: 1px solid #eee;
     padding: 10px;
     box-sizing: border-box;
-    border-radius: 25px;
+    border-radius: 8px;
+    background-color: rgb(223, 227, 252);
+}
+
+::placeholder{
+    color: rgb(17, 53, 116);
+    opacity: 1;
 }
 
 @media (min-width: 600px) {
     .Login {
         width: 500px;
     }
+}
+
+body {
+    background-color: white;
+}
+
+.logo{
+    text-align: center;
+    width: 50%;
 }
