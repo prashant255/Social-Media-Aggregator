@@ -116,7 +116,7 @@ getRefreshedAccessToken = (refreshToken) => {
     });
 }
 
-const saveToken = async (userId, {redditRefreshToken, redditAccessToken}) => {
+const saveToken = async (userId, {redditAccessToken, redditRefreshToken}) => {
     
     if(redditAccessToken === undefined || redditRefreshToken === undefined)
         throw new Error(JSON.stringify(error.BAD_REQUEST))
