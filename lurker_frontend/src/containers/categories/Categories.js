@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import classes from '../categories/Categories.module.css'
 
 import Card from '../../components/ui/cardsCategory/CardsCategory'
+import Button from '../../components/ui/button/Button'
 
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -109,7 +110,7 @@ class Categories extends Component {
 
         return (
             <div>
-                <GridList cellHeight={280} cols={4}>
+                <GridList cellHeight={250} spacing={1} cols={4}>
                     <GridListTile cols={4} style={{ height: 'auto', color:'rgba(17, 53, 117, 1)'}}>
                         <h1 style={{textAlign: 'center', fontSize: '60px'}}>What would you like to see?</h1>
                     </GridListTile>
@@ -127,6 +128,9 @@ class Categories extends Component {
                     </GridListTile>
                     ))}
                 </GridList>
+                <div className = {classes.Center}>
+                    <Button btnType = "Success" disabled = {!this.state.selectedCount} clicked = {this.nextClickHandler}>NEXT</Button>
+                </div>
             </div>
 
             // <div className = {classes.Categories}>

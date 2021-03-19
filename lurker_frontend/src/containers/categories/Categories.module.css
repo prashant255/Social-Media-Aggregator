@@ -1,3 +1,9 @@
+.Center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
 /* .base{
     display: 'flex';
     flex-wrap: 'wrap';
@@ -45,11 +51,5 @@
 .Cards * {
     box-sizing: border-box;
 }
-
-.Center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-} */
+ */
 
