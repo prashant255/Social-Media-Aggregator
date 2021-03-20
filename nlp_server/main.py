@@ -171,11 +171,19 @@ def duplicate_detection(questions):
 def categorise(text):
     return categorise_fn(categorise_obj, categorise_model, text)
 
+from datetime import date
+
 # routing the application
 @app.route('/categorise', methods=["POST"])
 def cat():
     if request.json and 'text' in request.json:
-        return jsonify(category=str(categorise(request.json['text'])))
+        ip = request.json['text']
+        res = categorise(ip)
+        # save result in logs
+        with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
+            ip = ip.replace("'", "\'")
+            f.write(f'{ip},{res}\n')
+        return jsonify(category=(res))
     return "Hungry for text!"
 
 @app.route('/duplicate', methods=['POST'])

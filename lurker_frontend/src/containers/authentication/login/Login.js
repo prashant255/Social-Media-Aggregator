@@ -97,8 +97,7 @@ class Login extends Component {
         }
         return (
           <div className  = {classes.Login}>
-              {/* //TODO: Change this heading to App logo */}
-              <h1>LURKER</h1>
+              <img src="./lurker-logo.png" className={classes.logo}/>
               <form onSubmit = {this.loginHandler}>
                   {formElementsArray.map(formElement => (
                     <Input 
@@ -114,7 +113,7 @@ class Login extends Component {
                   ))}
                     <Button btnType = "Success" disabled = {!this.state.formIsValid}>LOGIN</Button>
               </form>
-                    <p>Don't have an account? <Link to = "/register">Sign up</Link></p>
+                    <p style={{color: 'rgb(17, 53, 116)'}}>Don't have an account? <Link to = "/register">Sign up</Link></p>
             </div>
         )
     }
