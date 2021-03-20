@@ -43,6 +43,7 @@ const getAllPosts = async (userId) => {
                 let res = null;
                 try {
                     res = await axios.post("http://localhost:5000/categorise", {text: post.full_text.replace((rx), "")})
+                    console.log(post.id_str)
                     console.log(post.full_text.replace((rx), ""))
                     console.log(res.data.category)
                     PostDetails.update(
