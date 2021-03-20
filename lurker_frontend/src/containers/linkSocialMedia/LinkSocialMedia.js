@@ -17,23 +17,20 @@ class LinkSocialMedia extends Component {
 	state = {
 		twitter: false,
 		reddit: false,
-		facebook: false,
+		facebook: false
 	}
 
 	getSocialMediaStatus = () => {
-		console.log(this.props.jwtToken)
 		axios.get("/auth/status", {
 			headers: {
 				'Authorization': `Bearer ${this.props.jwtToken}`
 			}
 		}).then(status => {
-			console.log("status : ", status.data)
 			this.setState({
 				reddit: status.data.reddit,
 				facebook: status.data.facebook,
 				twitter: status.data.twitter
 			})
-			console.log(this.state)
 		});
 	}
 
@@ -43,6 +40,12 @@ class LinkSocialMedia extends Component {
 
 	nextClickHandler = () =>{
 		this.props.history.push('/category');
+	}
+
+	getUrl = (name) => {
+		const backendUrl = "http://localhost:8080";
+		const url = `${backendUrl}/api/${name}/connect`;
+		return url;
 	}
 
 	render() {
@@ -58,21 +61,20 @@ class LinkSocialMedia extends Component {
 					</GridListTile>
 
 					<GridListTile cols={1}>
-						<SocialLogin socialName="Reddit" loginURL="http://localhost:8080/api/reddit/connect" isLinked={this.state.reddit} />
+						<SocialLogin socialName="Reddit" loginURL={this.getUrl("reddit")} isLinked={this.state.reddit} />
 					</GridListTile>
 
 					<GridListTile cols={1} className="twitterLogo">
-						<SocialLogin socialName="Twitter" loginURL="http://localhost:8080/api/twitter/connect" isLinked={this.state.twitter} />
+						<SocialLogin socialName="Twitter" loginURL={this.getUrl("twitter")} isLinked={this.state.twitter} />
 					</GridListTile>
 
 					<GridListTile cols={1}>
-						<SocialLogin socialName="Facebook" loginURL="http://localhost:8080/api/facebook/connect" isLinked={this.state.facebook} />
+						<SocialLogin socialName="Facebook" loginURL={this.getUrl("facebook")} isLinked={this.state.facebook} />
 					</GridListTile>
 				</GridList>
 				<br/>
 				<div className={classes.Center}>
 					<Button btnType="Success" disabled={!(this.state.twitter || this.state.reddit || this.state.facebook)} clicked={this.nextClickHandler}>NEXT</Button>
-					{/* {console.log("status", this.state.twitter || this.state.reddit || this.state.facebook)} */}
 				</div>
 				<br/>
 			</div>
