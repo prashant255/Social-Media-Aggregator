@@ -17,8 +17,8 @@ router.post('/callback', authenticateUser, async (req, res) => {
 
         if(response.refresh_token){
             const redditObj = {
-                redditAccessToken: response.refresh_token,
-                redditRefreshToken: response.access_token
+                redditAccessToken: response.access_token,
+                redditRefreshToken: response.refresh_token
             };
             redditAuth.saveToken(req.user.id, redditObj);
         }
@@ -30,9 +30,9 @@ router.post('/callback', authenticateUser, async (req, res) => {
     };
 })
 
-router.post('/allPosts', authenticateUser, async (req, res) => {
+router.post('/allPosts/:userId', async (req, res) => {
     try{
-        redditPosts.getAllPosts(req.body, req.user.id)
+        redditPosts.getAllPosts(req.params.userId)
         res.send()
     } catch(e){
         res.status(500).send(e.message)

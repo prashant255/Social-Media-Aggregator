@@ -6,7 +6,10 @@ const Post = require('../models/posts')
 const request = require('./twitterAuth')
 const axios = require('axios')
 
-const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
+const getAllPosts = async (userId) => {
+    const tokens = await(Token.findOne({
+        where: {userId}
+    }))
     const endpoint = "https://api.twitter.com/1.1/statuses/home_timeline.json"
     const params = {
         exclude_replies: true,
@@ -14,16 +17,18 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
         trim_user: true,
         count: 20,
         tweet_mode: "extended",
-        include_entities: false
-          //TODO: Change the limit in later stage of development to 100
+        include_entities: false,
+        //TODO: Change the limit in later stage of development to 100
     }
+
+    if(tokens.twitterAnchorId !== null)
+        params['since_id'] = tokens.twitterAnchorId
     const url = endpoint + common.formatParams(params);
       
     // return res;
 
     try {
-        const response = await request.twitterRequest(accessToken, accessTokenPassword, url)
-        console.log(response.length)
+        const response = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
         response.map(async (post) => {
             const dbResponse = await PostDetails.findOrCreate({
                 where: {
@@ -38,6 +43,9 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
                 let res = null;
                 try {
                     res = await axios.post("http://localhost:5000/categorise", {text: post.full_text.replace((rx), "")})
+                    console.log(post.id_str)
+                    console.log(post.full_text.replace((rx), ""))
+                    console.log(res.data.category)
                     PostDetails.update(
                     {category: res.data.category},
                     {where: {
@@ -54,7 +62,6 @@ const getAllPosts = async ({accessToken, accessTokenPassword}, userId) => {
                 lurkerPostId: dbResponse[0].dataValues.id
             })
         })
-        console.log(response.length)
         
         if(response.length > 0) {
             await Token.update({

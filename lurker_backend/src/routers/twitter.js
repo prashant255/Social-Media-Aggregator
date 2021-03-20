@@ -21,9 +21,9 @@ router.post('/callback', authenticateUser, async (req, res) => {
   }
 })
 
-router.post('/allPosts', authenticateUser, async (req, res) => {
+router.post('/allPosts/:userId', async (req, res) => {
   try{
-      twitterPosts.getAllPosts(req.body, req.user.id)
+      twitterPosts.getAllPosts(req.params.userId)
       res.send()
   } catch(e){
       res.status(500).send(e.message)
