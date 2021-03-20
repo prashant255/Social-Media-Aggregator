@@ -37,7 +37,11 @@ const SuccessCallback = (props) => {
 
             case "TWITTER":
                 params = parseParams(props.location.search) // returns an object like:
-                axios.post("/twitter/callback", params).then(
+                axios.post("/twitter/callback", params, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }).then(
                     res => {
                         props.history.push('/linksocialmedia')
                     }
@@ -49,7 +53,11 @@ const SuccessCallback = (props) => {
 
             case "FACEBOOK":
                 params = parseParams(props.location.search)
-                axios.post("/facebook/callback", params).then(
+                axios.post("/facebook/callback", params, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }).then(
                     res => {
                         props.history.push('/linksocialmedia')
                     }

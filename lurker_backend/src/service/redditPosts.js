@@ -6,17 +6,20 @@ const PostDetails = require('../models/postDetails');
 const Token = require('../models/tokens');
 const Post = require('../models/posts')
 
-const getAllPosts = async ({ accessToken, redditAnchorId }, userId) => {
+const getAllPosts = async (userId) => {
     const endpoint = "https://oauth.reddit.com/best";
+    const tokens = await(Token.findOne({
+        where: {userId}
+    }))
     const params = {
-        before: redditAnchorId,
+        before: tokens.redditAnchorId,
         limit: 10  //TODO: Change the limit in later stage of development to 100
     }
     const url = endpoint + common.formatParams(params);
     try {
         const response = await axios.get(url, {
             headers: {
-              Authorization: 'Bearer ' + accessToken //the token is a variable which holds the token
+              Authorization: 'Bearer ' + tokens.redditAccessToken //the token is a variable which holds the token
             }
            })
         response.data.data.children.map(async (post) => {
@@ -45,7 +48,7 @@ const getAllPosts = async ({ accessToken, redditAnchorId }, userId) => {
         //Children[0] save as anchor id
         const count = response.data.data.dist 
         if (count > 0){
-            const res = await Token.update({
+            await Token.update({
                 redditAnchorId: response.data.data.children[0].data.name
             },
                 { where: { userId } }
