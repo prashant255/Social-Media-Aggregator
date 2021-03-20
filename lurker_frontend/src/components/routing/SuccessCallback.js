@@ -61,7 +61,9 @@ const SuccessCallback = (props) => {
                     res => {
                         props.history.push('/linksocialmedia')
                     }
-                )
+                ).catch( e =>
+                    console.error(e)
+                );
                 break;
 
             default:

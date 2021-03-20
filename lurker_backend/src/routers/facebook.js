@@ -4,19 +4,19 @@ const facebookAuth = require('../service/facebookAuth')
 const facebookPosts = require('../service/facebookPosts')
 const authenticateUser = require('../authentication/authMiddleware')
 
-router.get('/connect', authenticateUser, (req, res) => {
+router.get('/connect', (req, res) => {
     facebookAuth.authorizeUser(req, res)
     
 });
 
-router.get('/callback', (req, res) => {
-    code = res.req.query.code
-    // console.log(res)
-    // console.log(code)
-    // res.send("Test")
-    facebookAuth.getAccessCode(code, res)
-    res.send()
-    // facebookAuth.facebookCallback(req, res)
+router.post('/callback', authenticateUser, (req, res) => {
+
+    facebookAuth.getAccessCode(req.user.id, req.body).then(() => {
+        res.send('Linked Facebook');
+    }).catch(e => {
+        console.error('Error : ', e.data);
+        res.status(404).send(e);
+    })
 });
 
 router.post('/allPosts', async (req, res) => {
