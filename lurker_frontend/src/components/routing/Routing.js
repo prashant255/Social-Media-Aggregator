@@ -7,6 +7,7 @@ import Cards from '../../containers/categories/Categories'
 import SuccessCallback from './SuccessCallback'
 // import SuccessCallback2 from './SuccessCallback2'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
+import Feed from '../../containers/feed/Feed'
 
 const routing = () => {
     return (
@@ -14,6 +15,7 @@ const routing = () => {
             <Route path = "/register" component = {Signup} />
             <Route path = "/login" component  = {Login} />
             <Route path = "/category" component  = {Cards} />
+            <Route path = "/feed" component = {Feed} />
             <Redirect from = "/" exact to = "/login" />
             <Route 
                 path="/callback/reddit"  
