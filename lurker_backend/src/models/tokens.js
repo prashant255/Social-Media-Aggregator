@@ -28,6 +28,11 @@ Tokens = sequelize.define("tokens", {
         allowNull: true
     },
 
+    facebookAnchorId: {
+        type: Sequelize.STRING(15),
+        allowNull: true
+    }
+
     redditRefreshToken: {
         type: Sequelize.STRING(255),
         allowNull: true
