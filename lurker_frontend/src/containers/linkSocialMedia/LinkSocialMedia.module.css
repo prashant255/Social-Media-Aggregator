@@ -5,6 +5,7 @@
 
 .container{
     text-align: center;
+    background-color: rgb(223, 227, 252);
 }
 
 .subtitle {
@@ -18,8 +19,4 @@
     justify-content: center;
     align-items: center;
     font-size: 20px;
-}
-
-body{
-    background-color: rgb(223, 227, 252);
 }

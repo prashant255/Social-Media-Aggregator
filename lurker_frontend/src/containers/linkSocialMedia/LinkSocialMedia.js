@@ -57,12 +57,6 @@ class LinkSocialMedia extends Component {
 						<h3 className={classes.subtitle}>Pick your poison</h3>
 					</GridListTile>
 
-					{/* <GridListTile cols={3}>
-						<Typist avgTypingSpeed={40} cursor={{ show: false }}>
-							
-						</Typist>
-					</GridListTile> */}
-
 					<GridListTile cols={1}>
 						<SocialLogin socialName="Reddit" loginURL="http://localhost:8080/api/reddit/connect" isLinked={this.state.reddit} />
 					</GridListTile>
@@ -75,11 +69,12 @@ class LinkSocialMedia extends Component {
 						<SocialLogin socialName="Facebook" loginURL="http://localhost:8080/api/facebook/connect" isLinked={this.state.facebook} />
 					</GridListTile>
 				</GridList>
-				{/* <br/> <br/> */}
+				<br/>
 				<div className={classes.Center}>
 					<Button btnType="Success" disabled={!(this.state.twitter || this.state.reddit || this.state.facebook)} clicked={this.nextClickHandler}>NEXT</Button>
-					{console.log("status", this.state.twitter || this.state.reddit || this.state.facebook)}
+					{/* {console.log("status", this.state.twitter || this.state.reddit || this.state.facebook)} */}
 				</div>
+				<br/>
 			</div>
 		);
 	}
