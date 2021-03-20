@@ -14,7 +14,7 @@ router.post('/callback', authenticateUser, (req, res) => {
     facebookAuth.getAccessCode(req.user.id, req.body).then(() => {
         res.send('Linked Facebook');
     }).catch(e => {
-        console.error('Error : ', e.data);
+        console.error('Error : ', e);
         res.status(404).send(e);
     })
 });

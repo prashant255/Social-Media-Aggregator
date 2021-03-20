@@ -31,15 +31,20 @@ const getAccessCode = (userId, {code}) => {
             code: code
         }
         const url = endpoint +  common.formatParams(params);
-
+ 
         axios.get(url).then(response => {
-            console.log(response.data)
+            const facebookAccessToken = response.data.access_token;
             // TODO: response.data.expires_in after this time, user has to login again
-            Token.upsert({
-                userId,
-                facebookAccessToken: response.data.access_token
-            }).then(() => resolve())
-            .catch(e => reject(e));
+
+            const urlGetFacebookUserId = "https://graph.facebook.com/v9.0/me?access_token=" + facebookAccessToken;
+            axios.get(urlGetFacebookUserId).then(user => {
+                Token.upsert({
+                    userId,
+                    facebookAccessToken,
+                    facebookUserId: user.data.id
+                }).then(() => resolve())
+                .catch(e => reject(e));
+            }).catch(e => reject(e));
         }).catch(e => reject(e))
     });
 
