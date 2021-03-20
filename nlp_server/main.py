@@ -181,8 +181,8 @@ def cat():
         res = categorise(ip)
         # save result in logs
         with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
-            ip = ip.replace("'", "\'")
-            f.write(f'{ip},{res}\n')
+            ip = ip.replace('"', '\"')
+            f.write(f'"{ip}","{res}"\n')
         return jsonify(category=(res))
     return "Hungry for text!"
 
