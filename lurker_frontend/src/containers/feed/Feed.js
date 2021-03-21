@@ -5,11 +5,14 @@ import React, { Component } from 'react'
 // import RedditIcon from '@material-ui/icons/Reddit';
 
 import FeedCard from '../../components/ui/cardsFeed/CardsFeed'
+import Header from '../../components/ui/header/Header'
 
 export class Feed extends Component {
     render() {
         return (
             <div>
+                {/* TODO: Remove hardcoded name (maybe add name to Redux store?) */}
+                <Header name="Swapnil Markhedkar"></Header>
                 <FeedCard
                     id = {1}
                     userName = {"Shruti Phadke"}
