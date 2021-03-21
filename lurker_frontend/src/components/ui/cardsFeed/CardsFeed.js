@@ -17,7 +17,7 @@ import classes from '../cardsFeed/CardsFeed.module.css'
 
 import SvgIcon from '@material-ui/core/SvgIcon';
 
-function FeedCard(props) {
+function CardsFeed(props) {
     console.log(props)
 
     return (
@@ -58,4 +58,4 @@ function FeedCard(props) {
     )
 }
 
-export default FeedCard
+export default CardsFeed
