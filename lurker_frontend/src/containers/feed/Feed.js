@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import axios from '../../axios/lurkerBackend'
 import { useSelector } from 'react-redux'
-import FeedCard from '../../components/ui/cardsFeed/cardsFeed'
+import CardsFeed from '../../components/ui/cardsFeed/CardsFeed'
+import Header from '../../components/ui/header/Header'
 
 
 // import FacebookIcon from '@material-ui/icons/Facebook';
@@ -31,6 +32,7 @@ const Feed = () => {
     return (
 
         <div>
+            <Header name="Swapnil Markhedkar"></Header>
             {
                 posts ? posts.map(post => {
 
@@ -43,7 +45,7 @@ const Feed = () => {
                     // // postSource = {FacebookIcon} // Facebook | Reddit | Twitter
                     // caption = {"test3 this is a caption hello world"}
                 // />
-                    return <FeedCard key = {post.lurkerPostId} postDetails = {post}
+                    return <CardsFeed key = {post.lurkerPostId} postDetails = {post}
                     userName = "Prashant Agrawal"
                     postTimeStamp = {"March 20, 2021"}
                     profilePicture = {"test"}

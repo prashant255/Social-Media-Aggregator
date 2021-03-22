@@ -10,12 +10,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import classes from './cardsFeed.module.css'
+import classes from './CardsFeed.module.css'
 import * as constants from '../../../constants'
 import axios from 'axios'
 import parse from 'html-react-parser'
 
-const FeedCard = (props) => {
+const CardsFeed = (props) => {
 
     const [feedData, setFeedData] = useState(null)
 
@@ -87,4 +87,4 @@ const FeedCard = (props) => {
     )
 }
 
-export default FeedCard
+export default CardsFeed
