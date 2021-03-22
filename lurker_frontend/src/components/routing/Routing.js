@@ -5,7 +5,6 @@ import Login from '../../containers/authentication/login/Login'
 import Page404 from '../page404/Page404'
 import Cards from '../../containers/categories/Categories'
 import SuccessCallback from './SuccessCallback'
-// import SuccessCallback2 from './SuccessCallback2'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
 import Feed from '../../containers/feed/Feed'
 
@@ -35,4 +34,4 @@ const routing = () => {
     )
 }
 
-export default React.memo(routing)
+export default routing

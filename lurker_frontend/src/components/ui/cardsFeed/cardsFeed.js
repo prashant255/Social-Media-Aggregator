@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -8,31 +8,54 @@ import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
+import classes from './cardsFeed.module.css'
+import * as constants from '../../../constants'
+import axios from 'axios'
+import parse from 'html-react-parser'
 
+const FeedCard = (props) => {
 
-import classes from '../cardsFeed/CardsFeed.module.css'
+    const [feedData, setFeedData] = useState(null)
 
-import SvgIcon from '@material-ui/core/SvgIcon';
+    useEffect(() => {
+        //Switch Statement for Twitter, Reddit and Facebook
+        switch(props.postDetails.handle) {
+            case constants.HANDLES.TWITTER:
+                console.log("Twitter")
+                
+                break;
+            case constants.HANDLES.REDDIT:
+                console.log("Reddit")
+                axios.get(`https://api.reddit.com/by_id/${props.postDetails.postId}`).then(
+                    res => 
+                        setFeedData(res.data.data.children[0].data)
+                ).catch(
+                    e => console.log(e)
+                )
+                break;
+            case constants.HANDLES.FACEBOOK:
+                console.log("Facebook")  
+                break;  
+        }
+ 
+    }, [])
 
-function FeedCard(props) {
-    console.log(props)
+    let displayFeed = null
+    if(feedData !== null) {
 
-    return (
-        <div>
+    console.log(feedData.selftext_html)
+            displayFeed = (
             <Card className={classes.Card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label={props.userName} className={classes.avatar} src={props.profilePicture}>
-                            S
-                        </Avatar>
+                        <Avatar aria-label={feedData.author} className={classes.avatar} src={props.profilePicture} />
                     }
                     // action={
                     //     props.postSource
                     // }
-                    title={props.userName}
+                    title={feedData.subreddit}
                     subheader={props.postTimeStamp}
                 />
                 <CardMedia
@@ -42,7 +65,7 @@ function FeedCard(props) {
                 />
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {props.caption}
+                        {parse(parse(feedData.selftext_html))}
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -54,6 +77,12 @@ function FeedCard(props) {
                     </IconButton>
                 </CardActions>
             </Card>
+        )
+    }
+
+    return (
+        <div>
+            {displayFeed}
         </div>
     )
 }
