@@ -12,25 +12,36 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import classes from './CardsFeed.module.css'
 import * as constants from '../../../constants'
-import axios from 'axios'
+import axios from '../../../axios/lurkerBackend'
 import parse from 'html-react-parser'
+
+import { useSelector } from 'react-redux'
 
 const CardsFeed = (props) => {
 
+    const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
-
+    const headers = {
+        'Authorization': `Bearer ${jwtToken}`
+    }
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
+        //Add headers
         switch(props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
                 console.log("Twitter")
-                
+                axios.get(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`, { headers }).then(
+                    res => 
+                        setFeedData(res.data)
+                ).catch(
+                    e => console.log(e)
+                )
                 break;
             case constants.HANDLES.REDDIT:
                 console.log("Reddit")
-                axios.get(`https://api.reddit.com/by_id/${props.postDetails.postId}`).then(
+                axios.get(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`, { headers }).then(
                     res => 
-                        setFeedData(res.data.data.children[0].data)
+                        setFeedData(res.data)
                 ).catch(
                     e => console.log(e)
                 )
@@ -44,19 +55,17 @@ const CardsFeed = (props) => {
 
     let displayFeed = null
     if(feedData !== null) {
-
-    console.log(feedData.selftext_html)
             displayFeed = (
             <Card className={classes.Card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label={feedData.author} className={classes.avatar} src={props.profilePicture} />
+                        <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     // action={
                     //     props.postSource
                     // }
-                    title={feedData.subreddit}
-                    subheader={props.postTimeStamp}
+                    title={feedData.senderName}
+                    subheader={feedData.createdAt}
                 />
                 <CardMedia
                     // className={classes.media}
@@ -65,7 +74,7 @@ const CardsFeed = (props) => {
                 />
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {parse(parse(feedData.selftext_html))}
+                        {parse(parse(feedData.text))}
                     </Typography>
                 </CardContent>
                 <CardActions>
