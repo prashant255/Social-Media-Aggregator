@@ -6,6 +6,36 @@ const PostDetails = require('../models/postDetails');
 const Token = require('../models/tokens');
 const Post = require('../models/posts')
 
+const getPostById = async (userId, postId) => {
+    let url = `https://oauth.reddit.com/by_id/${postId}`
+    const tokens = await(Token.findOne({
+        where: {userId}
+    }))
+    const headers = {
+        Authorization: 'Bearer ' + tokens.redditAccessToken
+    }
+
+    try{
+        let postResponse = await axios.get(url, {
+            headers
+        })
+        postResponse = postResponse.data.data.children[0].data
+        url= `https://oauth.reddit.com/r/${postResponse.subreddit}/about`
+        const subRedditResponse = await axios.get(url, {
+            headers
+        })
+        const responseToSend = {
+            senderName: postResponse.subreddit_name_prefixed,
+            text: postResponse.selftext_html,
+            createdAt: new Date(postResponse.created*1000),
+            senderImage: subRedditResponse.data.data.icon_img
+        }
+        return responseToSend
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}
+
 const getAllPosts = async (userId) => {
     const endpoint = "https://oauth.reddit.com/best";
     const tokens = await(Token.findOne({
@@ -61,5 +91,6 @@ const getAllPosts = async (userId) => {
 }
 
 module.exports = {
-    getAllPosts
+    getAllPosts,
+    getPostById
 }
