@@ -6,32 +6,56 @@ import Page404 from '../page404/Page404'
 import Cards from '../../containers/categories/Categories'
 import SuccessCallback from './SuccessCallback'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
+import Aux from '../../hoc/Aux/Aux'
 import Feed from '../../containers/feed/Feed'
 
-const routing = () => {
-    return (
+import { useSelector } from 'react-redux'
+
+
+const Routing = () => {
+
+    const isAuthenticated = useSelector(state => state.jwtToken !== null)
+    
+    let routes  = (
         <Switch>
             <Route path = "/register" component = {Signup} />
             <Route path = "/login" component  = {Login} />
-            <Route path = "/category" component  = {Cards} />
-            <Route path = "/feed" component = {Feed} />
             <Redirect from = "/" exact to = "/login" />
-            <Route 
-                path="/callback/reddit"  
-                component={(props) => <SuccessCallback {...props} socialMedia="REDDIT" />}
-            />
-            <Route 
-                path="/callback/facebook"  
-                component={(props) => <SuccessCallback {...props} socialMedia="FACEBOOK" />}
-            />
-            <Route 
-                path="/callback/twitter"  
-                component={(props) => <SuccessCallback {...props} socialMedia="TWITTER" />}
-            />
-            <Route path="/linkSocialMedia" component={LinkSocialMedia}/>
             <Route component = {Page404} />
         </Switch>
     )
+
+    if(isAuthenticated) {
+        routes = (
+            <Switch>
+                <Route path = "/register" component = {Signup} />
+                <Route path = "/login" component  = {Login} />
+                <Route path = "/category" component  = {Cards} />
+                <Route path = "/feed" component = {Feed} />
+                <Route 
+                    path="/callback/reddit"  
+                    component={(props) => <SuccessCallback {...props} socialMedia="REDDIT" />}
+                />
+                <Route 
+                    path="/callback/facebook"  
+                    component={(props) => <SuccessCallback {...props} socialMedia="FACEBOOK" />}
+                />
+                <Route 
+                    path="/callback/twitter"  
+                    component={(props) => <SuccessCallback {...props} socialMedia="TWITTER" />}
+                />
+                <Route path="/linkSocialMedia" component={LinkSocialMedia}/>
+                <Redirect from = "/" exact to = "/feed" />
+                <Route component = {Page404} />
+            </Switch>
+        )
+    }
+
+    return (
+        <Aux>
+            {routes}
+        </Aux>
+    )
 }
 
-export default routing
+export default Routing
