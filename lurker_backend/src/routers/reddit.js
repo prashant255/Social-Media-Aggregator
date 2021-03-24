@@ -39,15 +39,13 @@ router.post('/allPosts/:userId', async (req, res) => {
     }
 })
 
-/*
-// Refer for refresh token
+router.post('/refresh/:userId', (req, res) => {
 
-redditAuth.getRefreshedAccessToken("10902378528-Dh1ikILCv5vUhZohB6jR31viGzAiZw")
-    .then(accessToken => {
-        console.log("Token : ", accessToken);
-    }).catch(e => {
-        console.log(e);
-    });
-*/
+    redditAuth.getRefreshedAccessToken(req.params.userId)
+        .then(() => res.send('Updated Access Token'))
+        .catch(e => {
+            res.status(404).send(e);
+        });
+});
 
 module.exports = router
