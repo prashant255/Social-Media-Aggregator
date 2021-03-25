@@ -2,14 +2,11 @@ import React, {useEffect, useState} from 'react'
 import axios from '../../axios/lurkerBackend'
 import { useSelector } from 'react-redux'
 import CardsFeed from '../../components/ui/cardsFeed/CardsFeed'
-import Header from '../../components/ui/header/Header'
-
 
 // import FacebookIcon from '@material-ui/icons/Facebook';
 // import TwitterIcon from '@material-ui/icons/Twitter';
 // import RedditIcon from '@material-ui/icons/Reddit';
 
-import FeedCard from '../../components/ui/cardsFeed/CardsFeed'
 import Header from '../../components/ui/header/Header'
 import Footer from '../../components/ui/footer/Footer'
 
@@ -35,24 +32,11 @@ const Feed = () => {
     return (
 
         <div>
+            {/* TODO: Save the name of the logged in user in the redux, fetch the user name and send it to the header. */}
             <Header name="Swapnil Markhedkar"></Header>
             {
                 posts ? posts.map(post => {
-
-                    // <FeedCard
-                    // id = {1}
-                    // userName = {"Shruti Phadke"}
-                    // postTimeStamp = {"March 20, 2021"}
-                    // profilePicture = {"test"}
-                    // imageSource = {"https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FImage&psig=AOvVaw0IZlHIPH-5SjQp-4CaLN37&ust=1616332747122000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCIDivez6vu8CFQAAAAAdAAAAABAD"}
-                    // // postSource = {FacebookIcon} // Facebook | Reddit | Twitter
-                    // caption = {"test3 this is a caption hello world"}
-                // />
-                    return <CardsFeed key = {post.lurkerPostId} postDetails = {post}
-                    userName = "Prashant Agrawal"
-                    postTimeStamp = {"March 20, 2021"}
-                    profilePicture = {"test"}
-                    imageSource = {"Some image"}/>
+                    return <CardsFeed key = {post.lurkerPostId} postDetails = {post}/>
                 }) : 
                     <h1>No post to display</h1>
             }
