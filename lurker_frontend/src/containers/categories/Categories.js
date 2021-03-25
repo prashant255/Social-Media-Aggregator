@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux'
 
 import classes from '../categories/Categories.module.css'
 
@@ -8,6 +9,7 @@ import Button from '../../components/ui/button/Button'
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import GridList from '@material-ui/core/GridList';
+import axios from '../../axios/lurkerBackend'
 
 class Categories extends Component {
     state = {
@@ -95,11 +97,20 @@ class Categories extends Component {
         for(let categoryIdentifier in this.state.categories)
             if(this.state.categories[categoryIdentifier].selected)
                 categorySelected.push(categoryIdentifier)
+
+        axios.post("/settings/categories/", categorySelected, {
+            headers: {
+                'Authorization': `Bearer ${this.props.jwtToken}`
+            }
+        }).then(() => {
+            this.props.history.push('/feed');
+        }).catch( e =>
+            console.log("Error : ",e)
+        );
         console.log(categorySelected)
     }
 
     render () {
-        
         const categoriesArray = []
         for(let key in this.state.categories){
             categoriesArray.push({
@@ -158,4 +169,10 @@ class Categories extends Component {
     }
 }
 
-export default Categories
+const mapStateToProps = state => {
+	return {
+		jwtToken: state.jwtToken
+	}
+}
+
+export default connect(mapStateToProps, null)(Categories)
