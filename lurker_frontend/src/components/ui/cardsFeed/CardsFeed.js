@@ -24,6 +24,7 @@ const CardsFeed = (props) => {
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
     }
+
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
@@ -53,8 +54,28 @@ const CardsFeed = (props) => {
  
     }, [])
 
+
+    let mediaPost = null
     let displayFeed = null
     if(feedData !== null) {
+            if(feedData.videos !== null) {
+                mediaPost = (
+                    <CardMedia
+                    // className={classes.media}
+                        component = "video"
+                        src = {feedData.videos}
+                        controls
+                        autoplay
+                    />
+                )
+            } else if (feedData.images.length >0) {
+                mediaPost = (
+                    <CardMedia
+                        component = "img"
+                        src = {feedData.images[0]}
+                    />
+                )
+            }
             displayFeed = (
             <Card className={classes.Card}>
                 <CardHeader
@@ -67,16 +88,15 @@ const CardsFeed = (props) => {
                     title={feedData.senderName}
                     subheader={feedData.createdAt}
                 />
-                <CardMedia
-                    // className={classes.media}
-                    component = "img"
-                    image = {props.imageSource}
-                />
-                <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {parse(parse(feedData.text))}
-                    </Typography>
-                </CardContent>
+                {console.log(mediaPost)}
+                {mediaPost}
+                {feedData.text ? 
+                    <CardContent>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            {parse(parse(feedData.text))}
+                        </Typography>
+                    </CardContent> : null
+                }
                 <CardActions>
                     <IconButton aria-label="add to favorites">
                         <FavoriteIcon />
