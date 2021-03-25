@@ -48,4 +48,12 @@ router.post('/refresh/:userId', (req, res) => {
         });
 });
 
+router.post('/vote', (req,res) => {
+    try{
+
+    } catch(e) {
+        
+    }
+});
+
 module.exports = router
