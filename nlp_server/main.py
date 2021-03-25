@@ -22,7 +22,11 @@ import nltk
 # nltk.download('wordnet')
 from nltk import word_tokenize
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+# from nltk.stem import WordNetLemmatizer
+
+# spaCy
+import spacy
+# spacy.cli.download('en_core_web_sm')
 
 # trax
 import trax.layers as tl
@@ -47,8 +51,8 @@ class Categorise():
         text = word_tokenize(text)
         STOPWORDS = set(stopwords.words('english'))
         text = [word for word in text if word not in STOPWORDS]
-        lemmatizer = WordNetLemmatizer()
-        text = [lemmatizer.lemmatize(word) for word in text]
+        sp = spacy.load('en_core_web_sm')
+        text = [word.lemma_ for word in sp(" ".join(text))]
         return text
 
     def text_to_vector(self, text, pad_token="__PAD__", num_token="__NUM__", unk_token="__UNK__"):
