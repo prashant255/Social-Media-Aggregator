@@ -17,8 +17,8 @@ router.post('/callback', authenticateUser, async (req, res) => {
 
         if(response.refresh_token){
             const redditObj = {
-                redditAccessToken: response.refresh_token,
-                redditRefreshToken: response.access_token
+                redditAccessToken: response.access_token,
+                redditRefreshToken: response.refresh_token
             };
             redditAuth.saveToken(req.user.id, redditObj);
         }
@@ -30,24 +30,39 @@ router.post('/callback', authenticateUser, async (req, res) => {
     };
 })
 
-router.post('/allPosts', authenticateUser, async (req, res) => {
+router.post('/allPosts/:userId', async (req, res) => {
     try{
-        redditPosts.getAllPosts(req.body, req.user.id)
+        redditPosts.getAllPosts(req.params.userId)
         res.send()
     } catch(e){
         res.status(500).send(e.message)
     }
 })
 
-/*
-// Refer for refresh token
+router.post('/refresh/:userId', (req, res) => {
 
-redditAuth.getRefreshedAccessToken("10902378528-Dh1ikILCv5vUhZohB6jR31viGzAiZw")
-    .then(accessToken => {
-        console.log("Token : ", accessToken);
-    }).catch(e => {
-        console.log(e);
-    });
-*/
+    redditAuth.getRefreshedAccessToken(req.params.userId)
+        .then(() => res.send('Updated Access Token'))
+        .catch(e => {
+            res.status(404).send(e);
+        });
+});
+
+router.post('/vote', (req,res) => {
+    try{
+
+    } catch(e) {
+        
+    }
+});
+
+router.get('/post/:postId', authenticateUser, async(req, res) => {
+    try{
+        const response = await redditPosts.getPostById(req.user.id, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
+})
 
 module.exports = router

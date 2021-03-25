@@ -52,12 +52,12 @@ class Categories extends Component {
                 imageSource: "motivation.png",
                 selected: false    
             },
-            promo: {
+            promotions: {
                 displayName: "Promotions",
                 imageSource: "promos.png",
                 selected: false    
             },
-            sports: {
+            sport: {
                 displayName: "Sports",
                 imageSource: "sports.png",
                 selected: false    

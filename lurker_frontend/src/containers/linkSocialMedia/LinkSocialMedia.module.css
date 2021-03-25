@@ -1,13 +1,16 @@
 .title {
-    font-size: 100px;
+    font-size: 90px;
+    color: rgb(17, 53, 116);
 }
 
 .container{
     text-align: center;
+    background-color: rgb(223, 227, 252);
 }
 
 .subtitle {
     font-size: 60px;
+    color: rgb(17, 53, 116);
     font-weight: normal;
 }
 

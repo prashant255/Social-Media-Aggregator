@@ -15,7 +15,7 @@ authorizeUser = (req, res) => {
             redirect_uri:"http://localhost:3000/callback/reddit",
             // redirect_uri:"http://localhost:3000/callback/reddit",
             duration:"permanent",
-            scope:"read"
+            scope:"read,vote"
         }
         const url = endpoint +  common.formatParams(params);
     res.redirect(url);
@@ -83,9 +83,19 @@ redditCallback = (code) => {
     // });
 }
 
-getRefreshedAccessToken = (refreshToken) => {
+getRefreshedAccessToken = (userId) => {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async(resolve, reject) => {
+
+        const token = await Token.findOne({where: { userId }});
+        
+        if(!token)
+            reject('No token for user');
+        else if(!token.redditRefreshToken)    
+            reject('No refresh token found');
+        
+        const refreshToken = token.redditRefreshToken;
+
         const url = "https://www.reddit.com/api/v1/access_token?grant_type=refresh_token&refresh_token=" + refreshToken;
         request.open("POST", url, true);
         const base64Auth = getBase64Auth();
@@ -99,7 +109,12 @@ getRefreshedAccessToken = (refreshToken) => {
                 const response = JSON.parse(request.responseText);
 
                 if(request.status == 200){
-                    resolve(response.access_token);
+                    const newAccessToken = response.access_token;
+                    Token.upsert({
+                        userId,
+                        redditAccessToken: newAccessToken
+                    }).then(() => resolve())
+                    .catch(e => reject(e))
                 }else{
                     reject(response);
                 }
@@ -116,7 +131,7 @@ getRefreshedAccessToken = (refreshToken) => {
     });
 }
 
-const saveToken = async (userId, {redditRefreshToken, redditAccessToken}) => {
+const saveToken = async (userId, {redditAccessToken, redditRefreshToken}) => {
     
     if(redditAccessToken === undefined || redditRefreshToken === undefined)
         throw new Error(JSON.stringify(error.BAD_REQUEST))

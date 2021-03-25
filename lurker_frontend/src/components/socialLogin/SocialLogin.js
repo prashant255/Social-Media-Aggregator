@@ -5,7 +5,6 @@ import twitterLogo from '../../assets/twitter.png'
 import redditLogo from '../../assets/reddit.png'
 
 import classes from "./SocialLogin.module.css"
-import { Link, Route, Redirect } from 'react-router-dom'
 
 const SocialLogin = (props) => {
     console.log(props)

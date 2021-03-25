@@ -26,6 +26,7 @@
     /* outline: none; */
     background-color: rgb(17, 53, 116);
     caret-color: white;
+    color: white;
 }
 
 .InputElement:focus::placeholder{
