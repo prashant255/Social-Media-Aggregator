@@ -6,6 +6,7 @@ import React, { Component } from 'react'
 
 import FeedCard from '../../components/ui/cardsFeed/CardsFeed'
 import Header from '../../components/ui/header/Header'
+import Footer from '../../components/ui/footer/Footer'
 
 export class Feed extends Component {
     render() {
@@ -22,6 +23,7 @@ export class Feed extends Component {
                     // postSource = {FacebookIcon} // Facebook | Reddit | Twitter
                     caption = {"test3 this is a caption hello world"}
                 />
+                <Footer/>
             </div>
         )
     }
