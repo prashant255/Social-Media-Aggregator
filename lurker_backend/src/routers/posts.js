@@ -12,5 +12,4 @@ router.get('/all', authenticateUser, async (req, res) => {
     }
 })
     
-
 module.exports = router

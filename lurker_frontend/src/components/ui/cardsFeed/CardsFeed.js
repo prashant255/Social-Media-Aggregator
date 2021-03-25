@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -8,32 +8,64 @@ import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
+import classes from './CardsFeed.module.css'
+import * as constants from '../../../constants'
+import axios from '../../../axios/lurkerBackend'
+import parse from 'html-react-parser'
 
+import { useSelector } from 'react-redux'
 
-import classes from '../cardsFeed/CardsFeed.module.css'
+const CardsFeed = (props) => {
 
-import SvgIcon from '@material-ui/core/SvgIcon';
+    const jwtToken = useSelector(state => state.jwtToken)
+    const [feedData, setFeedData] = useState(null)
+    const headers = {
+        'Authorization': `Bearer ${jwtToken}`
+    }
+    useEffect(() => {
+        //Switch Statement for Twitter, Reddit and Facebook
+        //Add headers
+        switch(props.postDetails.handle) {
+            case constants.HANDLES.TWITTER:
+                console.log("Twitter")
+                axios.get(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`, { headers }).then(
+                    res => 
+                        setFeedData(res.data)
+                ).catch(
+                    e => console.log(e)
+                )
+                break;
+            case constants.HANDLES.REDDIT:
+                console.log("Reddit")
+                axios.get(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`, { headers }).then(
+                    res => 
+                        setFeedData(res.data)
+                ).catch(
+                    e => console.log(e)
+                )
+                break;
+            case constants.HANDLES.FACEBOOK:
+                console.log("Facebook")  
+                break;  
+        }
+ 
+    }, [])
 
-function CardsFeed(props) {
-    console.log(props)
-
-    return (
-        <div>
+    let displayFeed = null
+    if(feedData !== null) {
+            displayFeed = (
             <Card className={classes.Card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label={props.userName} className={classes.avatar} src={props.profilePicture}>
-                            S
-                        </Avatar>
+                        <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     // action={
                     //     props.postSource
                     // }
-                    title={props.userName}
-                    subheader={props.postTimeStamp}
+                    title={feedData.senderName}
+                    subheader={feedData.createdAt}
                 />
                 <CardMedia
                     // className={classes.media}
@@ -42,7 +74,7 @@ function CardsFeed(props) {
                 />
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {props.caption}
+                        {parse(parse(feedData.text))}
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -54,6 +86,12 @@ function CardsFeed(props) {
                     </IconButton>
                 </CardActions>
             </Card>
+        )
+    }
+
+    return (
+        <div>
+            {displayFeed}
         </div>
     )
 }

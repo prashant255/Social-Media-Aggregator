@@ -16,6 +16,8 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
 
+import Logout from '../../logout/Logout'
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
@@ -36,6 +38,7 @@ const Header = (props) => {
 	const classes = useStyles();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [showLogoutComponent, setShowLogoutComponent] = React.useState(false);
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -76,8 +79,13 @@ const Header = (props) => {
 		},
 	}))(MenuItem);
 
+	const logoutClickHandler = () => {
+		setShowLogoutComponent(true)
+	}
+
 	return (
-		<div className={classes.root}>
+		<div className={classes.root}>		
+		{showLogoutComponent? <Logout /> : null}
 			<AppBar position="fixed">
 				<Toolbar className={classes.headerColor}>
 					<Typography className={classes.title}>
@@ -110,7 +118,7 @@ const Header = (props) => {
 								</ListItemIcon>
 								<ListItemText primary="About" />
 							</StyledMenuItem>
-							<StyledMenuItem>
+							<StyledMenuItem  onClick = {() => logoutClickHandler()}>
 								<ListItemIcon>
 									<ExitToAppIcon fontSize="small" />
 								</ListItemIcon>

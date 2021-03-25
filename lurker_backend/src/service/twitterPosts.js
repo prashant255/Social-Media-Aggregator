@@ -6,6 +6,27 @@ const Post = require('../models/posts')
 const request = require('./twitterAuth')
 const axios = require('axios')
 
+const getPostById = async (userId, postId) => {
+    console.log(userId)
+    console.log(postId)
+    let url = `https://api.twitter.com/1.1/statuses/show.json?id=${postId}&tweet_mode=extended`
+    const tokens = await(Token.findOne({
+        where: {userId}
+    }))
+    try{
+        const postResponse = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+        const responseToSend = {
+            senderName: postResponse.user.name,
+            text: postResponse.full_text,
+            createdAt: new Date(postResponse.created_at),
+            senderImage: postResponse.user.profile_image_url
+        }
+        return responseToSend
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}
+
 const getAllPosts = async (userId) => {
     const tokens = await(Token.findOne({
         where: {userId}
@@ -75,5 +96,6 @@ const getAllPosts = async (userId) => {
 }
 
 module.exports = {
-    getAllPosts
+    getAllPosts,
+    getPostById
 }

@@ -56,4 +56,13 @@ router.post('/vote', (req,res) => {
     }
 });
 
+router.get('/post/:postId', authenticateUser, async(req, res) => {
+    try{
+        const response = await redditPosts.getPostById(req.user.id, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
+})
+
 module.exports = router
