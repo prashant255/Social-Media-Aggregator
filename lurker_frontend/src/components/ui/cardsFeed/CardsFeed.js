@@ -1,4 +1,9 @@
 import React, {useEffect, useState} from 'react'
+import { useSelector } from 'react-redux'
+import parse from 'html-react-parser'
+
+import * as constants from '../../../constants'
+import axios from '../../../axios/lurkerBackend'
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -10,12 +15,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-import classes from './CardsFeed.module.css'
-import * as constants from '../../../constants'
-import axios from '../../../axios/lurkerBackend'
-import parse from 'html-react-parser'
 
-import { useSelector } from 'react-redux'
+import classes from './CardsFeed.module.css'
 
 var dayjs = require('dayjs')
 var relativeTime = require('dayjs/plugin/relativeTime')
@@ -57,8 +58,7 @@ const CardsFeed = (props) => {
         }
  
     }, [])
-
-
+   
     let mediaPost = null
     let displayFeed = null
     if(feedData !== null) {
@@ -87,9 +87,9 @@ const CardsFeed = (props) => {
                     avatar={
                         <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
-                    // action={
-                    //     props.postSource
-                    // }
+                    action={
+                        <props.postSource/>
+                    }
                     title={feedData.senderName}
                     subheader={ 
                         dayjs(feedData.createdAt).fromNow()

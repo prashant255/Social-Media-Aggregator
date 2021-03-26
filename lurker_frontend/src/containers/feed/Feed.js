@@ -3,9 +3,9 @@ import axios from '../../axios/lurkerBackend'
 import { useSelector } from 'react-redux'
 import CardsFeed from '../../components/ui/cardsFeed/CardsFeed'
 
-// import FacebookIcon from '@material-ui/icons/Facebook';
-// import TwitterIcon from '@material-ui/icons/Twitter';
-// import RedditIcon from '@material-ui/icons/Reddit';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import RedditIcon from '@material-ui/icons/Reddit';
 
 import Header from '../../components/ui/header/Header'
 import Footer from '../../components/ui/footer/Footer'
@@ -29,6 +29,7 @@ const Feed = () => {
         return () => {
         }
     }, [posts])
+
     return (
 
         <div>
@@ -36,7 +37,19 @@ const Feed = () => {
             <Header name="Swapnil Markhedkar"></Header>
             {
                 posts ? posts.map(post => {
-                    return <CardsFeed key = {post.lurkerPostId} postDetails = {post}/>
+                    let postHandle = null;
+                    switch(post.handle){
+                        case "Reddit": 
+                            postHandle = RedditIcon;
+                            break;
+                        case "Facebook": 
+                            postHandle = FacebookIcon;
+                            break;
+                        case "Twitter": 
+                            postHandle = TwitterIcon;
+                            break;
+                    }
+                    return <CardsFeed key = {post.lurkerPostId} postDetails = {post} postSource={postHandle}/>
                 }) : 
                     <h1>No post to display</h1>
             }
