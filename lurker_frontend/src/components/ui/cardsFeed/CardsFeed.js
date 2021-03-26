@@ -17,6 +17,10 @@ import parse from 'html-react-parser'
 
 import { useSelector } from 'react-redux'
 
+var dayjs = require('dayjs')
+var relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
 const CardsFeed = (props) => {
 
     const jwtToken = useSelector(state => state.jwtToken)
@@ -76,6 +80,7 @@ const CardsFeed = (props) => {
                     />
                 )
             }
+
             displayFeed = (
             <Card className={classes.Card}>
                 <CardHeader
@@ -86,7 +91,9 @@ const CardsFeed = (props) => {
                     //     props.postSource
                     // }
                     title={feedData.senderName}
-                    subheader={feedData.createdAt}
+                    subheader={ 
+                        dayjs(feedData.createdAt).fromNow()
+                    }
                 />
                 {console.log(mediaPost)}
                 {mediaPost}
