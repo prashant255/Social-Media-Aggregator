@@ -132,28 +132,6 @@ class Categories extends Component {
                     <Button btnType = "Success" disabled = {!this.state.selectedCount} clicked = {this.nextClickHandler}>NEXT</Button>
                 </div>
             </div>
-
-            // <div className = {classes.Categories}>
-            //     <div className = {classes.Cards}>
-            //         {
-            //             categoriesArray.map(category => 
-            //                 <Cards
-            //                     id = {category.id}    
-            //                     categoryName = {category.config.displayName}
-            //                     iconName = {category.config.iconName}
-            //                     selected = {category.config.selected}
-            //                     clicked = {() => this.categoryClickedHanlder(category.id)}
-            //                 />
-            //             )
-            //         }
-            //     </div>
-            //     <div className = {classes.Center}>
-            //         <Button 
-            //             btnType = "Success" 
-            //             disabled = {!this.state.selectedCount} 
-            //             clicked = {this.nextClickHanlder}>NEXT</Button>
-            //     </div>
-            // </div>
         )
     }
 }
