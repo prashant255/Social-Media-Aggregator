@@ -6,20 +6,76 @@ const Post = require('../models/posts')
 const request = require('./twitterAuth')
 const axios = require('axios')
 
+const likePost = (userId, postId) => {
+    const url = `https://api.twitter.com/1.1/favorites/create.json?id=${postId}`
+
+    return new Promise((resolve, reject) => {
+
+        Token.findOne({ where: {userId} }).then(tokens => {
+            if(!tokens)
+                reject('No Token');
+            else if(!tokens.twitterAccessToken)
+                reject('No Access Token')
+            else if(!tokens.twitterAccessTokenPwd)
+                reject('No Access Token Password')
+            
+            request.twitterRequestPost(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+            .then(res => {
+                resolve();
+            }).catch(e => reject(e));
+        })
+    })
+}
+
+const unlikePost = (userId, postId) => {
+    const url = `https://api.twitter.com/1.1/favorites/destroy.json?id=${postId}`
+
+    return new Promise((resolve, reject) => {
+
+        Token.findOne({ where: {userId} }).then(tokens => {
+            if(!tokens)
+                reject('No Token');
+            else if(!tokens.twitterAccessToken)
+                reject('No Access Token')
+            else if(!tokens.twitterAccessTokenPwd)
+                reject('No Access Token Password')
+            
+            request.twitterRequestPost(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+            .then(res => {
+                resolve();
+            }).catch(e => reject(e));
+        })
+    })
+}
+
 const getPostById = async (userId, postId) => {
-    console.log(userId)
-    console.log(postId)
     let url = `https://api.twitter.com/1.1/statuses/show.json?id=${postId}&tweet_mode=extended`
     const tokens = await(Token.findOne({
         where: {userId}
     }))
     try{
         const postResponse = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+        
+        let images = []
+        let videos = null
+        if(postResponse.extended_entities !== undefined) {
+        let mediaFromResponse = postResponse.extended_entities.media
+            mediaFromResponse.forEach( media => {
+                if(media.type === 'photo'){
+                    images.push(media.media_url)
+                } else if (media.type === 'video') {
+                    console.log("hello")
+                    videos = media.video_info.variants[0].url
+                }
+            })
+        }
         const responseToSend = {
             senderName: postResponse.user.name,
             text: postResponse.full_text,
             createdAt: new Date(postResponse.created_at),
-            senderImage: postResponse.user.profile_image_url
+            senderImage: postResponse.user.profile_image_url,
+            images,
+            videos
         }
         return responseToSend
     } catch (e) {
@@ -74,7 +130,7 @@ const getAllPosts = async (userId) => {
                         handle: common.HANDLES.TWITTER
                     }})
                 } catch (e) {
-                    console.log(e)
+                    console.log(e.message)
                 }
             }
 
@@ -96,6 +152,8 @@ const getAllPosts = async (userId) => {
 }
 
 module.exports = {
+    likePost,
+    unlikePost,
     getAllPosts,
     getPostById
 }

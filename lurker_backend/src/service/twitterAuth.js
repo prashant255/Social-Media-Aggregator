@@ -61,6 +61,21 @@ const twitterRequest = (oauthAccessToken, oauthAccessTokenSecret, url) => {
     })
 }
 
+const twitterRequestPost = (oauthAccessToken, oauthAccessTokenSecret, url) => {
+
+    return new Promise((resolve, reject) => {
+        consumer().post(url, oauthAccessToken, oauthAccessTokenSecret, {}, (error, data, response) => {
+            if (error) {
+                console.log(error)
+                reject(error)
+            } else {
+                dataJSON = JSON.parse(data)
+                resolve(dataJSON)
+            }
+        })  
+    })
+}
+
 const saveToken = async (userId, {twitterAccessToken, twitterAccessTokenPwd}) => {
 
     if(twitterAccessToken === undefined || twitterAccessTokenPwd === undefined)
@@ -80,6 +95,7 @@ const saveToken = async (userId, {twitterAccessToken, twitterAccessTokenPwd}) =>
 
 module.exports = {
     sessionConnect,
+    twitterRequestPost,
     twitterCallback,
     twitterRequest,
     saveToken

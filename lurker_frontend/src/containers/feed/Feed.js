@@ -7,6 +7,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import RedditIcon from '@material-ui/icons/Reddit';
 
+import FeedCard from '../../components/ui/cardsFeed/CardsFeed'
 import Header from '../../components/ui/header/Header'
 import Footer from '../../components/ui/footer/Footer'
 
