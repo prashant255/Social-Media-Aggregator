@@ -6,6 +6,48 @@ const Post = require('../models/posts')
 const request = require('./twitterAuth')
 const axios = require('axios')
 
+const likePost = (userId, postId) => {
+    const url = `https://api.twitter.com/1.1/favorites/create.json?id=${postId}`
+
+    return new Promise((resolve, reject) => {
+
+        Token.findOne({ where: {userId} }).then(tokens => {
+            if(!tokens)
+                reject('No Token');
+            else if(!tokens.twitterAccessToken)
+                reject('No Access Token')
+            else if(!tokens.twitterAccessTokenPwd)
+                reject('No Access Token Password')
+            
+            request.twitterRequestPost(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+            .then(res => {
+                resolve();
+            }).catch(e => reject(e));
+        })
+    })
+}
+
+const unlikePost = (userId, postId) => {
+    const url = `https://api.twitter.com/1.1/favorites/destroy.json?id=${postId}`
+
+    return new Promise((resolve, reject) => {
+
+        Token.findOne({ where: {userId} }).then(tokens => {
+            if(!tokens)
+                reject('No Token');
+            else if(!tokens.twitterAccessToken)
+                reject('No Access Token')
+            else if(!tokens.twitterAccessTokenPwd)
+                reject('No Access Token Password')
+            
+            request.twitterRequestPost(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+            .then(res => {
+                resolve();
+            }).catch(e => reject(e));
+        })
+    })
+}
+
 const getPostById = async (userId, postId) => {
     let url = `https://api.twitter.com/1.1/statuses/show.json?id=${postId}&tweet_mode=extended`
     const tokens = await(Token.findOne({
@@ -110,6 +152,8 @@ const getAllPosts = async (userId) => {
 }
 
 module.exports = {
+    likePost,
+    unlikePost,
     getAllPosts,
     getPostById
 }
