@@ -3,13 +3,16 @@
     color: rgb(17, 53, 116);
 }
 
-.container{
+.centerAll{
     text-align: center;
+}
+
+.background{
     background-color: rgb(223, 227, 252);
 }
 
 .subtitle {
-    font-size: 60px;
+    font-size: 30px;
     color: rgb(17, 53, 116);
     font-weight: normal;
 }

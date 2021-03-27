@@ -2,12 +2,14 @@
     /* TODO: Change to better name */
     border-radius: 50%;
     border: 0px solid #555;
+    width: 50%;
 }
 
 .imgLinked{
     border-radius: 50%;
     border: 10px solid green;
     cursor: not-allowed;
+    width: 50%;
 }
 
 .twitterStyle{
