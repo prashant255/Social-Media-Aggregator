@@ -31,7 +31,10 @@ const useStyles = makeStyles((theme) => ({
 	title: {
 		flexGrow: 1,
 	},
-	offset: theme.mixins.toolbar
+	logo: {
+		width: '10%',
+	},
+	offset: theme.mixins.toolbar,
 }));
 
 const Header = (props) => {
@@ -68,6 +71,7 @@ const Header = (props) => {
 			{...props}
 		/>
 	));
+	
 	const StyledMenuItem = withStyles((theme) => ({
 		root: {
 			'&:focus': {
@@ -88,10 +92,10 @@ const Header = (props) => {
 		{showLogoutComponent? <Logout /> : null}
 			<AppBar position="fixed">
 				<Toolbar className={classes.headerColor}>
-					<Typography className={classes.title}>
-						Lurker
-                    </Typography>
-
+					<div className={classes.title}>
+						<img src="./lurker-logo-small.png" className={classes.logo}/>
+					</div>
+				
 					<Typography>
 						{props.name}
 					</Typography>
