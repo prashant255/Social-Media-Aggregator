@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
 	title: {
 		flexGrow: 1,
 	},
+	appBar: {
+		zIndex: theme.zIndex.drawer + 1,
+	},
 	logo: {
 		width: '10%',
 	},
@@ -90,7 +93,7 @@ const Header = (props) => {
 	return (
 		<div className={classes.root}>		
 		{showLogoutComponent? <Logout /> : null}
-			<AppBar position="fixed">
+			<AppBar position="fixed" className={classes.appBar}>
 				<Toolbar className={classes.headerColor}>
 					<div className={classes.title}>
 						<img src="./lurker-logo-small.png" className={classes.logo}/>

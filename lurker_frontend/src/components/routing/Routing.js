@@ -6,6 +6,8 @@ import Page404 from '../page404/Page404'
 import Cards from '../../containers/categories/Categories'
 import SuccessCallback from './SuccessCallback'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
+import Settings from '../../containers/settings/Settings'
+// import ClippedDrawer from '../../containers/settings/ClippedDrawer'
 import Aux from '../../hoc/Aux/Aux'
 import Feed from '../../containers/feed/Feed'
 
@@ -45,6 +47,7 @@ const Routing = () => {
                     component={(props) => <SuccessCallback {...props} socialMedia="TWITTER" />}
                 />
                 <Route path="/linkSocialMedia" component={LinkSocialMedia}/>
+                <Route path = "/settings" component = {Settings}/>
                 <Redirect from = "/" exact to = "/feed" />
                 <Route component = {Page404} />
             </Switch>
