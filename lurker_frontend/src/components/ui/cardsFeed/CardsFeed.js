@@ -35,7 +35,6 @@ const CardsFeed = (props) => {
         //Add headers
         switch(props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
-                console.log("Twitter")
                 axios.get(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`, { headers }).then(
                     res => 
                         setFeedData(res.data)
@@ -44,7 +43,6 @@ const CardsFeed = (props) => {
                 )
                 break;
             case constants.HANDLES.REDDIT:
-                console.log("Reddit")
                 axios.get(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`, { headers }).then(
                     res => 
                         setFeedData(res.data)
@@ -95,7 +93,6 @@ const CardsFeed = (props) => {
                         dayjs(feedData.createdAt).fromNow()
                     }
                 />
-                {console.log(mediaPost)}
                 {mediaPost}
                 {feedData.text ? 
                     <CardContent>

@@ -13,11 +13,12 @@ import Footer from '../../components/ui/footer/Footer'
 
 const Feed = () => {
     
-    let currentOffset = 0
     const jwtToken = useSelector(state => state.jwtToken)
     const [posts, setPosts] = useState(null)
+    let currentOffset = 0
+
     useEffect(() => {
-        axios.get(`/posts/all/${currentOffset}`, {
+        axios.get(`/posts/all/0`, {
             headers: {
                 'Authorization': `Bearer ${jwtToken}`
             }
@@ -30,37 +31,29 @@ const Feed = () => {
         .catch( e => console.log(e))
         return () => {
         }
-    }, [posts])
+    }, [])
 
     useEffect(() => {
-        // On reaching end of page
         window.addEventListener('scroll', () => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                console.log("you're at the bottom of the page");
                 currentOffset += 5
-                console.log(currentOffset);
-
-                // axios.get(`/posts/all/${currentOffset}`, {
-                //     headers: {
-                //         'Authorization': `Bearer ${jwtToken}`
-                //     }
-                // }).then(
-                //         res => {
-                //             if(JSON.stringify(res.data) !== JSON.stringify(posts))
-                //                 setPosts(prevPosts => [...prevPosts, res.data])
-
-                //                 console.log('posts : ', posts.length)
-                //         }
-                //     )
-                // .catch( e => console.log(e))
-                // Show loading spinner and make fetch request to api
+                axios.get(`/posts/all/${currentOffset}`, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }).then(
+                        res => {
+                                setPosts(prevPosts => [...prevPosts, ...res.data])
+                        }
+                    )
+                .catch( e => console.log(e))
             }
-        });
-    }, []);
+        })
+    }, [])
 
     return (
-
         <div>
+            {console.log(posts)}
             {/* TODO: Save the name of the logged in user in the redux, fetch the user name and send it to the header. */}
             <Header name="Swapnil Markhedkar"></Header>
             {
