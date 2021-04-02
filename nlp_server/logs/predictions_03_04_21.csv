@@ -1,0 +1,24 @@
+"I mean, we all know this player... ","health"
+"On the new rate limit for editing comments Reddit recently added a rate limit on editing comments to combat certain kinds of spam. However, it's clear the new rate limit was overly restrictive for legitimate use cases. We've shortened it to 1 edit per 5 seconds for now as a quick adjustment going into the weekend, and will be looking at better adjustments going forward.
+
+If you have feedback on the new rate limit, in particular specific use cases that were broken, are still broken, or might be broken if we change things again, please share them below.","gaming"
+"The villagers always wondered what had happened to that merry band that went into the swamp... ","motivation"
+"Send SMS Text Message With Python Using GMail SMTP For Free Video: [https://youtu.be/hKxtMaa2hwQ](https://youtu.be/hKxtMaa2hwQ)
+
+Source: [https://github.com/acamso/demos/blob/master/\_email/send\_txt\_msg.py](https://github.com/acamso/demos/blob/master/_email/send_txt_msg.py)
+
+This  is a demonstration on how to send a text message with Python. In  this  example, we use GMail to send the SMS message; but any host can  work  with the correct SMTP settings.","promotions"
+"Made... raised fro the dead... toe-mat-toe, toe-mah-toe ","motivation"
+"Both classes can be replaced with any other class because no one can trust anyone else to not do something stupid. ","motivation"
+"Are sub-reddit Traffic Stats Legitimate?  I just happened to notice on my subs that the unique and page views for the month (April) and for the day (4/1) do not match up, the month stats are higher.  Given it's the first day of the month, one would expect the stats to be equal, leaving me wondering how legit the stats are, not that it matters.","sport"
+"All hail king duck! ","motivation"
+"Is it possible to retrieve all posts of a sub with respective comments? I'm having a really hard time trying to figure this out. Let's say I'd like to get all the posts in r/science containing the word "brain". Of these posts I need to retrieve the author's name and the names of all the commenters in that post.
+
+I know I can get all posts containing a certain keyword for a given sub and retrieve the authors of the posts or retrieve all comments containing that word for that sub. But I need to keep track of the link between the author of the submission and the commenter. 
+
+Is there a way to do this using Pushshift or any other methods?
+
+Thank you very much in advance","gaming"
+"How do I keep NSFW posts out of my subreddit? I recently converted /r/menwithbigcocks (which was an ex-porn sub) to a subreddit for roosters, and it still recieves ≈7 NSFW posts a day despite it having been restricted for a year (and me trying to make clear it's SFW).
+
+Right now I have automod set up to remove anything that comes from porn sites and/or contains phrases that can't have SFW meanings there, but I'd like to remove posts tagged NSFW as well. Is there a way to do this? `is_nsfw: ` only applies to crossposts and afaik there's no way to disable the NSFW tag in the subreddit.","gaming"

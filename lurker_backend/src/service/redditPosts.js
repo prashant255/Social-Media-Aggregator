@@ -97,11 +97,26 @@ const getAllPosts = async (userId) => {
             })
             if (dbResponse[1]) {
                 //Pass to ML pipeline
-                console.log(element.name)
-                console.log(element.title)
-                console.log(element.selftext)
-                if (element.post_hint === 'link')
-                    console.log(element.url)
+                let res = null
+                try {
+                    res = await axios.post("http://localhost:5000/categorise", {text: element.title + " " + element.selftext})    
+                    console.log(element.name)
+                    console.log(element.title)
+                    console.log(element.selftext)
+                    console.log(res.data.category)
+                    if (element.post_hint === 'link')
+                        console.log(element.url)
+                    PostDetails.update(
+                        {category: res.data.category},
+                        {
+                            where: {
+                            postId: element.name,
+                            handle: common.HANDLES.REDDIT
+                        }
+                    })
+                } catch (e) {
+                    throw new Error(e.message)
+                }
             }
             //New entry in Post table.
             await Post.create({
