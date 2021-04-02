@@ -55,7 +55,7 @@ const Feed = () => {
         <div>
             {console.log(posts)}
             {/* TODO: Save the name of the logged in user in the redux, fetch the user name and send it to the header. */}
-            <Header name="Swapnil Markhedkar"></Header>
+            <Header/>
             {
                 posts ? posts.map(post => {
                     let postHandle = null;

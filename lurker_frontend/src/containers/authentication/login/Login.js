@@ -54,7 +54,7 @@ class Login extends Component {
 		console.log(formData)
 		try {
 			const response = await axios.post('/login', formData)
-			this.props.onSuccessfulLogin(response.data.token)
+			this.props.onSuccessfulLogin(response.data.dataValues.name, response.data.token)
 			this.props.history.push('/linksocialmedia')
 		} catch (err) {
 			console.log(err.response)
@@ -121,7 +121,7 @@ class Login extends Component {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onSuccessfulLogin: (jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken })
+		onSuccessfulLogin: (name, jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken, name })
 	}
 }
 
