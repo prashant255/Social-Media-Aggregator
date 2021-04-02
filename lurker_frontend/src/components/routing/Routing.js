@@ -20,6 +20,12 @@ const Routing = () => {
         <Switch>
             <Route path = "/register" component = {Signup} />
             <Route path = "/login" component  = {Login} />
+            <Redirect path = "/category" to = "/login" />
+            <Redirect path = "/feed" to = "/login"/>
+            <Redirect path="/callback/reddit" to = "/login" />
+            <Redirect path="/callback/facebook" to = "/login" />
+            <Redirect path="/callback/twitter" to = "/login" />
+            <Redirect path="/linkSocialMedia" to = "/login" />    
             <Redirect from = "/" exact to = "/login" />
             <Route component = {Page404} />
         </Switch>
