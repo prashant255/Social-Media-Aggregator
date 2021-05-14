@@ -73,6 +73,12 @@ class Categories extends Component {
                 displayName: "Business",
                 imageSource: "business.png",
                 selected: false    
+            },
+            news: {
+                //TODO: Change image Sources
+                displayName: "News",
+                imageSource: "business.png",
+                selected: false    
             }
         },
         selectedCount: 0

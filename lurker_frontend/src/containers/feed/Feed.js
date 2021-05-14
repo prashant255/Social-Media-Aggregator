@@ -15,8 +15,10 @@ const Feed = () => {
     
     const jwtToken = useSelector(state => state.jwtToken)
     const [posts, setPosts] = useState(null)
+    let currentOffset = 0
+
     useEffect(() => {
-        axios.get("/posts/all", {
+        axios.get(`/posts/all/0`, {
             headers: {
                 'Authorization': `Bearer ${jwtToken}`
             }
@@ -29,13 +31,31 @@ const Feed = () => {
         .catch( e => console.log(e))
         return () => {
         }
-    }, [posts])
+    }, [])
+
+    useEffect(() => {
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                currentOffset += 5
+                axios.get(`/posts/all/${currentOffset}`, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }).then(
+                        res => {
+                                setPosts(prevPosts => [...prevPosts, ...res.data])
+                        }
+                    )
+                .catch( e => console.log(e))
+            }
+        })
+    }, [])
 
     return (
-
         <div>
+            {console.log(posts)}
             {/* TODO: Save the name of the logged in user in the redux, fetch the user name and send it to the header. */}
-            <Header name="Swapnil Markhedkar"></Header>
+            <Header/>
             {
                 posts ? posts.map(post => {
                     let postHandle = null;

@@ -11,6 +11,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
 
+import { useSelector } from 'react-redux'
+
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -45,6 +47,8 @@ const Header = (props) => {
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [showLogoutComponent, setShowLogoutComponent] = React.useState(false);
+
+	const userName = useSelector(state => state.name)
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -100,7 +104,7 @@ const Header = (props) => {
 					</div>
 				
 					<Typography>
-						{props.name}
+						{userName}
 					</Typography>
 					<IconButton color="inherit" onClick={handleClick}>
 						<AccountCircle />

@@ -1,7 +1,8 @@
 import * as actionTypes from './actions'
 
 const initialState = {
-    jwtToken: null
+    jwtToken: null,
+    name: null
 };
 
 const auth = (state = initialState, action) => {
@@ -9,7 +10,8 @@ const auth = (state = initialState, action) => {
         case actionTypes.AUTH_TOKEN:
             return {
                 ...state,
-                jwtToken: action.jwtToken
+                jwtToken: action.jwtToken,
+                name: action.name
             }
         default: 
             return state;

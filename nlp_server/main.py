@@ -26,7 +26,7 @@ from nltk.corpus import stopwords
 
 # spaCy
 import spacy
-# spacy.cli.download('en_core_web_sm')
+spacy.cli.download('en_core_web_sm')
 
 # trax
 import trax.layers as tl
