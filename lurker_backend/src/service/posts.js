@@ -8,7 +8,6 @@ const getPostForUser = async (userId,offset) => {
         let query = 'select * from posts as p inner join post_details as pd on p."lurkerPostId" = pd.id where p."userId" = :userId and LOWER(pd.category) in (:category)'
         query += `limit ${limit} offset ${offset}`
 
-        console.log("Offset : ", offset)
         const posts = await sequelize.query(query, 
         { 
             replacements: { 
@@ -20,11 +19,32 @@ const getPostForUser = async (userId,offset) => {
         return posts    
     }
     catch(e) {
-        console.log(e.message)
-        // throw new Error(e.message)
+        throw new Error(e.message)
+    }
+}
+
+const getPostForUserByCategory = async (userId, offset, category) => {
+    try{
+        const limit = 5
+        let query = 'select * from posts as p inner join post_details as pd on p."lurkerPostId" = pd.id where p."userId" = :userId and LOWER(pd.category) = :category '
+        query += `limit ${limit} offset ${offset}`
+
+        const posts = await sequelize.query(query, 
+        { 
+            replacements: { 
+                category,
+                userId
+            },
+            type: QueryTypes.SELECT 
+        })
+        return posts    
+    }
+    catch(e) {
+        throw new Error(e.message)
     }
 }
 
 module.exports = {
-    getPostForUser
+    getPostForUser,
+    getPostForUserByCategory
 }

@@ -11,5 +11,14 @@ router.get('/all/:offset', authenticateUser, async (req, res) => {
         errorHandler(e.message)
     }
 })
+
+router.get('/:category/:offset', authenticateUser, async (req, res) => {
+    try {
+        const response = await posts.getPostForUserByCategory(req.user.id, req.params.offset, req.params.category)
+        res.send(response)
+    } catch(e) {
+        errorHandler(e.message)
+    }
+})
     
 module.exports = router
