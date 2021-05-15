@@ -7,7 +7,7 @@ import Cards from '../../containers/categories/Categories'
 import SuccessCallback from './SuccessCallback'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
 import Aux from '../../hoc/Aux/Aux'
-import Feed from '../../containers/feed/Feed'
+import Layout from '../layout/Layout'
 
 import { useSelector } from 'react-redux'
 
@@ -37,7 +37,7 @@ const Routing = () => {
                 <Route path = "/register" component = {Signup} />
                 <Route path = "/login" component  = {Login} />
                 <Route path = "/category" component  = {Cards} />
-                <Route path = "/feed" component = {Feed} />
+                <Route path = "/feed" component = {(props) => <Layout {...props} content = 'drawer'/>} />   
                 <Route 
                     path="/callback/reddit"  
                     component={(props) => <SuccessCallback {...props} socialMedia="REDDIT" />}

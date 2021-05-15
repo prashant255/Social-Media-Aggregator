@@ -4,6 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 
 const useStyles = makeStyles((theme) => ({
+		root: {
+			marginTop: 30
+		},
 		text: {
 			padding: theme.spacing(2, 2, 0),
 		},
@@ -38,7 +41,7 @@ const Footer = () =>{
 		const now = new Date().getFullYear();
 
 		return (
-				<div>
+				<div className = {classes.root}>
 					<AppBar color="white" className={classes.appBar} >
 						<Toolbar align = "center" justify = "center" alignItems = "center">
 							Copyright © {now}
