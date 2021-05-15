@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
 
-import classes from '../categories/Categories.module.css'
+import classes from './Categories.module.css'
 
 import Card from '../../components/ui/cardsCategory/CardsCategory'
 import Button from '../../components/ui/button/Button'

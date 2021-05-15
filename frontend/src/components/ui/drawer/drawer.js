@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Feed from '../../../containers/feed/Feed'
-import Header from '../../../components/ui/header/Header'
+import Header from '../header/Header'
 
 import axios from '../../../axios/lurkerBackend'
 import React, {useEffect, useState} from 'react'
