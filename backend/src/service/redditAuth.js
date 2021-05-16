@@ -83,52 +83,33 @@ redditCallback = (code) => {
     // });
 }
 
-getRefreshedAccessToken = (userId) => {
-
-    return new Promise(async(resolve, reject) => {
-
+getRefreshedAccessToken = async (userId) => {
+    try {
         const token = await Token.findOne({where: { userId }});
         
         if(!token)
-            reject('No token for user');
+            throw new Error('No token for user');
         else if(!token.redditRefreshToken)    
-            reject('No refresh token found');
+            throw new Error('No refresh token found');
         
         const refreshToken = token.redditRefreshToken;
 
-        const url = "https://www.reddit.com/api/v1/access_token?grant_type=refresh_token&refresh_token=" + refreshToken;
-        request.open("POST", url, true);
+        const url = `https://www.reddit.com/api/v1/access_token?grant_type=refresh_token&refresh_token=${refreshToken}`;
         const base64Auth = getBase64Auth();
-        request.setRequestHeader('Authorization','Basic ' + base64Auth);
-        request.setRequestHeader("Content-type", "application/json");
         
-        request.send();
-
-        request.onreadystatechange = () => {
-            if (request.readyState == request.DONE) {
-                const response = JSON.parse(request.responseText);
-
-                if(request.status == 200){
-                    const newAccessToken = response.access_token;
-                    Token.upsert({
-                        userId,
-                        redditAccessToken: newAccessToken
-                    }).then(() => resolve())
-                    .catch(e => reject(e))
-                }else{
-                    reject(response);
-                }
+        const response = await axios.post(url, {}, {
+            headers: {
+                'Authorization': `Basic ${base64Auth}`
             }
-        }
-
-        request.onerror = (e) => {
-            // TODO: Mostly no error till this point, but you never know
-            reject({
-                message: e,
-                error: request.status
-            });
-        }
-    });
+        })
+        await Token.upsert({
+            userId, 
+            redditAccessToken: response.access_token
+        })
+    } catch(e) {
+        console.log(e)
+        throw new Error(e)
+    }
 }
 
 const saveToken = async (userId, {redditAccessToken, redditRefreshToken}) => {

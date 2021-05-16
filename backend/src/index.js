@@ -5,6 +5,7 @@ const session = require('express-session');
 
 //DB connection using sequelize
 require('./database/connection')
+require('./scheduler')
 
 const app = express()
 
