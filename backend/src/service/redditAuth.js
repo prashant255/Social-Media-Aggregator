@@ -104,7 +104,7 @@ getRefreshedAccessToken = async (userId) => {
         })
         await Token.upsert({
             userId, 
-            redditAccessToken: response.access_token
+            redditAccessToken: response.data.access_token
         })
     } catch(e) {
         console.log(e)
