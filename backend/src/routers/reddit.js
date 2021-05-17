@@ -8,6 +8,15 @@ router.get('/connect', (req, res) => {
     redditAuth.authorizeUser(req, res);
 });
 
+router.post('/unlink', authenticateUser, async (req, res) => {
+    try{
+        await redditAuth.unlinkAccount(req.user.id)
+        res.send()
+    } catch(e) {
+        res.status(404).send(e.message)
+    }
+})
+
 router.post('/callback', authenticateUser, async (req, res) => {
 
     const { code } = req.body;

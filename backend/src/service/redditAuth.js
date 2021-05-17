@@ -1,9 +1,9 @@
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const request = new XMLHttpRequest(); 
 const common = require('../common')
 const Token = require('../models/tokens')
 const error = require('../error')
 const axios = require('axios')
+const { QueryTypes } = require('sequelize')
 
 authorizeUser = (req, res) => {
 
@@ -47,40 +47,6 @@ redditCallback = (code) => {
             reject(e);
         });
     });
-    
-    // return new Promise((resolve, reject) => {
-    //     const redirectUri = "http://localhost:8080/api/reddit/callback";
-    //     const url = "https://www.reddit.com/api/v1/access_token?grant_type=authorization_code&code=" + code + "&redirect_uri=" + redirectUri;
-    //     const base64Auth = getBase64Auth();   
-        
-    //     request.open("POST", url, true);
-    //     request.setRequestHeader('Authorization','Basic ' + base64Auth);
-    //     request.setRequestHeader("Content-type", "application/json");
-
-    //     request.send();
-
-    //     request.onreadystatechange = () => {
-    //         if (request.readyState == request.DONE) {
-    //             const response = JSON.parse(request.responseText);
-
-    //             if(request.status == 200){
-    //                 resolve(response);
-    //             }else{
-    //                 console.log("ERROR: ", response);
-    //                 reject(response);
-    //             }
-    //         }
-    //     }
-
-    //     request.onerror = (e) => {
-    //         // TODO: Mostly no error till this point, but you never know
-    //         console.log("ERR: ",e);
-    //         reject({
-    //             message: e,
-    //             error: request.status
-    //         });
-    //     }
-    // });
 }
 
 getRefreshedAccessToken = async (userId) => {
@@ -128,10 +94,43 @@ const saveToken = async (userId, {redditAccessToken, redditRefreshToken}) => {
     
 }
 
+const unlinkAccount = async (userId) => {
+    try{
+        //Transaction is created to rollback in case account deletion fails.
+        const t = await sequelize.transaction();
+        const token = await Token.findOne({where: { userId }})
+        if(!token || !token.redditRefreshToken)
+            throw new Error('No account to unlink');
+        await Token.upsert({
+            userId,
+            redditAccessToken: null,
+            redditRefreshToken: null,
+            redditAnchorId: null
+        }, { transaction: t})
+        //Delete all the posts associated with reddit
+        let query = 'delete from posts where "lurkerPostId" in (select id  from posts inner join post_details on posts."lurkerPostId"= post_details.id where handle = :handle and "userId" = :userId) and "userId" = :userId;'
+        await sequelize.query(query, 
+        { 
+            replacements: { 
+                handle: common.HANDLES.REDDIT,
+                userId
+            },
+            type: QueryTypes.DELETE 
+        }, {transaction: t})
+        
+        await t.commit()
+        
+    } catch(e) {
+        await t.rollback()
+        throw new Error(e.message)
+    } 
+}
+
 module.exports = {
     authorizeUser,
     redditCallback,
     getRefreshedAccessToken,
-    saveToken
+    saveToken,
+    unlinkAccount
 }
 
