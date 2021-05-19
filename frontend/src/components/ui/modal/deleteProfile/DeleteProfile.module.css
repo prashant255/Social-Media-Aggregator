@@ -1,0 +1,28 @@
+.button {
+    background-color: #04AA6D;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+button:hover {
+    opacity:1;
+}
+  
+.cancelbtn, .deletebtn {
+    float: left;
+    width: 50%;
+}
+  
+.cancelbtn {
+    background-color: #ccc;
+    color: black;
+}
+  
+.deletebtn {
+    background-color: #f44336;
+}
