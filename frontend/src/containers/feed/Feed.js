@@ -32,7 +32,6 @@ const Feed = (props) => {
     const jwtToken = useSelector(state => state.jwtToken)
     const [posts, setPosts] = useState(null)
     let currentOffset = 0
-    console.log(props.selectedCategory)
     useEffect(() => {
         axios.get(`/posts/${props.selectedCategory}/0`, {
             headers: {
@@ -48,7 +47,6 @@ const Feed = (props) => {
         return () => {
             setPosts(null)
             currentOffset = 0
-            console.log("Deleted")
         }
     }, [props.selectedCategory])
 
@@ -58,13 +56,11 @@ const Feed = (props) => {
             setPosts(null)
             currentOffset = 0
             window.removeEventListener('scroll', onScrollHandler)
-            console.log("Deleted")
         }   
     }, [props.selectedCategory])
 
     return (
         <div>
-            {console.log(posts)}
             {/* TODO: Save the name of the logged in user in the redux, fetch the user name and send it to the header. */}
             {
                 posts ? posts.map(post => {

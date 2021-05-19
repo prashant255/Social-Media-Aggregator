@@ -64,7 +64,6 @@ const DeleteProfileModal = (props) =>{
           </div>
         </Fade>
       </Modal>
-      {console.log(accountDeleted)}
       {accountDeleted ? <Logout /> : null}
     </div>
   );

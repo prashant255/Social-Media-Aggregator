@@ -91,7 +91,6 @@ class Categories extends Component {
     }
 
     categoryClickedHandler = (id) => {
-        console.log(id)
         let categories = {...this.state.categories}
         let selectedCount = this.state.selectedCount
         let categoryConfig = {...categories[id]}
@@ -119,7 +118,6 @@ class Categories extends Component {
         }).catch( e =>
             console.log("Error : ",e)
         );
-        console.log(categorySelected)
     }
 
     render () {
