@@ -2,7 +2,8 @@ import * as actionTypes from './actions'
 
 const initialState = {
     jwtToken: null,
-    name: null
+    name: null,
+    posts: []
 };
 
 const auth = (state = initialState, action) => {
@@ -13,6 +14,16 @@ const auth = (state = initialState, action) => {
                 jwtToken: action.jwtToken,
                 name: action.name
             }
+        
+        case actionTypes.POSTS:
+            const currentPosts = state.posts;
+            currentPosts.push(action.post);
+            
+            return {
+                ...state,
+                posts: currentPosts
+            }
+        
         default: 
             return state;
     }
