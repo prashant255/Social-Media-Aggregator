@@ -55,7 +55,7 @@ getRefreshedAccessToken = async (userId) => {
         
         if(!token)
             throw new Error('No token for user');
-        else if(!token.redditRefreshToken)    
+        else if(token.redditRefreshToken === null)    
             throw new Error('No refresh token found');
         
         const refreshToken = token.redditRefreshToken;
@@ -99,7 +99,7 @@ const unlinkAccount = async (userId) => {
         //Transaction is created to rollback in case account deletion fails.
         const t = await sequelize.transaction();
         const token = await Token.findOne({where: { userId }})
-        if(!token || !token.redditRefreshToken)
+        if(!token || token.redditRefreshToken === null)
             throw new Error('No account to unlink');
         await Token.upsert({
             userId,

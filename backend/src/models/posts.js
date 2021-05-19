@@ -11,6 +11,11 @@ Posts = sequelize.define("posts", {
     lurkerPostId: {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+
+    bookmark: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true
     }
 }, {
     indexes: [

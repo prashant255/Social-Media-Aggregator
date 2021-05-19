@@ -35,6 +35,7 @@ const Reddit = require('./routers/reddit')
 const Facebook = require('./routers/facebook')
 const Settings = require('./routers/settings')
 const Posts = require('./routers/posts')
+const Bookmark = require('./routers/bookmarks')
 
 //port is provided in the environment variable.
 const port = process.env.PORT 
@@ -46,6 +47,7 @@ app.use('/api/auth', Auth)
 app.use('/api/facebook', Facebook)
 app.use('/api/settings', Settings)
 app.use('/api/posts', Posts)
+app.use('/api/bookmark', Bookmark)
 
 app.get('*', (req, res) => {
     res.send('404 page not found!').status(404)    
