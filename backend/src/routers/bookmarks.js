@@ -12,5 +12,14 @@ router.post('/:postId', authenticateUser, async (req, res) => {
     }
 })
 
+router.get('/:offset', authenticateUser, async (req, res) => {
+    try{
+        posts = await bookmarks.getBookmarkedPost(req.user.id, req.params.offset)
+        res.send(posts)
+    } catch (e) {
+        res.status(500).send(e.message)
+    }
+})
+
 
 module.exports = router
