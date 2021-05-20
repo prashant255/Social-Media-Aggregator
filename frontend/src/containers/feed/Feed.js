@@ -12,7 +12,6 @@ import Footer from '../../components/ui/footer/Footer'
 
 const Feed = (props) => {
     
-
     const onScrollHandler = () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
             currentOffset += 5

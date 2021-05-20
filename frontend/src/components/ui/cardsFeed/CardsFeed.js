@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
 
+import classes from './CardsFeed.module.css'
+
 import * as constants from '../../../constants'
 import axios from '../../../axios/lurkerBackend'
 
@@ -12,11 +14,15 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-import classes from './CardsFeed.module.css'
+import MobileStepper from '@material-ui/core/MobileStepper';
 
 var dayjs = require('dayjs')
 var relativeTime = require('dayjs/plugin/relativeTime')
@@ -29,6 +35,17 @@ const CardsFeed = (props) => {
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
     }
+
+    const [activeStep, setActiveStep] = React.useState(0);
+
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
 
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
@@ -70,12 +87,46 @@ const CardsFeed = (props) => {
                         autoplay
                     />
                 )
-            } else if (feedData.images.length >0) {
+            } 
+            else if (feedData.images.length==1){
                 mediaPost = (
                     <CardMedia
-                        component = "img"
-                        src = {feedData.images[0]}
+                        component="img"
+                        src={feedData.images[0]}
                     />
+                )
+            }
+            else if (feedData.images.length >1) {
+                mediaPost = (
+                    <div>
+                        <img
+                            className={classes.img}
+                            src={feedData.images[activeStep]}
+                        />
+                        <MobileStepper
+                            variant="dots"
+                            steps={feedData.images.length}
+                            position="static"
+                            activeStep={activeStep}
+                            nextButton={
+                                <Button 
+                                    size="small" 
+                                    onClick={handleNext} 
+                                    disabled={activeStep === feedData.images.length - 1}>
+                                    <KeyboardArrowRight />
+                                </Button>
+                            }
+                            backButton={
+                                <Button 
+                                    size="small" 
+                                    onClick={handleBack} 
+                                    disabled={activeStep === 0}>
+                                    <KeyboardArrowLeft />
+                                </Button>
+                            }
+                        />
+                    </div>
+                    
                 )
             }
 
@@ -83,7 +134,7 @@ const CardsFeed = (props) => {
             <Card className={classes.Card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
+                        <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} isMaximized={true} />
                     }
                     action={
                         <props.postSource/>
