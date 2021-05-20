@@ -1,10 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
 import App from './App';
 import reducer from './store/auth'
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+
+const theme = createMuiTheme({
+	typography: {
+		fontFamily: "Open Sans"
+	}
+})
 
 const saveToLocalStorage = (state) => {
   try {
@@ -40,8 +49,10 @@ store.subscribe(() => saveToLocalStorage(store.getState()));
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store = {store}>
-      <App />
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
