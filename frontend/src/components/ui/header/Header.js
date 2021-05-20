@@ -19,6 +19,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
 
 import Logout from '../../logout/Logout'
+import DeleteProfileModal from '../modal/deleteProfile/DeleteProfile'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -47,6 +48,7 @@ const Header = (props) => {
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [showLogoutComponent, setShowLogoutComponent] = React.useState(false);
+	const [deleteProfileOpen, setDeleteProfileOpen] = React.useState(false);
 
 	const userName = useSelector(state => state.name)
 
@@ -90,14 +92,23 @@ const Header = (props) => {
 		},
 	}))(MenuItem);
 
+	const handleOpenModal = (state) => {
+		setDeleteProfileOpen(state);
+	  };
 	const logoutClickHandler = () => {
 		setShowLogoutComponent(true)
+	}
+
+	const deleteAccountHanlder = () => {
+		handleClose()
+		setDeleteProfileOpen(true)
 	}
 
 	return (
 		<div className={classes.root}>		
 		{showLogoutComponent? <Logout /> : null}
-			<AppBar position="fixed" className={classes.appBar}>
+		<DeleteProfileModal open = {deleteProfileOpen} handleModal = { handleOpenModal}/>
+			<AppBar position="fixed">
 				<Toolbar className={classes.headerColor}>
 					<div className={classes.title}>
 						<img src="./lurker-logo-small.png" className={classes.logo}/>
@@ -123,6 +134,15 @@ const Header = (props) => {
 								</ListItemIcon>
 								<ListItemText primary="Settings" />
 							</StyledMenuItem>
+
+							{/* TODO: To make submenu inside the settings for delete accout */}
+							<StyledMenuItem onClick = { () => deleteAccountHanlder()}>
+								<ListItemIcon>
+									<SettingsIcon fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary="Delete Account" />
+							</StyledMenuItem>
+
 							<StyledMenuItem>
 								<ListItemIcon>
 									<InfoIcon fontSize="small" />

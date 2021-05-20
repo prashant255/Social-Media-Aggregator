@@ -30,6 +30,8 @@ const login = async ({email, password}) => {
         if(email === undefined || password === undefined)
             throw new Error(JSON.stringify(error.BAD_REQUEST))
         const user = await User.findOne({where: {email}})
+        if(user === null)
+            throw new Error(JSON.stringify(error.NO_USER_EXIST))
         if(!user.emailVerificationStatus)
             throw new Error(JSON.stringify(error.EMAIL_VERIFICATION_ERROR))   
         if(await bcrypt.compare(password, user.password)){

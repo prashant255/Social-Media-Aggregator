@@ -1,5 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import { useSelector } from 'react-redux'
+
+import { useDispatch, useSelector } from 'react-redux'
+import * as actionTypes from '../../../store/actions'
+
 import parse from 'html-react-parser'
 
 import classes from './CardsFeed.module.css'
@@ -32,6 +35,8 @@ const CardsFeed = (props) => {
 
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
+    const dispatch = useDispatch()
+    let posts = useSelector(state => state.posts)
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
     }
@@ -46,27 +51,53 @@ const CardsFeed = (props) => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const fetchFromCache = (postId) => {
+        let currPost = null
+
+        posts.map(post => {
+            if(post.id == postId)
+                currPost = post
+        })
+
+        if(currPost){
+            setFeedData(currPost)
+            return true
+        }
+
+        return false
+    }
+
+    const addToCache = (url) => {
+        axios.get(url, { headers }).then(
+            res => {
+                setFeedData(res.data)
+
+                dispatch({
+                    type: actionTypes.POSTS,
+                    post: {...res.data, id: props.postDetails.postId}
+                })
+            }
+        ).catch(
+            e => console.log(e)
+        )
+    }
 
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
+
+        if(fetchFromCache(props.postDetails.postId))
+            return; //if true, then it was already present in cache
+
         switch(props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
-                axios.get(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`, { headers }).then(
-                    res => 
-                        setFeedData(res.data)
-                ).catch(
-                    e => console.log(e)
-                )
+                addToCache(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`)
                 break;
+
             case constants.HANDLES.REDDIT:
-                axios.get(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`, { headers }).then(
-                    res => 
-                        setFeedData(res.data)
-                ).catch(
-                    e => console.log(e)
-                )
+                addToCache(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`)
                 break;
+
             case constants.HANDLES.FACEBOOK:
                 console.log("Facebook")  
                 break;  

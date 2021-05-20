@@ -9,7 +9,7 @@ const Logout = () => {
     const dispatch = useDispatch()
     const logout  = () => {
         dispatch({
-            type: actionTypes.AUTH_TOKEN, jwtToken: null, name: null
+            type: actionTypes.AUTH_TOKEN, jwtToken: null, name: null, posts: []
         })
     }
     return (

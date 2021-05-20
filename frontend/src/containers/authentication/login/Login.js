@@ -121,7 +121,7 @@ class Login extends Component {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onSuccessfulLogin: (name, jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken, name })
+		onSuccessfulLogin: (name, jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken, name, posts: []})
 	}
 }
 

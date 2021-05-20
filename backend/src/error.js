@@ -15,6 +15,11 @@ const EMAIL_VERIFICATION_ERROR = {
     code: 401
 }
 
+const NO_USER_EXIST = {
+    message: "No user with this email exist",
+    code: 401
+}
+
 const UNIQUE_EMAIL = {
     message: "Email id already registerd",
     code: 400
@@ -34,6 +39,7 @@ module.exports = {
     INVALID_CREDENTIALS,
     EMAIL_VERIFICATION_ERROR,
     UNIQUE_EMAIL,
+    NO_USER_EXIST,
     errorHandler
 }
 global.errorHandler = errorHandler
