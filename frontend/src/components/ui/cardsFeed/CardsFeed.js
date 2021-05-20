@@ -122,7 +122,7 @@ const CardsFeed = (props) => {
                     />
                 )
             } 
-            else if (feedData.images.length==1){
+            else if (feedData.images.length === 1){
                 mediaPost = (
                     <CardMedia
                         component="img"
@@ -136,6 +136,7 @@ const CardsFeed = (props) => {
                         <img
                             className={classes.img}
                             src={feedData.images[activeStep]}
+                            alt = 'feed'
                         />
                         <MobileStepper
                             variant="dots"
