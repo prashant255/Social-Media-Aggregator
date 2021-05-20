@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 const useStyles = makeStyles((theme) => ({
 		root: {
-			marginTop: 30
+			marginTop: 30,
 		},
 		text: {
 			padding: theme.spacing(2, 2, 0),
@@ -22,13 +22,15 @@ const useStyles = makeStyles((theme) => ({
 		appBar: {
 			top: 'auto',
 			bottom: 0,
+			color: 'black',
+			backgroundColor: 'white',
+			position: 'sticky',
 		},
 		grow: {
 			flexGrow: 1,
 		},
 		fabButton: {
 			position: 'absolute',
-			zIndex: 1,
 			top: -30,
 			left: 0,
 			right: 0,
@@ -42,8 +44,8 @@ const Footer = () =>{
 
 		return (
 				<div className = {classes.root}>
-					<AppBar className={classes.appBar} >
-						<Toolbar align = "center" justify = "center">
+					<AppBar className={classes.appBar}>
+						<Toolbar align = "center" justify = "center" >
 							Copyright © {now}
 						</Toolbar>
 					</AppBar>
