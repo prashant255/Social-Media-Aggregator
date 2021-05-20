@@ -97,7 +97,7 @@ class Login extends Component {
 		}
 		return (
 			<div className={classes.Login}>
-				<img src="./lurker-logo.png" className={classes.logo} />
+				<img src="./lurker-logo.png" className={classes.logo} alt = {'Lurker'}/>
 				<form onSubmit={this.loginHandler}>
 					{formElementsArray.map(formElement => (
 						<Input
