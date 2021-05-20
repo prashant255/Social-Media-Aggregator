@@ -75,15 +75,13 @@ class Categories extends Component {
                 selected: false    
             },
             news: {
-                //TODO: Change image Sources
                 displayName: "News",
-                imageSource: "business.png",
+                imageSource: "news.png",
                 selected: false    
             },
             personal: {
-                //TODO: Change image Sources
                 displayName: "Personal",
-                imageSource: "business.png",
+                imageSource: "personal.png",
                 selected: false    
             }
         },
