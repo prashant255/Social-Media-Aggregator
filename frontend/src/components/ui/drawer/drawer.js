@@ -67,7 +67,6 @@ useEffect(() => {
 
   return (
     <div className={classes.root}>
-      {console.log(categoriesToDisplay)}
       <Header/>   
       <CssBaseline />
       <Drawer

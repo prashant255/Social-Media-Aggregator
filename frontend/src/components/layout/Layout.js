@@ -10,6 +10,8 @@ const layout = (props) => {
         case 'drawer': 
             mainContent = <Drawer />
             break
+        default:
+            mainContent = null
     }
 
     return (
