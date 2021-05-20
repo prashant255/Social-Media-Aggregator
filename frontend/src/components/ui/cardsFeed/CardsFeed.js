@@ -55,8 +55,9 @@ const CardsFeed = (props) => {
         let currPost = null
 
         posts.map(post => {
-            if(post.id == postId)
+            if(post.id === postId)
                 currPost = post
+            return null
         })
 
         if(currPost){
@@ -100,7 +101,9 @@ const CardsFeed = (props) => {
 
             case constants.HANDLES.FACEBOOK:
                 console.log("Facebook")  
-                break;  
+                break; 
+            default:
+                console.log("Invalid Handle")
         }
  
     }, [])
@@ -165,7 +168,7 @@ const CardsFeed = (props) => {
             <Card className={classes.Card}>
                 <CardHeader
                     avatar={
-                        <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} isMaximized={true} />
+                        <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     action={
                         <props.postSource/>

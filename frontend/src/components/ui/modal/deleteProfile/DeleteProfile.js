@@ -11,7 +11,6 @@ import Logout from '../../../logout/Logout';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
   },

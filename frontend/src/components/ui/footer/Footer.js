@@ -42,8 +42,8 @@ const Footer = () =>{
 
 		return (
 				<div className = {classes.root}>
-					<AppBar color="white" className={classes.appBar} >
-						<Toolbar align = "center" justify = "center" alignItems = "center">
+					<AppBar className={classes.appBar} >
+						<Toolbar align = "center" justify = "center">
 							Copyright © {now}
 						</Toolbar>
 					</AppBar>
