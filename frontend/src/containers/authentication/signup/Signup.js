@@ -146,7 +146,7 @@ class Signup extends Component {
         }
         return (
           <div className  = {classes.Signup}>
-              <img src="./lurker-logo.png" className={classes.logo}/>
+              <img src="./lurker-logo.png" className={classes.logo} alt={'Lurker'}/>
               <form onSubmit = {this.signupHandler}>
                   {formElementsArray.map(formElement => (
                     <Input 

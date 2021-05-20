@@ -85,6 +85,8 @@ const Feed = (props) => {
                         case "Twitter":
                             postHandle = TwitterIcon;
                             break;
+                        default:
+                            console.log("Invalid Handle")
                     }
                     return <CardsFeed key={post.lurkerPostId} postDetails={post} postSource={postHandle} />
                 }) :
