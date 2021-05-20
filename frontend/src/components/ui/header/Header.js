@@ -21,6 +21,8 @@ import InfoIcon from '@material-ui/icons/Info';
 import Logout from '../../logout/Logout'
 import DeleteProfileModal from '../modal/deleteProfile/DeleteProfile'
 
+import { useHistory } from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
@@ -45,11 +47,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
 	const classes = useStyles();
-
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [showLogoutComponent, setShowLogoutComponent] = React.useState(false);
 	const [deleteProfileOpen, setDeleteProfileOpen] = React.useState(false);
-
+	const history = useHistory();
 	const userName = useSelector(state => state.name)
 
 	const handleClick = (event) => {
@@ -104,6 +105,11 @@ const Header = (props) => {
 		setDeleteProfileOpen(true)
 	}
 
+	const bookmarkClickHandler = () => {
+		handleClose()
+		history.push('/bookmark')
+	}
+
 	return (
 		<div className={classes.root}>		
 		{showLogoutComponent? <Logout /> : null}
@@ -136,11 +142,18 @@ const Header = (props) => {
 							</StyledMenuItem>
 
 							{/* TODO: To make submenu inside the settings for delete accout */}
-							<StyledMenuItem onClick = { () => deleteAccountHanlder()}>
+							<StyledMenuItem onClick = {deleteAccountHanlder}>
 								<ListItemIcon>
 									<SettingsIcon fontSize="small" />
 								</ListItemIcon>
 								<ListItemText primary="Delete Account" />
+							</StyledMenuItem>
+
+							<StyledMenuItem onClick = {bookmarkClickHandler}>
+								<ListItemIcon>
+									<SettingsIcon fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary="Bookmarks" />
 							</StyledMenuItem>
 
 							<StyledMenuItem>
@@ -149,7 +162,7 @@ const Header = (props) => {
 								</ListItemIcon>
 								<ListItemText primary="About" />
 							</StyledMenuItem>
-							<StyledMenuItem  onClick = {() => logoutClickHandler()}>
+							<StyledMenuItem  onClick = {logoutClickHandler}>
 								<ListItemIcon>
 									<ExitToAppIcon fontSize="small" />
 								</ListItemIcon>

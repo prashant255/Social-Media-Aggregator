@@ -9,7 +9,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Feed from '../../../containers/feed/Feed'
-import Header from '../header/Header'
 
 import axios from '../../../axios/lurkerBackend'
 import React, {useEffect, useState} from 'react'
@@ -39,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 
   content: {
     flexGrow: 1,
-    marginTop: '2%',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3),
   },
@@ -50,7 +48,7 @@ const LeftDrawer = () => {
   const jwtToken = useSelector(state => state.jwtToken)
   const [categories, setCategories] = useState(null)
   const [categoriesToDisplay, setCategoriesToDisplay] = useState('all')
-  let feed =  <Feed selectedCategory = {categoriesToDisplay}/>
+  let feed =  <Feed selectedCategory = {categoriesToDisplay} type = {'layout'}/>
   const categoryClickHandler = (category) => {
     feed = null
     setCategoriesToDisplay(category)
@@ -67,7 +65,6 @@ useEffect(() => {
 
   return (
     <div className={classes.root}>
-      <Header/>   
       <CssBaseline />
       <Drawer
         className={classes.drawer}

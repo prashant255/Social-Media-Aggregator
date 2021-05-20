@@ -1,7 +1,8 @@
 import React from 'react'
-import Header from '../ui/footer/Footer'
+import Header from '../ui/header/Header'
 import Footer from '../ui/footer/Footer'
 import Drawer from '../ui/drawer/drawer'
+import Bookmark from '../bookmark/bookmark'
 
 const layout = (props) => {
 
@@ -10,6 +11,10 @@ const layout = (props) => {
         case 'drawer': 
             mainContent = <Drawer />
             break
+        case 'bookmark':
+            console.log("Inside")
+            mainContent = <Bookmark />
+            break
         default:
             mainContent = null
     }
@@ -17,7 +22,7 @@ const layout = (props) => {
     return (
         <div>
             <Header />
-            {mainContent}
+                {mainContent}
             <Footer />       
         </div>
     )
