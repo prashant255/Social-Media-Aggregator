@@ -14,6 +14,7 @@ import classes from "./LinkSocialMedia.module.css";
 
 import axios from '../../axios/lurkerBackend';
 import { connect } from 'react-redux'
+import { Typography } from "@material-ui/core";
 
 class LinkSocialMedia extends Component {
 
@@ -53,6 +54,7 @@ class LinkSocialMedia extends Component {
 
 	render() {
 		return (
+			<Typography>
 			<div className={classes.background}>
 				<Header/>
 				<div className={classes.centerAll}>
@@ -61,9 +63,6 @@ class LinkSocialMedia extends Component {
 						<Typist avgTypingSpeed={40} cursor={{ show: false }}>
 							<h1 className={classes.title}>Choose what you see.</h1>
 						</Typist>
-						{/* <h5 className={classes.subtitle}></h5> */}
-						{/* <Typist.Delay ms={900} />
-						<h3 className={classes.subtitle}>Pick your poison</h3> */}
 					</GridListTile>
 
 					<GridListTile cols={1}>
@@ -86,6 +85,7 @@ class LinkSocialMedia extends Component {
 				</div>
 				<Footer/>
 			</div>
+			</Typography>
 		);
 	}
 }

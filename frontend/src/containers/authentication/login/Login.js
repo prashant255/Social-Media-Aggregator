@@ -8,6 +8,7 @@ import { checkValidity } from '../../../shared/utility'
 import axios from '../../../axios/authentication'
 import { Link } from 'react-router-dom';
 import * as actionTypes from '../../../store/actions'
+import { Typography } from '@material-ui/core'
 
 class Login extends Component {
 
@@ -96,32 +97,34 @@ class Login extends Component {
 			})
 		}
 		return (
-			<div className={classes.Login}>
-				<img src="./lurker-logo.png" className={classes.logo} alt = {'Lurker'}/>
-				<form onSubmit={this.loginHandler}>
-					{formElementsArray.map(formElement => (
-						<Input
-							key={formElement.id}
-							elementType={formElement.config.elementType}
-							elementConfig={formElement.config.elementConfig}
-							value={formElement.config.value}
-							invalid={!formElement.config.valid}
-							shouldValidate={formElement.config.validation}
-							touched={formElement.config.touched}
-							errorMessage={formElement.config.errorMessage}
-							changed={(event) => this.inputChangedHandler(event, formElement.id)} />
-					))}
-					<Button btnType="Success" disabled={!this.state.formIsValid}>LOGIN</Button>
-				</form>
-				<p style={{ color: 'rgb(17, 53, 116)' }}>Don't have an account? <Link to="/register">Sign up</Link></p>
-			</div>
+			<Typography>
+				<div className={classes.Login}>
+					<img src="./lurker-logo.png" className={classes.logo} alt={'Lurker'} />
+					<form onSubmit={this.loginHandler}>
+						{formElementsArray.map(formElement => (
+							<Input
+								key={formElement.id}
+								elementType={formElement.config.elementType}
+								elementConfig={formElement.config.elementConfig}
+								value={formElement.config.value}
+								invalid={!formElement.config.valid}
+								shouldValidate={formElement.config.validation}
+								touched={formElement.config.touched}
+								errorMessage={formElement.config.errorMessage}
+								changed={(event) => this.inputChangedHandler(event, formElement.id)} />
+						))}
+						<Button btnType="Success" disabled={!this.state.formIsValid}>LOGIN</Button>
+					</form>
+					<p style={{ color: 'rgb(17, 53, 116)' }}>Don't have an account? <Link to="/register">Sign up</Link></p>
+				</div>
+			</Typography>
 		)
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onSuccessfulLogin: (name, jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken, name, posts: []})
+		onSuccessfulLogin: (name, jwtToken) => dispatch({ type: actionTypes.AUTH_TOKEN, jwtToken, name, posts: [] })
 	}
 }
 
