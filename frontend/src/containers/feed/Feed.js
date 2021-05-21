@@ -88,7 +88,7 @@ const Feed = (props) => {
                         default:
                             console.log("Invalid Handle")
                     }
-                    return <CardsFeed key={post.lurkerPostId} postDetails={post} postSource={postHandle} />
+                    return <CardsFeed key={post.lurkerPostId} postDetails={post} postSource={postHandle} bookmark = {post.bookmark}/>
                 }) :
                     <h1>No post to display</h1>
             }

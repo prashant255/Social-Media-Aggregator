@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import * as actionTypes from '../../../store/actions'
@@ -37,10 +37,18 @@ const CardsFeed = (props) => {
 
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
+    const [bookmarkSelected, setBookmarkSelected] = useState(props.bookmark)
     const dispatch = useDispatch()
     let posts = useSelector(state => state.posts)
+
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
+    }
+    
+    const bookmarkClickHanlder = () => {
+        axios.post(`/bookmark/${props.postDetails.lurkerPostId}`, {}, {
+            headers
+        }).then(res => res.data !== '' ? setBookmarkSelected(res.data): setBookmarkSelected(null))    
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -57,12 +65,12 @@ const CardsFeed = (props) => {
         let currPost = null
 
         posts.map(post => {
-            if(post.id === postId)
+            if (post.id === postId)
                 currPost = post
             return null
         })
 
-        if(currPost){
+        if (currPost) {
             setFeedData(currPost)
             return true
         }
@@ -77,7 +85,7 @@ const CardsFeed = (props) => {
 
                 dispatch({
                     type: actionTypes.POSTS,
-                    post: {...res.data, id: props.postDetails.postId}
+                    post: { ...res.data, id: props.postDetails.postId }
                 })
             }
         ).catch(
@@ -89,10 +97,10 @@ const CardsFeed = (props) => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
 
-        if(fetchFromCache(props.postDetails.postId))
+        if (fetchFromCache(props.postDetails.postId))
             return; //if true, then it was already present in cache
 
-        switch(props.postDetails.handle) {
+        switch (props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
                 addToCache(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`)
                 break;
@@ -102,87 +110,87 @@ const CardsFeed = (props) => {
                 break;
 
             case constants.HANDLES.FACEBOOK:
-                console.log("Facebook")  
-                break; 
+                console.log("Facebook")
+                break;
             default:
                 console.log("Invalid Handle")
         }
- 
+
     }, [])
-   
+
     let mediaPost = null
     let displayFeed = null
-    if(feedData !== null) {
-            if(feedData.videos !== null) {
-                mediaPost = (
-                    <CardMedia
+    if (feedData !== null) {
+        if (feedData.videos !== null) {
+            mediaPost = (
+                <CardMedia
                     // className={classes.media}
-                        component = "video"
-                        src = {feedData.videos}
-                        controls
-                        autoplay
+                    component="video"
+                    src={feedData.videos}
+                    controls
+                    autoplay
+                />
+            )
+        }
+        else if (feedData.images.length === 1) {
+            mediaPost = (
+                <CardMedia
+                    component="img"
+                    src={feedData.images[0]}
+                />
+            )
+        }
+        else if (feedData.images.length > 1) {
+            mediaPost = (
+                <div>
+                    <img
+                        className={classes.img}
+                        src={feedData.images[activeStep]}
+                        alt='feed'
                     />
-                )
-            } 
-            else if (feedData.images.length === 1){
-                mediaPost = (
-                    <CardMedia
-                        component="img"
-                        src={feedData.images[0]}
+                    <MobileStepper
+                        variant="dots"
+                        steps={feedData.images.length}
+                        position="static"
+                        activeStep={activeStep}
+                        nextButton={
+                            <Button
+                                size="small"
+                                onClick={handleNext}
+                                disabled={activeStep === feedData.images.length - 1}>
+                                <KeyboardArrowRight />
+                            </Button>
+                        }
+                        backButton={
+                            <Button
+                                size="small"
+                                onClick={handleBack}
+                                disabled={activeStep === 0}>
+                                <KeyboardArrowLeft />
+                            </Button>
+                        }
                     />
-                )
-            }
-            else if (feedData.images.length >1) {
-                mediaPost = (
-                    <div>
-                        <img
-                            className={classes.img}
-                            src={feedData.images[activeStep]}
-                            alt = 'feed'
-                        />
-                        <MobileStepper
-                            variant="dots"
-                            steps={feedData.images.length}
-                            position="static"
-                            activeStep={activeStep}
-                            nextButton={
-                                <Button 
-                                    size="small" 
-                                    onClick={handleNext} 
-                                    disabled={activeStep === feedData.images.length - 1}>
-                                    <KeyboardArrowRight />
-                                </Button>
-                            }
-                            backButton={
-                                <Button 
-                                    size="small" 
-                                    onClick={handleBack} 
-                                    disabled={activeStep === 0}>
-                                    <KeyboardArrowLeft />
-                                </Button>
-                            }
-                        />
-                    </div>
-                    
-                )
-            }
+                </div>
 
-            displayFeed = (
+            )
+        }
+
+        displayFeed = (
             <Card className={classes.Card}>
                 <CardHeader
                     avatar={
                         <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     action={
-                        <props.postSource/>
+                        <props.postSource />
                     }
                     title={feedData.senderName}
-                    subheader={ 
+                    subheader={
                         dayjs(feedData.createdAt).fromNow()
                     }
                 />
                 {mediaPost}
-                {feedData.text ? 
+                {feedData.text ?
                     <CardContent>
                         <Typography variant="body2" color="textSecondary" component="p">
                             {parse(parse(feedData.text))}
@@ -196,9 +204,9 @@ const CardsFeed = (props) => {
                     <IconButton aria-label="share">
                         <ShareIcon />
                     </IconButton>
-                    <IconButton aria-label="bookmark" size="medium">
+                    <IconButton aria-label="bookmark" size="medium" onClick = {bookmarkClickHanlder}>
                         {/* NOTE: unfilled bookmark icon to denote "not selected" also imported above */}
-                        <BookmarkIcon />
+                        {bookmarkSelected !== null ? <BookmarkIcon /> : <BookmarkBorderIcon />}
                     </IconButton>
                 </CardActions>
             </Card>
