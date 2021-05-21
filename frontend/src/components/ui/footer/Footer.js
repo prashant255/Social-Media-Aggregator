@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 const useStyles = makeStyles((theme) => ({
 		root: {
-			marginTop: 30,
+			overflow: 'auto'
 		},
 		text: {
 			padding: theme.spacing(2, 2, 0),
@@ -13,14 +13,7 @@ const useStyles = makeStyles((theme) => ({
 		paper: {
 			paddingBottom: 50,
 		},
-		list: {
-			marginBottom: theme.spacing(2),
-		},
-		subheader: {
-			backgroundColor: theme.palette.background.paper,
-		},
 		appBar: {
-			top: 'auto',
 			bottom: 0,
 			color: 'black',
 			backgroundColor: 'white',
@@ -28,14 +21,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		grow: {
 			flexGrow: 1,
-		},
-		fabButton: {
-			position: 'absolute',
-			top: -30,
-			left: 0,
-			right: 0,
-			margin: '0 auto',
-		},
+		}
 	}));
 
 const Footer = () =>{
