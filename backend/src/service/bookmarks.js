@@ -20,6 +20,7 @@ const changeBookmark = async (userId, postId) => {
             lurkerPostId:postId
         }
     })
+    return bookmark
 }
 
 const getBookmarkedPost = async (userId, offset) => {

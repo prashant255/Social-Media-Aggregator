@@ -5,8 +5,8 @@ const authenticateUser = require('../authentication/authMiddleware')
 
 router.post('/:postId', authenticateUser, async (req, res) => {
     try{
-        await bookmarks.changeBookmark(req.user.id, req.params.postId)
-        res.send()
+        bookmark = await bookmarks.changeBookmark(req.user.id, req.params.postId)
+        res.send(bookmark)
     } catch (e) {
         res.status(500).send(e.message)
     }
