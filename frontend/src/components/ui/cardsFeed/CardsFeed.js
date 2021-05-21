@@ -22,6 +22,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
@@ -193,6 +195,10 @@ const CardsFeed = (props) => {
                     </IconButton>
                     <IconButton aria-label="share">
                         <ShareIcon />
+                    </IconButton>
+                    <IconButton aria-label="bookmark" size="medium">
+                        {/* NOTE: unfilled bookmark icon to denote "not selected" also imported above */}
+                        <BookmarkIcon />
                     </IconButton>
                 </CardActions>
             </Card>
