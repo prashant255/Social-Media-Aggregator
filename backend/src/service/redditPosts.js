@@ -99,21 +99,25 @@ const getAllPosts = async (userId) => {
                 //Pass to ML pipeline
                 let res = null
                 try {
-                    res = await axios.post("http://localhost:5000/categorise", {text: element.title + " " + element.selftext})    
                     console.log(element.name)
                     console.log(element.title)
                     console.log(element.selftext)
-                    console.log(res.data.category)
                     if (element.post_hint === 'link')
                         console.log(element.url)
-                    PostDetails.update(
-                        {category: res.data.category},
-                        {
-                            where: {
-                            postId: element.name,
-                            handle: common.HANDLES.REDDIT
-                        }
-                    })
+                    try{
+                        res = await axios.post("http://localhost:5000/categorise", {text: element.title + " " + element.selftext})    
+                        PostDetails.update(
+                            {category: res.data.category},
+                            {
+                                where: {
+                                postId: element.name,
+                                handle: common.HANDLES.REDDIT
+                            }
+                        })
+                    }catch (e) {
+                        console.log("Unable to fetch category")
+                    } 
+                    
                 } catch (e) {
                     throw new Error(e.message)
                 }

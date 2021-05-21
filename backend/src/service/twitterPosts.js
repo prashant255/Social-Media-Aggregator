@@ -11,18 +11,18 @@ const likePost = (userId, postId) => {
 
     return new Promise((resolve, reject) => {
 
-        Token.findOne({ where: {userId} }).then(tokens => {
-            if(!tokens)
+        Token.findOne({ where: { userId } }).then(tokens => {
+            if (!tokens)
                 reject('No Token');
-            else if(!tokens.twitterAccessToken)
+            else if (!tokens.twitterAccessToken)
                 reject('No Access Token')
-            else if(!tokens.twitterAccessTokenPwd)
+            else if (!tokens.twitterAccessTokenPwd)
                 reject('No Access Token Password')
-            
+
             request.twitterRequestPost(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
-            .then(res => {
-                resolve();
-            }).catch(e => reject(e));
+                .then(res => {
+                    resolve();
+                }).catch(e => reject(e));
         })
     })
 }
@@ -32,36 +32,36 @@ const unlikePost = (userId, postId) => {
 
     return new Promise((resolve, reject) => {
 
-        Token.findOne({ where: {userId} }).then(tokens => {
-            if(!tokens)
+        Token.findOne({ where: { userId } }).then(tokens => {
+            if (!tokens)
                 reject('No Token');
-            else if(!tokens.twitterAccessToken)
+            else if (!tokens.twitterAccessToken)
                 reject('No Access Token')
-            else if(!tokens.twitterAccessTokenPwd)
+            else if (!tokens.twitterAccessTokenPwd)
                 reject('No Access Token Password')
-            
+
             request.twitterRequestPost(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
-            .then(res => {
-                resolve();
-            }).catch(e => reject(e));
+                .then(res => {
+                    resolve();
+                }).catch(e => reject(e));
         })
     })
 }
 
 const getPostById = async (userId, postId) => {
     let url = `https://api.twitter.com/1.1/statuses/show.json?id=${postId}&tweet_mode=extended`
-    const tokens = await(Token.findOne({
-        where: {userId}
+    const tokens = await (Token.findOne({
+        where: { userId }
     }))
-    try{
+    try {
         const postResponse = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
-        
+
         let images = []
         let videos = null
-        if(postResponse.extended_entities !== undefined) {
-        let mediaFromResponse = postResponse.extended_entities.media
-            mediaFromResponse.forEach( media => {
-                if(media.type === 'photo'){
+        if (postResponse.extended_entities !== undefined) {
+            let mediaFromResponse = postResponse.extended_entities.media
+            mediaFromResponse.forEach(media => {
+                if (media.type === 'photo') {
                     images.push(media.media_url)
                 } else if (media.type === 'video') {
                     console.log("hello")
@@ -84,8 +84,8 @@ const getPostById = async (userId, postId) => {
 }
 
 const getAllPosts = async (userId) => {
-    const tokens = await(Token.findOne({
-        where: {userId}
+    const tokens = await (Token.findOne({
+        where: { userId }
     }))
     const endpoint = "https://api.twitter.com/1.1/statuses/home_timeline.json"
     const params = {
@@ -98,10 +98,10 @@ const getAllPosts = async (userId) => {
         //TODO: Change the limit in later stage of development to 100
     }
 
-    if(tokens.twitterAnchorId !== null)
+    if (tokens.twitterAnchorId !== null)
         params['since_id'] = tokens.twitterAnchorId
     const url = endpoint + common.formatParams(params);
-      
+
     // return res;
 
     try {
@@ -112,25 +112,30 @@ const getAllPosts = async (userId) => {
                     postId: post.id_str,
                     handle: common.HANDLES.TWITTER
                 }
-            })  
-            if(dbResponse[1]) {
+            })
+            if (dbResponse[1]) {
                 const rx = /https?:\/\/\S+/g
                 const arr = post.full_text.match(rx).pop()
                 // console.log(arr) //All the urls in array format
                 let res = null;
                 try {
-                    res = await axios.post("http://localhost:5000/categorise", {text: post.full_text.replace((rx), "")})
                     console.log(post.id_str)
                     console.log(post.full_text.replace((rx), ""))
-                    console.log(res.data.category)
-                    PostDetails.update(
-                    {category: res.data.category},
-                    {where: {
-                        postId: post.id_str,
-                        handle: common.HANDLES.TWITTER
-                    }})
+                    try {
+                        res = await axios.post("http://localhost:5000/categorise", { text: post.full_text.replace((rx), "") })
+                        PostDetails.update(
+                            { category: res.data.category },
+                            {
+                                where: {
+                                    postId: post.id_str,
+                                    handle: common.HANDLES.TWITTER
+                                }
+                            })
+                    } catch (e) {
+                        console.log("Unable to fetch category")
+                    }
                 } catch (e) {
-                    console.log(e.message)
+                    throw new Error(e.message)
                 }
             }
 
@@ -139,11 +144,11 @@ const getAllPosts = async (userId) => {
                 lurkerPostId: dbResponse[0].dataValues.id
             })
         })
-        
-        if(response.length > 0) {
+
+        if (response.length > 0) {
             await Token.update({
                 twitterAnchorId: response[0].id
-            }, {where: { userId }}
+            }, { where: { userId } }
             )
         }
     } catch (e) {
