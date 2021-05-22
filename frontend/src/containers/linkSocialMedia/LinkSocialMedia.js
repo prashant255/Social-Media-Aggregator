@@ -52,6 +52,37 @@ class LinkSocialMedia extends Component {
 		return url;
 	}
 
+	showUnlink = (socialName) => {
+		const url = "http://localhost:8080/api/"+socialName+"/unlink";
+
+		axios.post(url, {}, {
+			headers: {
+				'Authorization': `Bearer ${this.props.jwtToken}`
+			}
+		}).then(status => {
+			switch(socialName) {
+				case "reddit":
+					this.setState({
+						reddit: false
+					});
+					break;
+				case "facebook":
+					this.setState({
+						facebook: false
+					});
+					break;
+				case "twitter":
+					this.setState({
+						twitter: false
+					});
+					break;
+			}
+		}).catch(e => {
+			console.log(e);
+		});
+		
+	}
+
 	render() {
 		return (
 			<Typography>
@@ -67,14 +98,17 @@ class LinkSocialMedia extends Component {
 
 					<GridListTile cols={1}>
 						<SocialLogin socialName="Reddit" loginURL={this.getUrl("reddit")} isLinked={this.state.reddit} />
+						{this.state.reddit ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("reddit")}>remove access</p> : <p></p>}
 					</GridListTile>
 
 					<GridListTile cols={1} className="twitterLogo">
 						<SocialLogin socialName="Twitter" loginURL={this.getUrl("twitter")} isLinked={this.state.twitter} />
+						{this.state.twitter ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("twitter")}>remove access</p> : <p></p>}
 					</GridListTile>
 
 					<GridListTile cols={1}>
 						<SocialLogin socialName="Facebook" loginURL={this.getUrl("facebook")} isLinked={this.state.facebook} />
+						{this.state.facebook ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("facebook")}>remove access</p> : <p></p>}
 					</GridListTile>
 				</GridList>
 				<br/>
@@ -89,6 +123,8 @@ class LinkSocialMedia extends Component {
 		);
 	}
 }
+
+// cursor: not-allowed;
 
 const mapStateToProps = state => {
 	return {
