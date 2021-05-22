@@ -17,6 +17,10 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
+import LinkIcon from '@material-ui/icons/Link';
+import CategoryIcon from '@material-ui/icons/Category';
+import BookmarksIcon from '@material-ui/icons/Bookmarks';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import Logout from '../../logout/Logout'
 import DeleteProfileModal from '../modal/deleteProfile/DeleteProfile'
@@ -45,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 	offset: theme.mixins.toolbar,
 }));
 
-const Header = (props) => {
+const Header = () => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [showLogoutComponent, setShowLogoutComponent] = React.useState(false);
@@ -81,7 +85,7 @@ const Header = (props) => {
 			{...props}
 		/>
 	));
-	
+
 	const StyledMenuItem = withStyles((theme) => ({
 		root: {
 			'&:focus': {
@@ -95,7 +99,7 @@ const Header = (props) => {
 
 	const handleOpenModal = (state) => {
 		setDeleteProfileOpen(state);
-	  };
+	};
 	const logoutClickHandler = () => {
 		setShowLogoutComponent(true)
 	}
@@ -110,16 +114,26 @@ const Header = (props) => {
 		history.push('/bookmark')
 	}
 
+	const linkSocialMediaHandler = () => {
+		handleClose()
+		history.push('/linksocialmedia')
+	}
+
+	const changeCategoryHandler = () => {
+		handleClose()
+		history.push('/category')
+	}
+
 	return (
-		<div className={classes.root}>		
-		{showLogoutComponent? <Logout /> : null}
-		<DeleteProfileModal open = {deleteProfileOpen} handleModal = { handleOpenModal}/>
+		<div className={classes.root}>
+			{showLogoutComponent ? <Logout /> : null}
+			<DeleteProfileModal open={deleteProfileOpen} handleModal={handleOpenModal} />
 			<AppBar position="fixed">
 				<Toolbar className={classes.headerColor}>
 					<div className={classes.title}>
-						<img src="./lurker-logo-small.png" className={classes.logo} alt = {'Lurker'}/>
+						<img src="./lurker-logo-small.png" className={classes.logo} alt={'Lurker'} />
 					</div>
-				
+
 					<Typography>
 						{userName}
 					</Typography>
@@ -134,27 +148,7 @@ const Header = (props) => {
 							open={Boolean(anchorEl)}
 							onClose={handleClose}
 						>
-							<StyledMenuItem>
-								<ListItemIcon>
-									<SettingsIcon fontSize="small" />
-								</ListItemIcon>
-								<ListItemText primary="Settings" />
-							</StyledMenuItem>
 
-							{/* TODO: To make submenu inside the settings for delete accout */}
-							<StyledMenuItem onClick = {deleteAccountHanlder}>
-								<ListItemIcon>
-									<SettingsIcon fontSize="small" />
-								</ListItemIcon>
-								<ListItemText primary="Delete Account" />
-							</StyledMenuItem>
-
-							<StyledMenuItem onClick = {bookmarkClickHandler}>
-								<ListItemIcon>
-									<SettingsIcon fontSize="small" />
-								</ListItemIcon>
-								<ListItemText primary="Bookmarks" />
-							</StyledMenuItem>
 
 							<StyledMenuItem>
 								<ListItemIcon>
@@ -162,7 +156,36 @@ const Header = (props) => {
 								</ListItemIcon>
 								<ListItemText primary="About" />
 							</StyledMenuItem>
-							<StyledMenuItem  onClick = {logoutClickHandler}>
+
+							<StyledMenuItem onClick={bookmarkClickHandler}>
+								<ListItemIcon>
+									<BookmarksIcon fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary="Bookmarks" />
+							</StyledMenuItem>
+
+							<StyledMenuItem onClick={linkSocialMediaHandler}>
+								<ListItemIcon>
+									<LinkIcon fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary="Link Handles" />
+							</StyledMenuItem>
+
+							<StyledMenuItem onClick={changeCategoryHandler}>
+								<ListItemIcon>
+									<CategoryIcon fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary="Change Categories" />
+							</StyledMenuItem>
+
+							<StyledMenuItem onClick={deleteAccountHanlder}>
+								<ListItemIcon>
+									<DeleteForeverIcon fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary="Delete Account" />
+							</StyledMenuItem>
+
+							<StyledMenuItem onClick={logoutClickHandler}>
 								<ListItemIcon>
 									<ExitToAppIcon fontSize="small" />
 								</ListItemIcon>
