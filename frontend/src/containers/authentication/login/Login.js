@@ -56,7 +56,7 @@ class Login extends Component {
 		try {
 			const response = await axios.post('/login', formData)
 			this.props.onSuccessfulLogin(response.data.dataValues.name, response.data.token)
-			this.props.history.push('/linksocialmedia')
+			this.props.history.push('/feed')
 		} catch (err) {
 			console.log(err.response)
 		}

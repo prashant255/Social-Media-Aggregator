@@ -43,7 +43,7 @@ class LinkSocialMedia extends Component {
 	}
 
 	nextClickHandler = () =>{
-		this.props.history.push('/category');
+		this.props.history.push('/feed');
 	}
 
 	getUrl = (name) => {

@@ -5,6 +5,8 @@ import classes from './Categories.module.css'
 
 import Card from '../../components/ui/cardsCategory/CardsCategory'
 import Button from '../../components/ui/button/Button'
+import Footer from '../../components/ui/footer/Footer'
+import Header from '../../components/ui/header/Header'
 
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
@@ -129,6 +131,7 @@ class Categories extends Component {
 
         return (
             <div>
+                <Header />
                 <GridList cellHeight={250} spacing={1} cols={4}>
                     <GridListTile cols={4} style={{ height: 'auto', color:'rgba(17, 53, 117, 1)'}}>
                         <h1 style={{textAlign: 'center', fontSize: '60px'}}>What would you like to see?</h1>
@@ -150,6 +153,7 @@ class Categories extends Component {
                 <div className = {classes.Center}>
                     <Button btnType = "Success" disabled = {!this.state.selectedCount} clicked = {this.nextClickHandler}>NEXT</Button>
                 </div>
+                <Footer />
             </div>
         )
     }
