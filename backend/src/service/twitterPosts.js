@@ -64,7 +64,6 @@ const getPostById = async (userId, postId) => {
                 if (media.type === 'photo') {
                     images.push(media.media_url)
                 } else if (media.type === 'video') {
-                    console.log("hello")
                     videos = media.video_info.variants[0].url
                 }
             })
