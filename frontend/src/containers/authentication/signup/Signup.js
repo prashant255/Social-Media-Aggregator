@@ -70,7 +70,8 @@ class Signup extends Component {
 				touched: false
 			}
 		},
-		formIsValid: false
+		formIsValid: false,
+		errorMessage: null
 	}
 
 
@@ -87,7 +88,9 @@ class Signup extends Component {
 			alert("Confirmation email has been sent to you. Please check your spam folder too.")
 			this.props.history.push('/login')
 		} catch (err) {
-			console.log(err.response)
+			this.setState({
+				errorMessage: err.response.data
+			})
 		}
 	}
 
@@ -149,6 +152,7 @@ class Signup extends Component {
 			<Typography>
 				<div className={classes.Signup}>
 					<img src="./lurker-logo.png" className={classes.logo} alt={'Lurker'} />
+					<div className={classes.Error}>{this.state.errorMessage}</div>
 					<form onSubmit={this.signupHandler}>
 						{formElementsArray.map(formElement => (
 							<Input

@@ -58,7 +58,6 @@ class Login extends Component {
 			this.props.onSuccessfulLogin(response.data.dataValues.name, response.data.token)
 			this.props.history.push('/feed')
 		} catch (err) {
-			console.log(err.response.data)
 			this.setState({
 				errorMessage: err.response.data
 			})
