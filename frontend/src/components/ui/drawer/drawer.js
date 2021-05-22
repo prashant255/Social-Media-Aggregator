@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 		color: '#999',
 	},
 	content: {
-		minHeight: '90vh',
+		minHeight: '86vh',
 		backgroundColor: theme.palette.background.default,
 		padding: theme.spacing(3),
 	},

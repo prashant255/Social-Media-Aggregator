@@ -117,8 +117,8 @@ class LinkSocialMedia extends Component {
 				</div>
 				<br/>
 				</div>
-				<Footer/>
 			</div>
+			<Footer/>
 			</Typography>
 		);
 	}
