@@ -1,6 +1,7 @@
 const oauth = require('oauth');
 const Token = require('../models/tokens')
 const common = require('../common')
+const { QueryTypes } = require('sequelize')
 
 consumer = () => {
     return new oauth.OAuth(
@@ -93,10 +94,43 @@ const saveToken = async (userId, {twitterAccessToken, twitterAccessTokenPwd}) =>
     
 }
 
+const unlinkAccount = async (userId) => {
+    try{
+        //Transaction is created to rollback in case account deletion fails.
+        const t = await sequelize.transaction();
+        const token = await Token.findOne({where: { userId }})
+        if(!token || token.twitterAccessToken === null)
+            throw new Error('No account to unlink');
+        await Token.upsert({
+            userId,
+            twitterAccessToken: null,
+            twitterAccessTokenPwd: null,
+            twitterAnchorId: null
+        }, { transaction: t})
+        //Delete all the posts associated with reddit
+        let query = 'delete from posts where "lurkerPostId" in (select id  from posts inner join post_details on posts."lurkerPostId"= post_details.id where handle = :handle and "userId" = :userId) and "userId" = :userId;'
+        await sequelize.query(query, 
+        { 
+            replacements: { 
+                handle: common.HANDLES.TWITTER,
+                userId
+            },
+            type: QueryTypes.DELETE 
+        }, {transaction: t})
+        
+        await t.commit()
+        
+    } catch(e) {
+        await t.rollback()
+        throw new Error(e.message)
+    } 
+}
+
 module.exports = {
     sessionConnect,
     twitterRequestPost,
     twitterCallback,
     twitterRequest,
-    saveToken
+    saveToken,
+    unlinkAccount
 }

@@ -21,6 +21,15 @@ router.post('/callback', authenticateUser, async (req, res) => {
 	}
 })
 
+router.post('/unlink', authenticateUser, async (req, res) => {
+    try{
+        await twitterAuth.unlinkAccount(req.user.id)
+        res.send()
+    } catch(e) {
+        res.status(404).send(e.message)
+    }
+})
+
 router.post('/allPosts/:userId', async (req, res) => {
 	try {
 		twitterPosts.getAllPosts(req.params.userId)
