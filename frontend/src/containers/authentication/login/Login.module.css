@@ -10,6 +10,11 @@
     background-color: rgb(223, 227, 252);
 }
 
+.Error {
+    margin-top: 10px;
+    color: #ff0000;
+}
+
 ::placeholder{
     color: rgb(17, 53, 116);
     opacity: 1;
