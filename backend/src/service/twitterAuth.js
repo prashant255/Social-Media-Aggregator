@@ -45,8 +45,6 @@ twitterCallback = (req, res) => {
 }
 
 const twitterRequest = (oauthAccessToken, oauthAccessTokenSecret, url) => {
-    console.log("Oauth Access Token", oauthAccessToken)
-    console.log("Oauth Secret", oauthAccessTokenSecret)
     console.log(url)
     return new Promise((resolve, reject) => {
         consumer().get(url, oauthAccessToken, oauthAccessTokenSecret, (error, data, response) => {
