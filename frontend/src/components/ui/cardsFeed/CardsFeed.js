@@ -28,27 +28,42 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import MobileStepper from '@material-ui/core/MobileStepper';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 var dayjs = require('dayjs')
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const CardsFeed = (props) => {
 
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
     const [bookmarkSelected, setBookmarkSelected] = useState(props.bookmark)
+    const [snackbarOpen, setSnackbarOpen] = useState(false)
     const dispatch = useDispatch()
     let posts = useSelector(state => state.posts)
-
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
     }
-    
+
     const bookmarkClickHanlder = () => {
         axios.post(`/bookmark/${props.postDetails.lurkerPostId}`, {}, {
             headers
-        }).then(res => res.data !== '' ? setBookmarkSelected(res.data): setBookmarkSelected(null))    
+        }).then(res => {
+            if (res.data !== '') {
+                setSnackbarOpen(true)
+                setBookmarkSelected(res.data)
+            }
+            else {
+                setSnackbarOpen(true)
+                setBookmarkSelected(null)
+            }
+        })
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -204,9 +219,21 @@ const CardsFeed = (props) => {
                     <IconButton aria-label="share">
                         <ShareIcon />
                     </IconButton>
-                    <IconButton aria-label="bookmark" size="medium" onClick = {bookmarkClickHanlder}>
+                    <IconButton aria-label="bookmark" size="medium" onClick={bookmarkClickHanlder}>
                         {/* NOTE: unfilled bookmark icon to denote "not selected" also imported above */}
                         {bookmarkSelected !== null ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                        <Snackbar
+                            autoHideDuration={2000}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            open={snackbarOpen}
+                            onClose={() => setSnackbarOpen(false)}
+                        >
+                            {bookmarkSelected !== null ?
+                                <Alert onClose={() => setSnackbarOpen(false)} severity="success"> Bookmark Added </Alert>
+                                :
+                                <Alert onClose={() => setSnackbarOpen(false)} severity="error"> Bookmark Removed </Alert>
+                            }
+                        </Snackbar>
                     </IconButton>
                 </CardActions>
             </Card>
