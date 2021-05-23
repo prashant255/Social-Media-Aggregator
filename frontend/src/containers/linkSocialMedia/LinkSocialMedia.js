@@ -76,6 +76,8 @@ class LinkSocialMedia extends Component {
 						twitter: false
 					});
 					break;
+				default:
+					console.log("Invalid Hanlde")
 			}
 		}).catch(e => {
 			console.log(e);
