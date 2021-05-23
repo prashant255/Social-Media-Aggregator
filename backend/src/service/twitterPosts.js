@@ -101,8 +101,6 @@ const getAllPosts = async (userId) => {
         params['since_id'] = tokens.twitterAnchorId
     const url = endpoint + common.formatParams(params);
 
-    // return res;
-
     try {
         const response = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
         response.map(async (post) => {

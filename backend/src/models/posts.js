@@ -16,7 +16,13 @@ Posts = sequelize.define("posts", {
     bookmark: {
         type: Sequelize.BOOLEAN,
         allowNull: true
+    },
+
+    groupId: {
+        type: Sequelize.INTEGER,
+        allowNull: true
     }
+
 }, {
     indexes: [
         {
