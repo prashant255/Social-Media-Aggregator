@@ -15,13 +15,25 @@ import classes from "./LinkSocialMedia.module.css";
 import axios from '../../axios/lurkerBackend';
 import { connect } from 'react-redux'
 import { Typography } from "@material-ui/core";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+var dayjs = require('dayjs')
+var relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
+function Alert(props) {
+	return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 class LinkSocialMedia extends Component {
 
 	state = {
 		twitter: false,
 		reddit: false,
-		facebook: false
+		facebook: false,
+		snakbarOpen: false,
+		unlinkHandle: null,
 	}
 
 	getSocialMediaStatus = () => {
@@ -42,7 +54,7 @@ class LinkSocialMedia extends Component {
 		this.getSocialMediaStatus();
 	}
 
-	nextClickHandler = () =>{
+	nextClickHandler = () => {
 		this.props.history.push('/feed');
 	}
 
@@ -53,27 +65,33 @@ class LinkSocialMedia extends Component {
 	}
 
 	showUnlink = (socialName) => {
-		const url = "http://localhost:8080/api/"+socialName+"/unlink";
+		const url = "http://localhost:8080/api/" + socialName + "/unlink";
 
 		axios.post(url, {}, {
 			headers: {
 				'Authorization': `Bearer ${this.props.jwtToken}`
 			}
 		}).then(status => {
-			switch(socialName) {
+			switch (socialName) {
 				case "reddit":
 					this.setState({
-						reddit: false
+						reddit: false,
+						snackbarOpen: true,
+						unlinkHandle: 'Reddit'
 					});
 					break;
 				case "facebook":
 					this.setState({
-						facebook: false
+						facebook: false,
+						snackbarOpen: true,
+						unlinkHandle: 'Facebook'
 					});
 					break;
 				case "twitter":
 					this.setState({
-						twitter: false
+						twitter: false,
+						snackbarOpen: true,
+						unlinkHandle: 'Twitter'
 					});
 					break;
 				default:
@@ -82,45 +100,52 @@ class LinkSocialMedia extends Component {
 		}).catch(e => {
 			console.log(e);
 		});
-		
+
 	}
 
 	render() {
 		return (
 			<Typography>
-			<div className={classes.background}>
-				<Header/>
-				<div className={classes.centerAll}>
-				<GridList cellHeight={'auto'} cols={3} alignItems='center' justifyContent='center'>
-					<GridListTile cols={3}>
-						<Typist avgTypingSpeed={40} cursor={{ show: false }}>
-							<h1 className={classes.title}>Choose what you see.</h1>
-						</Typist>
-					</GridListTile>
+				<div className={classes.background}>
+					<Header />
+					<div className={classes.centerAll}>
+						<GridList cellHeight={'auto'} cols={3} alignItems='center' justifyContent='center'>
+							<GridListTile cols={3}>
+								<Typist avgTypingSpeed={40} cursor={{ show: false }}>
+									<h1 className={classes.title}>Choose what you see.</h1>
+								</Typist>
+							</GridListTile>
 
-					<GridListTile cols={1}>
-						<SocialLogin socialName="Reddit" loginURL={this.getUrl("reddit")} isLinked={this.state.reddit} />
-						{this.state.reddit ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("reddit")}>remove access</p> : <p></p>}
-					</GridListTile>
+							<GridListTile cols={1}>
+								<SocialLogin socialName="Reddit" loginURL={this.getUrl("reddit")} isLinked={this.state.reddit} />
+								{this.state.reddit ? <p className={classes.removeAccess} onClick={() => this.showUnlink("reddit")}>remove access</p> : <p></p>}
+							</GridListTile>
+							<GridListTile cols={1} className="twitterLogo">
+								<SocialLogin socialName="Twitter" loginURL={this.getUrl("twitter")} isLinked={this.state.twitter} />
+								{this.state.twitter ? <p className={classes.removeAccess} onClick={() => this.showUnlink("twitter")}>remove access</p> : <p></p>}
+							</GridListTile>
 
-					<GridListTile cols={1} className="twitterLogo">
-						<SocialLogin socialName="Twitter" loginURL={this.getUrl("twitter")} isLinked={this.state.twitter} />
-						{this.state.twitter ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("twitter")}>remove access</p> : <p></p>}
-					</GridListTile>
-
-					<GridListTile cols={1}>
-						<SocialLogin socialName="Facebook" loginURL={this.getUrl("facebook")} isLinked={this.state.facebook} />
-						{this.state.facebook ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("facebook")}>remove access</p> : <p></p>}
-					</GridListTile>
-				</GridList>
-				<br/>
-				<div className={classes.Center}>
-					<Button btnType="Success" disabled={!(this.state.twitter || this.state.reddit || this.state.facebook)} clicked={this.nextClickHandler}>NEXT</Button>
+							<GridListTile cols={1}>
+								<SocialLogin socialName="Facebook" loginURL={this.getUrl("facebook")} isLinked={this.state.facebook} />
+								{this.state.facebook ? <p className={classes.removeAccess} onClick={() => this.showUnlink("facebook")}>remove access</p> : <p></p>}
+							</GridListTile>
+						</GridList>
+						<Snackbar
+							autoHideDuration={3000}
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+							open={this.state.snackbarOpen}
+							onClose={() => this.setState({snackbarOpen: false})}
+						>
+								<Alert onClose={() => this.setState({snackbarOpen: false})} severity="error"> {this.state.unlinkHandle} account unlinked </Alert>
+						</Snackbar>
+						<br />
+						<div className={classes.Center}>
+							<Button btnType="Success" disabled={!(this.state.twitter || this.state.reddit || this.state.facebook)} clicked={this.nextClickHandler}>NEXT</Button>
+						</div>
+						<br />
+					</div>
 				</div>
-				<br/>
-				</div>
-			</div>
-			<Footer/>
+				<Footer />
 			</Typography>
 		);
 	}

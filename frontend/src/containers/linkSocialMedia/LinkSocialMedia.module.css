@@ -28,4 +28,5 @@
 .removeAccess{
     color: gray;
     text-decoration: underline;
+    cursor: pointer;
 }
