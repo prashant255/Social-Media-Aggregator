@@ -27,6 +27,7 @@
     "oauth-1.0a": "^2.2.6",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
+    "request": "^2.88.2",
     "sequelize": "^6.5.0",
     "sequelize-cli": "^6.2.0",
     "xmlhttprequest": "^1.8.0"

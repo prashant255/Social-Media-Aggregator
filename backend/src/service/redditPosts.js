@@ -1,7 +1,10 @@
 // Assumption:- Max 100 post added per minute.
 'use strict';
-const common = require('../common')
 const axios = require('axios')
+const FormData = require('form-data');
+const request = require('request');
+
+const common = require('../common')
 const PostDetails = require('../models/postDetails');
 const Token = require('../models/tokens');
 const Post = require('../models/posts')
@@ -144,7 +147,39 @@ const getAllPosts = async (userId) => {
 
 }
 
+const vote = async (id, dir) => {
+    return new Promise(async (resolve,reject) => {
+        const USER_AGENT = 'Lurker App by (by /u/swapmarkh )';
+        const tokens = await(Token.findOne({
+            where: {userId: 1}
+        }))
+        const token = tokens.redditAccessToken
+        
+        request({
+            method: 'POST',
+            url: 'https://oauth.reddit.com/api/vote',
+            headers: {
+                'User-Agent': USER_AGENT,
+                'Authorization': `bearer ${token}`,
+                // 'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            form: {
+                id,
+                dir
+            }, json: false }, 
+        function (error, response, body) {
+            if (error)
+                reject(error)
+            else if (body.error) 
+                reject(body.error)
+            else
+                resolve()
+        });
+    })
+}
+
 module.exports = {
     getAllPosts,
-    getPostById
+    getPostById,
+    vote
 }
