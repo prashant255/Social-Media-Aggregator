@@ -62,13 +62,24 @@ const CardsFeed = (props) => {
         return {voteUrl, data}
     }
 
+    const twitterLike = () => {
+        let voteUrl = '', data = {}
+        if(voteStatus)
+            voteUrl = `/twitter/unlike/${props.postDetails.postId}`
+        else
+            voteUrl = `/twitter/like/${props.postDetails.postId}`
+        
+        return {voteUrl, data}
+    }
+
     const voteClickHandler = () => {
         
         let voteUrl='', data = {}
 
         switch(props.postDetails.handle){
             case constants.HANDLES.TWITTER:
-                return;
+                ({voteUrl, data} = twitterLike())
+                break;
             case constants.HANDLES.REDDIT:
                 ({voteUrl, data} = redditVote());
                 break;
@@ -122,6 +133,10 @@ const CardsFeed = (props) => {
             res => {
                 setFeedData(res.data)
 
+                // for twitter
+                if(res.data.favorited)
+                    setVoteStatus(true)
+                
                 dispatch({
                     type: actionTypes.POSTS,
                     post: { ...res.data, id: props.postDetails.postId }
@@ -132,7 +147,7 @@ const CardsFeed = (props) => {
         )
     }
 
-    const getVoteStatus = (url) => {
+    const getVoteRedditStatus = (url) => {
         axios.get(url, {headers}).then(status => {
             if(status.data === 1)
                 setVoteStatus(true);
@@ -153,7 +168,7 @@ const CardsFeed = (props) => {
                 break;
 
             case constants.HANDLES.REDDIT:
-                getVoteStatus(`${baseUrl}reddit/post/${props.postDetails.postId}/voteStatus`)
+                getVoteRedditStatus(`${baseUrl}reddit/post/${props.postDetails.postId}/voteStatus`)
                 if (fetchFromCache(props.postDetails.postId)) break;
                 addToCache(`${baseUrl}reddit/post/${props.postDetails.postId}`)
                 break;
