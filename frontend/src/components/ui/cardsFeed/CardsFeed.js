@@ -84,6 +84,12 @@ const CardsFeed = (props) => {
         })
     }
 
+    const openInNewTab = () => {
+        console.log(props.url)
+        const newWindow = window.open(props.url, '_blank', 'noopener,noreferrer')
+        if (newWindow) newWindow.opener = null
+    }
+
     const [activeStep, setActiveStep] = React.useState(0);
 
     const handleNext = () => {
@@ -225,7 +231,7 @@ const CardsFeed = (props) => {
                         <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     action={
-                        <props.postSource />
+                        <props.postSource onClick = {openInNewTab}/>
                     }
                     title={feedData.senderName}
                     subheader={
