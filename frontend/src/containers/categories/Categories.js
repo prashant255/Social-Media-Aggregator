@@ -97,9 +97,9 @@ class Categories extends Component {
             } 
         }).then(res => {
             if(res !== null){
-                res.data.selectedCategory.map(category => {
+                res.data.selectedCategory.map(category => 
                     this.categoryClickedHandler(category)
-                })
+                )
                 
             }
         })

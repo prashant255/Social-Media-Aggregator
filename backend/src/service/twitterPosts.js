@@ -3,8 +3,10 @@ const common = require('../common')
 const PostDetails = require('../models/postDetails');
 const Token = require('../models/tokens');
 const Post = require('../models/posts')
+const Groups = require('../models/groups')
 const request = require('./twitterAuth')
 const axios = require('axios')
+const { QueryTypes } = require('sequelize')
 
 const likePost = (userId, postId) => {
     const url = `https://api.twitter.com/1.1/favorites/create.json?id=${postId}`
@@ -92,7 +94,7 @@ const getAllPosts = async (userId) => {
         exclude_replies: true,
         include_rts: false,
         trim_user: true,
-        count: 20,
+        count: 1,
         tweet_mode: "extended",
         include_entities: false,
         //TODO: Change the limit in later stage of development to 100
@@ -102,9 +104,8 @@ const getAllPosts = async (userId) => {
         params['since_id'] = tokens.twitterAnchorId
     const url = endpoint + common.formatParams(params);
 
-    // return res;
-
     try {
+        let groupId = null;
         const response = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
         response.map(async (post) => {
             const dbResponse = await PostDetails.findOrCreate({
@@ -118,30 +119,58 @@ const getAllPosts = async (userId) => {
                 const arr = post.full_text.match(rx).pop()
                 // console.log(arr) //All the urls in array format
                 let res = null;
+                let resDuplicate = null;
                 try {
                     console.log(post.id_str)
                     console.log(post.full_text.replace((rx), ""))
                     try {
-                        res = await axios.post("http://localhost:5000/categorise", { text: post.full_text.replace((rx), "") })
-                        PostDetails.update(
-                            { category: res.data.category },
-                            {
-                                where: {
-                                    postId: post.id_str,
-                                    handle: common.HANDLES.TWITTER
-                                }
+                        //TODO: dummy API used to simulate NLP server, change the API later
+                        res = await axios.post("http://localhost:8080/api/twitter/categorise", { text: post.full_text.replace((rx), "") })
+                        
+                        const t = await sequelize.transaction();
+                        let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
+                        const embeddings = await sequelize.query(query, 
+                            { 
+                                replacements: { 
+                                    category: res.data.category,
+                                    userId
+                                },
+                                type: QueryTypes.SELECT 
+                            }, { transaction: t })
+
+                        //TODO: dummy API used to simulate NLP server, change the API later
+                        resDuplicate = await axios.post("http://localhost:8080/api/twitter/duplicate", {
+                            currentPostEmbedding: res.data.embedding,
+                            otherEmbedding: embeddings
+                        })
+                        groupId = resDuplicate.data.groupId;
+                        if(groupId === null){
+                            let resFromGroups = await Groups.create({
+                                category: res.data.category,
+                                embedding: res.data.embedding
                             })
+                            groupId = resFromGroups.dataValues.id
+                        }
                     } catch (e) {
-                        console.log("Unable to fetch category")
+                        console.log(e.message)
                     }
+
                 } catch (e) {
                     throw new Error(e.message)
                 }
+            } else {
+                let responseFromDb = await Post.findOne({
+                    where: {
+                        lurkerPostId: dbResponse[0].dataValues.id
+                    },
+                    attributes: ['groupId']
+                })
+                groupId = responseFromDb.dataValues.groupId
             }
-
             await Post.create({
                 userId,
-                lurkerPostId: dbResponse[0].dataValues.id
+                lurkerPostId: dbResponse[0].dataValues.id,
+                groupId
             })
         })
 

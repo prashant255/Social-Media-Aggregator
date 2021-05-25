@@ -7,7 +7,6 @@ import redditLogo from '../../assets/reddit.png'
 import classes from "./SocialLogin.module.css"
 
 const SocialLogin = (props) => {
-    console.log(props)
     let iconPath=""
 
     if(props.socialName==="Reddit"){

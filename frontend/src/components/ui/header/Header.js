@@ -15,7 +15,6 @@ import { useSelector } from 'react-redux'
 
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import SettingsIcon from '@material-ui/icons/Settings';
 import InfoIcon from '@material-ui/icons/Info';
 import LinkIcon from '@material-ui/icons/Link';
 import CategoryIcon from '@material-ui/icons/Category';

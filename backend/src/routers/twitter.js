@@ -60,4 +60,15 @@ router.post('/unlike/:postId', authenticateUser, (req, res) => {
 	.catch(e => res.status(400).send(e))
 })
 
+//TODO: This is just to simulate NLP server, delete this after testing.
+router.post('/categorise', (req, res) => {
+	console.log(req.body.text)
+	res.send({category: 'news', embedding: [18.4, 20.3, 45.1, 89.12, 78.34]})
+})
+
+//TODO: This is just to simulate NLP server, delete this after testing.
+router.post('/duplicate', (req, res) => {
+	res.send({groupId: null})
+})
+
 module.exports = router

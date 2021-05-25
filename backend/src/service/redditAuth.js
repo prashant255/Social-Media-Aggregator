@@ -95,9 +95,10 @@ const saveToken = async (userId, { redditAccessToken, redditRefreshToken }) => {
 }
 
 const unlinkAccount = async (userId) => {
+
+    const t = await sequelize.transaction();
     try {
         //Transaction is created to rollback in case account deletion fails.
-        const t = await sequelize.transaction();
         const token = await Token.findOne({ where: { userId } })
         if (!token || token.redditRefreshToken === null)
             throw new Error('No account to unlink');

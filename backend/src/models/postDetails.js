@@ -21,11 +21,6 @@ module.exports = sequelize.define("post_details", {
     postId: {
         type: Sequelize.STRING(255),
         allowNull: false
-    },
-
-    category: {
-        type: Sequelize.INTEGER,
-        allowNull: true
     }
 }, {
     indexes: [
