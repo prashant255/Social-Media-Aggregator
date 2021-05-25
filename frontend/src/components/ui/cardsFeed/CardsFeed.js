@@ -26,6 +26,7 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 import MobileStepper from '@material-ui/core/MobileStepper';
 
@@ -38,6 +39,7 @@ const CardsFeed = (props) => {
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
     const [bookmarkSelected, setBookmarkSelected] = useState(props.bookmark)
+    const [voteStatus, setVoteStatus] = useState(null)
     const dispatch = useDispatch()
     let posts = useSelector(state => state.posts)
 
@@ -45,10 +47,41 @@ const CardsFeed = (props) => {
         'Authorization': `Bearer ${jwtToken}`
     }
     
-    const bookmarkClickHanlder = () => {
+    const bookmarkClickHandler = () => {
         axios.post(`/bookmark/${props.postDetails.lurkerPostId}`, {}, {
             headers
         }).then(res => res.data !== '' ? setBookmarkSelected(res.data): setBookmarkSelected(null))    
+    }
+
+    const redditVote = () => {
+        const voteUrl = '/reddit/vote'
+        const data = {
+            id: props.postDetails.postId,
+            dir: voteStatus ? 0 : 1
+        }
+        return {voteUrl, data}
+    }
+
+    const voteClickHandler = () => {
+        
+        let voteUrl='', data = {}
+
+        switch(props.postDetails.handle){
+            case constants.HANDLES.TWITTER:
+                return;
+            case constants.HANDLES.REDDIT:
+                ({voteUrl, data} = redditVote());
+                break;
+            case constants.HANDLES.FACEBOOK:
+                return
+        }
+
+        axios.post(voteUrl, data, {
+            headers
+        }).then(() => {
+            if(voteStatus) setVoteStatus(null)
+            else setVoteStatus(true)
+        })
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -93,20 +126,30 @@ const CardsFeed = (props) => {
         )
     }
 
+    const getVoteStatus = (url) => {
+        axios.get(url, {headers}).then(status => {
+            if(status.data === 1)
+                setVoteStatus(true);
+        }).catch(e => console.log(e))
+    }
+
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
 
-        if (fetchFromCache(props.postDetails.postId))
-            return; //if true, then it was already present in cache
+        const baseUrl = 'http://localhost:8080/api/'
 
         switch (props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
-                addToCache(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`)
+                if (fetchFromCache(props.postDetails.postId))
+                    break; //if true, then it was already present in cache
+                addToCache(`${baseUrl}twitter/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.REDDIT:
-                addToCache(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`)
+                getVoteStatus(`${baseUrl}reddit/post/${props.postDetails.postId}/voteStatus`)
+                if (fetchFromCache(props.postDetails.postId)) break;
+                addToCache(`${baseUrl}reddit/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.FACEBOOK:
@@ -198,13 +241,13 @@ const CardsFeed = (props) => {
                     </CardContent> : null
                 }
                 <CardActions>
-                    <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
+                    <IconButton aria-label="add to favorites" onClick = {voteClickHandler} >
+                    {voteStatus ? <FavoriteIcon style={{ color: "#fb3958" }} /> : <FavoriteBorderIcon />}
                     </IconButton>
                     <IconButton aria-label="share">
                         <ShareIcon />
                     </IconButton>
-                    <IconButton aria-label="bookmark" size="medium" onClick = {bookmarkClickHanlder}>
+                    <IconButton aria-label="bookmark" size="medium" onClick = {bookmarkClickHandler}>
                         {/* NOTE: unfilled bookmark icon to denote "not selected" also imported above */}
                         {bookmarkSelected !== null ? <BookmarkIcon /> : <BookmarkBorderIcon />}
                     </IconButton>
