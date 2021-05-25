@@ -48,13 +48,13 @@ router.get('/post/:postId', authenticateUser, async (req, res) => {
 	}
 })
 
-router.post('/like/:postId', (req, res) => {
+router.post('/like/:postId', authenticateUser,(req, res) => {
 	twitterPosts.likePost(req.user.id, req.params.postId)
 	.then(() => res.send())
 	.catch(e => res.status(400).send(e))
 })
 
-router.post('/unlike/:postId',authenticateUser, (req, res) => {
+router.post('/unlike/:postId', authenticateUser, (req, res) => {
 	twitterPosts.unlikePost(req.user.id, req.params.postId)
 	.then(() => res.send())
 	.catch(e => res.status(400).send(e))
