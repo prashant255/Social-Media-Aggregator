@@ -1,8 +1,7 @@
 // Assumption:- Max 100 post added per minute.
 'use strict';
 const axios = require('axios')
-const FormData = require('form-data');
-const request = require('request');
+const request = require('request')
 
 const common = require('../common')
 const PostDetails = require('../models/postDetails');
@@ -154,14 +153,13 @@ const vote = async (id, dir) => {
             where: {userId: 1}
         }))
         const token = tokens.redditAccessToken
-        
+
         request({
             method: 'POST',
             url: 'https://oauth.reddit.com/api/vote',
             headers: {
                 'User-Agent': USER_AGENT,
-                'Authorization': `bearer ${token}`,
-                // 'Content-Type': 'application/x-www-form-urlencoded'
+                'Authorization': `bearer ${token}`
             },
             form: {
                 id,
@@ -178,8 +176,37 @@ const vote = async (id, dir) => {
     })
 }
 
+const getVoteStatus = async (userId, postId) => {
+    try{
+        const endpoint = `https://oauth.reddit.com/comments/${postId.slice(3)}/.json`;
+        const tokens = await(Token.findOne({
+            where: {userId}
+        }))
+        const headers = {
+            Authorization: 'Bearer ' + tokens.redditAccessToken
+        }
+        const postResponses = await axios.get(endpoint, {
+            headers
+        })
+
+        let voteStatus = null
+
+        postResponses.data.map(post => {
+            const kind = post.data.children[0].kind
+
+            if(kind === 't3')
+                voteStatus = post.data.children[0].data.likes
+        })
+
+        return voteStatus
+    } catch(e) {
+        throw new Error(e)
+    }
+}
+
 module.exports = {
     getAllPosts,
     getPostById,
-    vote
+    vote,
+    getVoteStatus
 }

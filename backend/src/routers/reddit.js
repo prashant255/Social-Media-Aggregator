@@ -71,7 +71,7 @@ router.post('/vote', async(req,res) => {
 
     //     res.status(statusCode).send(e);
     // }
-
+    
     const {id, dir} = req.body;
 
     console.log('here3')
@@ -91,6 +91,16 @@ router.get('/post/:postId', authenticateUser, async(req, res) => {
         const response = await redditPosts.getPostById(req.user.id, req.params.postId)
         res.send(response)
     } catch(e) {
+        res.status(500).send(e.message)
+    }
+})
+
+router.get('/post/:postId/voteStatus', async (req,res) => {
+    try{
+        const response = await redditPosts.getVoteStatus(1, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        console.log(e)
         res.status(500).send(e.message)
     }
 })
