@@ -17,7 +17,6 @@
     "env-cmd": "^8.0.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "form-data": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.0",
