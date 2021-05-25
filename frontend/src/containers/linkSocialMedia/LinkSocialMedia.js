@@ -98,17 +98,17 @@ class LinkSocialMedia extends Component {
 
 					<GridListTile cols={1}>
 						<SocialLogin socialName="Reddit" loginURL={this.getUrl("reddit")} isLinked={this.state.reddit} />
-						{this.state.reddit ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("reddit")}>remove access</p> : <p></p>}
+						{this.state.reddit ? <p style={{cursor:'pointer'}} className={classes.removeAccess} onClick={()=>this.showUnlink("reddit")}>remove access</p> : <p></p>}
 					</GridListTile>
 
 					<GridListTile cols={1} className="twitterLogo">
 						<SocialLogin socialName="Twitter" loginURL={this.getUrl("twitter")} isLinked={this.state.twitter} />
-						{this.state.twitter ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("twitter")}>remove access</p> : <p></p>}
+						{this.state.twitter ? <p style={{cursor:'pointer'}} className={classes.removeAccess} onClick={()=>this.showUnlink("twitter")}>remove access</p> : <p></p>}
 					</GridListTile>
 
 					<GridListTile cols={1}>
 						<SocialLogin socialName="Facebook" loginURL={this.getUrl("facebook")} isLinked={this.state.facebook} />
-						{this.state.facebook ? <p className={classes.removeAccess} onClick={()=>this.showUnlink("facebook")}>remove access</p> : <p></p>}
+						{this.state.facebook ? <p style={{cursor:'pointer'}} className={classes.removeAccess} onClick={()=>this.showUnlink("facebook")}>remove access</p> : <p></p>}
 					</GridListTile>
 				</GridList>
 				<br/>
