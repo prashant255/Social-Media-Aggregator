@@ -177,6 +177,12 @@ const vote = async (id, dir) => {
 }
 
 const getVoteStatus = async (userId, postId) => {
+    // Voting convention of reddit is followed
+    // 1 -> upvote
+    // 0 -> no vote
+    // -1-> downvote
+    // NOTE: Even though string '1' or '0' is returned, the API actually gives a number
+
     try{
         const endpoint = `https://oauth.reddit.com/comments/${postId.slice(3)}/.json`;
         const tokens = await(Token.findOne({
@@ -189,16 +195,19 @@ const getVoteStatus = async (userId, postId) => {
             headers
         })
 
-        let voteStatus = null
+        let voteStatus = '0'
 
         postResponses.data.map(post => {
-            const kind = post.data.children[0].kind
 
-            if(kind === 't3')
-                voteStatus = post.data.children[0].data.likes
+            let kind=''
+            if(post.data.children.length>0 && post.data.children[0].kind)
+                kind = post.data.children[0].kind
+                if(kind === 't3' && post.data.children[0].data.likes)
+                    voteStatus = '1'
+            
         })
-
         return voteStatus
+
     } catch(e) {
         throw new Error(e)
     }
