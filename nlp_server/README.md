@@ -7,7 +7,7 @@
 `python main.py`
 
 ### Step 2: Endpoints
-* **POST /categorise**
+* **POST /catnwe**
     * Request body
     ```javascript
     {
@@ -17,16 +17,20 @@
     * Response
     ```javascript
     {
-        "category": "<category from the model>"
+        "category": "<category from the model>",
+        "embedding": [<array of floats for duplicate detection>]
     }
     ```
-* **POST /duplicate**
+* **POST /group**
     * Request body
     ```javascript
     {
-        "questions": [
-            "<question1>", 
-            "<question2>", 
+        "postEmbedding": [<array of floats for duplicate detection>],
+        "otherEmbedding": [
+            {
+                "id": <integer>,
+                "embedding": [<array of floats for duplicate detection>]
+            },
             ...
         ]
     }
@@ -34,13 +38,6 @@
     * Response
     ```javascript
     {
-        "groups": [
-            [
-                "<question1 of group1>", 
-                "<question2 of group1>", 
-                ...
-            ], 
-            ...
-        ]
+        "groupId": <integer>
     }
     ```
