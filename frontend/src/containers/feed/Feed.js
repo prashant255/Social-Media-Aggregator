@@ -81,12 +81,16 @@ const Feed = (props) => {
                             postHandle = RedditIcon;
                             url = `https://redd.it/${post.postId.slice(3)}`
                             break;
+                        
                         case "Facebook":
                             postHandle = FacebookIcon;
                             break;
+                        
                         case "Twitter":
                             postHandle = TwitterIcon;
+                            url = `https://twitter.com/a/status/${post.postId}`
                             break;
+                        
                         default:
                             console.log("Invalid Handle")
                     }
