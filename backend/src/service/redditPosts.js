@@ -49,7 +49,8 @@ const getPostById = async (userId, postId) => {
 
         let videos = null
         if(postResponse.secure_media !== undefined && postResponse.secure_media !== null) {
-            videos = postResponse.secure_media.reddit_video.fallback_url
+            if(postResponse.secure_media.reddit_video)
+                videos = postResponse.secure_media.reddit_video.fallback_url
         }
 
         //TODO: Add logic to render video
