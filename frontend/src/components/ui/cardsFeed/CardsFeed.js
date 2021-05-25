@@ -231,7 +231,7 @@ const CardsFeed = (props) => {
                         <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     action={
-                        <props.postSource onClick = {openInNewTab}/>
+                            <props.postSource style={{cursor:'pointer'}} onClick = {openInNewTab}/>
                     }
                     title={feedData.senderName}
                     subheader={
