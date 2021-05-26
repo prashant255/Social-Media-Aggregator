@@ -26,19 +26,31 @@ from nltk.corpus import stopwords
 
 # spaCy
 import spacy
-spacy.cli.download('en_core_web_sm')
+# spacy.cli.download('en_core_web_sm')
 
 # trax
 import trax.layers as tl
-from trax.fastmath import numpy as fastnp
+from trax.math import numpy as fastnp
+
+# duplicate
+import json
+from tensorflow.keras.preprocessing.text import tokenizer_from_json
+from tensorflow.keras.models import load_model
+import tensorflow.keras.backend as K
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # categorisation
 class Categorise():
-    def __init__(self, info):
+    def __init__(self):
+        # load config
+        info = pickle.load(open("./categorise_model/info.pkl", "rb"))
         self.vocab = info['vocab']
         self.max_len = info['max_len']
         self.label_encoder = LabelEncoder()
         self.label_encoder.classes_ = info['label_encoder'] 
+
+        # model
+        self.model = load_model("./categorise_model/keras_checkpoint")
 
     def preprocess(self, text):
         url_remove = re.compile(r'https?://\S+|www\.\S+')
@@ -70,11 +82,11 @@ class Categorise():
         vector = np.array([vector])
         return vector
 
-    def categorise(self, model, text):
+    def categorise(self, text):
         text = self.preprocess(text)
         vector = self.text_to_vector(text)
         label_encoder = self.label_encoder
-        cat_vect = model(vector)
+        cat_vect = self.model(vector)
         cat_max_ind = np.argmax(cat_vect)
         category = label_encoder.inverse_transform([cat_max_ind])
         return str(np.squeeze(category))
@@ -90,111 +102,78 @@ class Categorise():
 
 # dupicate detection
 class Duplicates():
+    def __init__(self):
+        # config
+        with open('./duplicates_model/config.pickle', 'rb') as file:
+            config = pickle.load(file)
+        self.max_len = config['MAX_LEN']
+        self.threshold = config['THRESHOLD']
 
-    def __init__(self, vocab):
-        self.vocab = vocab
+        # tokeniser
+        with open('./duplicates_model/tokenizer.json') as file:
+            tok_json = json.load(file)
+        self.tok = tokenizer_from_json(tok_json)
 
-    def Siamese(self, d_model=128, mode='train'):
+        # model
+        self.model = load_model('./duplicates_model/model/', custom_objects={'normalise': self.normalise})
 
-        vocab_size = len(self.vocab)
+    def normalise(self, x):
+        return x / K.sqrt(K.sum(x * x, axis=-1, keepdims=True))
 
-        def normalize(x):
-            return x / fastnp.sqrt(fastnp.sum(x * x, axis=-1, keepdims=True))
-    
-        q_processor = tl.Serial(
-            tl.Embedding(vocab_size, d_model),
-            tl.LSTM(d_model),
-            tl.Mean(axis=1),
-            tl.Fn('Nomalize', lambda x: normalize(x))
-        )
-        
-        model = tl.Parallel(q_processor, q_processor)
-        return model
+    def preprocess_duplicate(self, text):
+        text = ''.join(c for c in text if ord(c) < 128)
+        text = self.tok.texts_to_sequences([text])
+        text = pad_sequences(text, maxlen=self.max_len, padding='post')
+        return text
 
-    def text_to_vector(self, text, max_len):
-        pad = self.vocab["<PAD>"]
-        text = nltk.word_tokenize(text)
-        vector = []
-        for word in text: 
-            vector += [self.vocab.get(word, 0)]
-        vector = vector + [pad] * (max_len - len(vector))
-        return vector
+    def get_word_embeddings(self, text):
+        text = self.preprocess_duplicate(text)
+        o1, _ = self.model.predict((text, text))
+        return o1
 
-    def is_duplicate(self, q1, q2, model, threshold, max_len):
-        q1 = np.array([self.text_to_vector(q1, max_len)])
-        q2 = np.array([self.text_to_vector(q2, max_len)])
-        v1, v2 = model((q1, q2))
-        d = fastnp.dot(v1, v2.T)
-        res = d > threshold
-        return np.squeeze(res)
+    def get_group_id(self, postEmbedding, otherEmbedding):
+        for grp in otherEmbedding:
+            if np.dot(postEmbedding, grp['embedding']) > self.threshold:
+                return grp['id']
+        return -1
 
 # main 
-def duplicate_detection_fn(obj, model, questions, vocab):
-    # calculate info
-    max_len = len(max(questions, key=lambda x: len(x)))
-    max_len = 2**int(np.ceil(np.log2(max_len)))
-    
-    # make groups
-    assert len(questions) >= 1
-    groups = [[questions[0]]]
-    for question in questions[1:]:
-        groups_len = len(groups)
-        idx = -1
-        grouped = False
-        for idx in range(groups_len):
-            question1 = question
-            question2 = groups[idx][0]
-            if obj.is_duplicate(question1, question2, model, 0.7, max_len):
-                groups[idx].append(question)
-                grouped = True
-                break
-        if not grouped and idx == groups_len-1:
-            groups.append([question])
-    
-    return groups
-
-def categorise_fn(obj, model, text):
-    return obj.categorise(model, text)
-
-# initialise the server
-duplicate_vocab = pickle.load(open("./duplicates_model/vocab.pkl", "rb"))
-duplicate_obj = Duplicates(duplicate_vocab)
-duplicate_model = duplicate_obj.Siamese()
-duplicate_model.init_from_file("./duplicates_model/model.pkl.gz")
-
-categorise_info = pickle.load(open("./categorise_model/info.pkl", "rb"))
-# model = get_model(len(vocab))
-# model.init_from_file("./model/lstm/model.pkl.gz")
-categorise_model = tf.keras.models.load_model("./categorise_model/keras_checkpoint")
-categorise_obj = Categorise(categorise_info)
+duplicate_obj = Duplicates()
+categorise_obj = Categorise()
 
 # helper function
-def duplicate_detection(questions):
-    return duplicate_detection_fn(duplicate_obj, duplicate_model, questions, duplicate_vocab)
+def word_embeddings(text):
+    return duplicate_obj.get_word_embeddings(text)
 
 def categorise(text):
-    return categorise_fn(categorise_obj, categorise_model, text)
+    return categorise_obj.categorise(text)
+
+def group(postEmbedding, otherEmbedding):
+    return duplicate_obj.get_group_id(postEmbedding, otherEmbedding)
 
 from datetime import date
 
 # routing the application
-@app.route('/categorise', methods=["POST"])
+@app.route('/catnwe', methods=["POST"])
 def cat():
     if request.json and 'text' in request.json:
         ip = request.json['text']
-        res = categorise(ip)
-        # save result in logs
-        with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
-            ip = ip.replace('"', '\"')
-            f.write(f'"{ip}","{res}"\n')
-        return jsonify(category=(res))
+        cat = categorise(ip)
+        we = word_embeddings(ip).squeeze().tolist()
+        # # save result in logs
+        # with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
+        #     ip = ip.replace('"', '\"')
+        #     f.write(f'"{ip}","{res}"\n')
+        return jsonify(category=(cat), embedding=(we))
     return "Hungry for text!"
 
-@app.route('/duplicate', methods=['POST'])
+@app.route('/group', methods=['POST'])
 def dd():
-    if request.json and 'questions' in request.json:
-        questions = request.json['questions']
-        return jsonify(groups=(duplicate_detection(questions)))
-    return "Hey get the questions!"
+    if request.json and 'postEmbedding' in request.json and 'otherEmbedding' in request.json:
+        postEmbedding = request.json['postEmbedding']
+        otherEmbedding = request.json['otherEmbedding']
+        groupId = group(postEmbedding, otherEmbedding)
+        return jsonify(groupId=(groupId))
+    return "Hey get the embeddings!"
     
 app.run()

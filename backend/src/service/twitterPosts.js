@@ -76,7 +76,8 @@ const getPostById = async (userId, postId) => {
             createdAt: new Date(postResponse.created_at),
             senderImage: postResponse.user.profile_image_url,
             images,
-            videos
+            videos,
+            favorited: postResponse.favorited
         }
         return responseToSend
     } catch (e) {

@@ -1,7 +1,9 @@
 // Assumption:- Max 100 post added per minute.
 'use strict';
-const common = require('../common')
 const axios = require('axios')
+const request = require('request')
+
+const common = require('../common')
 const PostDetails = require('../models/postDetails');
 const Token = require('../models/tokens');
 const Post = require('../models/posts')
@@ -47,7 +49,8 @@ const getPostById = async (userId, postId) => {
 
         let videos = null
         if(postResponse.secure_media !== undefined && postResponse.secure_media !== null) {
-            videos = postResponse.secure_media.reddit_video.fallback_url
+            if(postResponse.secure_media.reddit_video)
+                videos = postResponse.secure_media.reddit_video.fallback_url
         }
 
         //TODO: Add logic to render video
@@ -144,7 +147,76 @@ const getAllPosts = async (userId) => {
 
 }
 
+const vote = async (id, dir) => {
+    return new Promise(async (resolve,reject) => {
+        const USER_AGENT = 'Lurker App by (by /u/swapmarkh )';
+        const tokens = await(Token.findOne({
+            where: {userId: 1}
+        }))
+        const token = tokens.redditAccessToken
+
+        request({
+            method: 'POST',
+            url: 'https://oauth.reddit.com/api/vote',
+            headers: {
+                'User-Agent': USER_AGENT,
+                'Authorization': `bearer ${token}`
+            },
+            form: {
+                id,
+                dir
+            }, json: false }, 
+        function (error, response, body) {
+            if (error)
+                reject(error)
+            else if (body.error) 
+                reject(body.error)
+            else
+                resolve()
+        });
+    })
+}
+
+const getVoteStatus = async (userId, postId) => {
+    // Voting convention of reddit is followed
+    // 1 -> upvote
+    // 0 -> no vote
+    // -1-> downvote
+    // NOTE: Even though string '1' or '0' is returned, the API actually gives a number
+
+    try{
+        const endpoint = `https://oauth.reddit.com/comments/${postId.slice(3)}/.json`;
+        const tokens = await(Token.findOne({
+            where: {userId}
+        }))
+        const headers = {
+            Authorization: 'Bearer ' + tokens.redditAccessToken
+        }
+        const postResponses = await axios.get(endpoint, {
+            headers
+        })
+
+        let voteStatus = '0'
+
+        postResponses.data.map(post => {
+
+            let kind=''
+            if(post.data.children.length>0 && post.data.children[0].kind)
+                kind = post.data.children[0].kind
+                if(kind === 't3' && post.data.children[0].data.likes)
+                    voteStatus = '1'
+            
+        })
+        return voteStatus
+
+    } catch(e) {
+        throw new Error(e)
+    }
+}
+
 module.exports = {
     getAllPosts,
-    getPostById
+    getPostById,
+    vote,
+    getVoteStatus
 }

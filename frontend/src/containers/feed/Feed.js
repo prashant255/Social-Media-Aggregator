@@ -75,20 +75,34 @@ const Feed = (props) => {
             {
                 posts ? posts.map(post => {
                     let postHandle = null;
+                    let url = null;
                     switch (post.handle) {
                         case "Reddit":
                             postHandle = RedditIcon;
+                            url = `https://redd.it/${post.postId.slice(3)}`
                             break;
+                        
                         case "Facebook":
                             postHandle = FacebookIcon;
                             break;
+                        
                         case "Twitter":
                             postHandle = TwitterIcon;
+                            url = `https://twitter.com/a/status/${post.postId}`
                             break;
+                        
                         default:
                             console.log("Invalid Handle")
                     }
-                    return <CardsFeed key={post.lurkerPostId} postDetails={post} postSource={postHandle} bookmark = {post.bookmark}/>
+                    return (
+                        <CardsFeed 
+                            key={post.lurkerPostId} 
+                            postDetails={post} 
+                            postSource={postHandle} 
+                            bookmark = {post.bookmark}
+                            url = {url}
+                        />
+                    )
                 }) :
                     <h1>No post to display</h1>
             }
