@@ -9,7 +9,7 @@ Groups = sequelize.define("groups", {
     },
 
     embedding: {
-        type: Sequelize.ARRAY(Sequelize.FLOAT(10)),
+        type: Sequelize.ARRAY(Sequelize.DECIMAL),
         allowNull: false
     },      
     

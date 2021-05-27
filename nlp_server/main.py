@@ -30,7 +30,7 @@ import spacy
 
 # trax
 import trax.layers as tl
-from trax.math import numpy as fastnp
+from trax.fastmath import numpy as fastnp
 
 # duplicate
 import json

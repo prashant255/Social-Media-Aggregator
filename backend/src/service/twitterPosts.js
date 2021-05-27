@@ -124,8 +124,7 @@ const getAllPosts = async (userId) => {
                     console.log(post.id_str)
                     console.log(post.full_text.replace((rx), ""))
                     try {
-                        //TODO: dummy API used to simulate NLP server, change the API later
-                        res = await axios.post("http://localhost:8080/api/twitter/catnwe", { text: post.full_text.replace((rx), "") })
+                        res = await axios.post("http://localhost:5000/catnwe", { text: post.full_text.replace((rx), "") })
                         
                         const t = await sequelize.transaction();
                         let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
@@ -138,8 +137,7 @@ const getAllPosts = async (userId) => {
                                 type: QueryTypes.SELECT 
                             }, { transaction: t })
 
-                        //TODO: dummy API used to simulate NLP server, change the API later
-                        resDuplicate = await axios.post("http://localhost:8080/api/twitter/group", {
+                        resDuplicate = await axios.post("http://localhost:5000/group", {
                             postEmbedding: res.data.embedding,
                             otherEmbedding: embeddings
                         })
