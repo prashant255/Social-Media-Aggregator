@@ -203,7 +203,7 @@ const vote = async (id, dir) => {
     })
 }
 
-const getVoteStatus = async (userId, postId) => {
+const getLikeStatus = async (userId, postId) => {
     // Voting convention of reddit is followed
     // 1 -> upvote
     // 0 -> no vote
@@ -222,7 +222,7 @@ const getVoteStatus = async (userId, postId) => {
             headers
         })
 
-        let voteStatus = '0'
+        let likeStatus = '0'
 
         postResponses.data.map(post => {
 
@@ -230,10 +230,10 @@ const getVoteStatus = async (userId, postId) => {
             if(post.data.children.length>0 && post.data.children[0].kind)
                 kind = post.data.children[0].kind
                 if(kind === 't3' && post.data.children[0].data.likes)
-                    voteStatus = '1'
+                    likeStatus = '1'
             
         })
-        return voteStatus
+        return likeStatus
 
     } catch(e) {
         throw new Error(e)
@@ -244,5 +244,5 @@ module.exports = {
     getAllPosts,
     getPostById,
     vote,
-    getVoteStatus
+    getLikeStatus
 }

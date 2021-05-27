@@ -194,11 +194,11 @@ const getLikeStatus = async (userId, postId) => {
     try {
         const postResponse = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
 
-        let voteStatus = '0'
+        let likeStatus = '0'
         if(postResponse.favorited)
-            voteStatus = '1'
+            likeStatus = '1'
 
-        return voteStatus
+        return likeStatus
     } catch (e) {
         throw new Error(e.message)
     }
