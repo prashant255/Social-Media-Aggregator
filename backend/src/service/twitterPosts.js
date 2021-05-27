@@ -126,7 +126,6 @@ const getAllPosts = async (userId) => {
                     try {
                         res = await axios.post("http://localhost:5000/catnwe", { text: post.full_text.replace((rx), "") })
                         
-                        const t = await sequelize.transaction();
                         let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
                         const embeddings = await sequelize.query(query, 
                             { 
@@ -135,7 +134,7 @@ const getAllPosts = async (userId) => {
                                     userId
                                 },
                                 type: QueryTypes.SELECT 
-                            }, { transaction: t })
+                            })
 
                         resDuplicate = await axios.post("http://localhost:5000/group", {
                             postEmbedding: res.data.embedding,
