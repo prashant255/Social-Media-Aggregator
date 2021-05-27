@@ -147,10 +147,6 @@ const CardsFeed = (props) => {
         axios.get(url, { headers }).then(
             res => {
                 setFeedData(res.data)
-
-                // for twitter
-                if(res.data.favorited)
-                    setVoteStatus(true)
                 
                 dispatch({
                     type: actionTypes.POSTS,
@@ -169,23 +165,31 @@ const CardsFeed = (props) => {
         }).catch(e => console.log(e))
     }
 
+    const getLikeStatus = (url) => {
+        axios.get(url, {headers}).then(status => {
+            if(status.data === 1)
+                setVoteStatus(true);
+        }).catch(e => console.log(e))
+    }
+
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
 
-        const baseUrl = 'http://localhost:8080/api/'
+        const baseUrl = 'http://localhost:8080/api'
 
         switch (props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
+                getLikeStatus(`${baseUrl}/twitter/post/${props.postDetails.postId}/likeStatus`)
                 if (fetchFromCache(props.postDetails.postId))
                     break; //if true, then it was already present in cache
                 addToCache(`${baseUrl}twitter/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.REDDIT:
-                getVoteRedditStatus(`${baseUrl}reddit/post/${props.postDetails.postId}/voteStatus`)
+                getVoteRedditStatus(`${baseUrl}/reddit/post/${props.postDetails.postId}/voteStatus`)
                 if (fetchFromCache(props.postDetails.postId)) break;
-                addToCache(`${baseUrl}reddit/post/${props.postDetails.postId}`)
+                addToCache(`${baseUrl}/reddit/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.FACEBOOK:

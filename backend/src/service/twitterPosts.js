@@ -76,8 +76,7 @@ const getPostById = async (userId, postId) => {
             createdAt: new Date(postResponse.created_at),
             senderImage: postResponse.user.profile_image_url,
             images,
-            videos,
-            favorited: postResponse.favorited
+            videos
         }
         return responseToSend
     } catch (e) {
@@ -182,9 +181,33 @@ const getAllPosts = async (userId) => {
     }
 }
 
+const getLikeStatus = async (userId, postId) => {
+    // Voting convention similar to reddit is followed
+    // 1 -> upvote
+    // 0 -> no vote
+    // NOTE: Even though string '1' or '0' is returned, the API actually gives a number
+
+    let url = `https://api.twitter.com/1.1/statuses/show.json?id=${postId}&tweet_mode=extended`
+    const tokens = await (Token.findOne({
+        where: { userId }
+    }))
+    try {
+        const postResponse = await request.twitterRequest(tokens.twitterAccessToken, tokens.twitterAccessTokenPwd, url)
+
+        let voteStatus = '0'
+        if(postResponse.favorited)
+            voteStatus = '1'
+
+        return voteStatus
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}
+
 module.exports = {
     likePost,
     unlikePost,
     getAllPosts,
-    getPostById
+    getPostById,
+    getLikeStatus
 }
