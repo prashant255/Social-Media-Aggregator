@@ -60,6 +60,16 @@ router.post('/unlike/:postId', authenticateUser, (req, res) => {
 	.catch(e => res.status(400).send(e))
 })
 
+router.get('/post/:postId/likeStatus', authenticateUser, async (req,res) => {
+    try{
+        const response = await twitterPosts.getLikeStatus(req.user.id, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        console.log(e)
+        res.status(500).send(e.message)
+    }
+})
+
 //TODO: This is just to simulate NLP server, delete this after testing.
 router.post('/catnwe', (req, res) => {
 	console.log(req.body.text)

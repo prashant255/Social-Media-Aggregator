@@ -95,9 +95,9 @@ router.get('/post/:postId', authenticateUser, async(req, res) => {
     }
 })
 
-router.get('/post/:postId/voteStatus', authenticateUser, async (req,res) => {
+router.get('/post/:postId/likeStatus', authenticateUser, async (req,res) => {
     try{
-        const response = await redditPosts.getVoteStatus(req.user.id, req.params.postId)
+        const response = await redditPosts.getLikeStatus(req.user.id, req.params.postId)
         res.send(response)
     } catch(e) {
         console.log(e)

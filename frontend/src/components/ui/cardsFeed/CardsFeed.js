@@ -45,7 +45,7 @@ const CardsFeed = (props) => {
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
     const [bookmarkSelected, setBookmarkSelected] = useState(props.bookmark)
-    const [voteStatus, setVoteStatus] = useState(null)
+    const [likeStatus, setLikeStatus] = useState(null)
     const [snackbarOpen, setSnackbarOpen] = useState(false)
     const dispatch = useDispatch()
     let posts = useSelector(state => state.posts)
@@ -72,14 +72,14 @@ const CardsFeed = (props) => {
         const voteUrl = '/reddit/vote'
         const data = {
             id: props.postDetails.postId,
-            dir: voteStatus ? 0 : 1
+            dir: likeStatus ? 0 : 1
         }
         return {voteUrl, data}
     }
 
     const twitterLike = () => {
         let voteUrl = '', data = {}
-        if(voteStatus)
+        if(likeStatus)
             voteUrl = `/twitter/unlike/${props.postDetails.postId}`
         else
             voteUrl = `/twitter/like/${props.postDetails.postId}`
@@ -105,8 +105,8 @@ const CardsFeed = (props) => {
         axios.post(voteUrl, data, {
             headers
         }).then(() => {
-            if(voteStatus) setVoteStatus(null)
-            else setVoteStatus(true)
+            if(likeStatus) setLikeStatus(null)
+            else setLikeStatus(true)
         })
     }
 
@@ -147,10 +147,6 @@ const CardsFeed = (props) => {
         axios.get(url, { headers }).then(
             res => {
                 setFeedData(res.data)
-
-                // for twitter
-                if(res.data.favorited)
-                    setVoteStatus(true)
                 
                 dispatch({
                     type: actionTypes.POSTS,
@@ -162,10 +158,10 @@ const CardsFeed = (props) => {
         )
     }
 
-    const getVoteRedditStatus = (url) => {
+    const getLikeStatus = (url) => {
         axios.get(url, {headers}).then(status => {
             if(status.data === 1)
-                setVoteStatus(true);
+                setLikeStatus(true);
         }).catch(e => console.log(e))
     }
 
@@ -173,19 +169,20 @@ const CardsFeed = (props) => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
 
-        const baseUrl = 'http://localhost:8080/api/'
+        const baseUrl = 'http://localhost:8080/api'
 
         switch (props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
+                getLikeStatus(`${baseUrl}/twitter/post/${props.postDetails.postId}/likeStatus`)
                 if (fetchFromCache(props.postDetails.postId))
                     break; //if true, then it was already present in cache
                 addToCache(`${baseUrl}twitter/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.REDDIT:
-                getVoteRedditStatus(`${baseUrl}reddit/post/${props.postDetails.postId}/voteStatus`)
+                getLikeStatus(`${baseUrl}/reddit/post/${props.postDetails.postId}/likeStatus`)
                 if (fetchFromCache(props.postDetails.postId)) break;
-                addToCache(`${baseUrl}reddit/post/${props.postDetails.postId}`)
+                addToCache(`${baseUrl}/reddit/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.FACEBOOK:
@@ -278,7 +275,7 @@ const CardsFeed = (props) => {
                 }
                 <CardActions>
                     <IconButton aria-label="add to favorites" onClick = {voteClickHandler} >
-                    {voteStatus ? <FavoriteIcon style={{ color: "#fb3958" }} /> : <FavoriteBorderIcon />}
+                    {likeStatus ? <FavoriteIcon style={{ color: "#fb3958" }} /> : <FavoriteBorderIcon />}
                     </IconButton>
                     <IconButton aria-label="share">
                         <ShareIcon />
