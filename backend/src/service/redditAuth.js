@@ -73,7 +73,6 @@ getRefreshedAccessToken = async (userId) => {
             redditAccessToken: response.data.access_token
         })
     } catch (e) {
-        console.log(e)
         throw new Error(e)
     }
 }
