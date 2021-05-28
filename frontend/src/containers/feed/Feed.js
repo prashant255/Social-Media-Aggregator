@@ -73,10 +73,13 @@ const Feed = (props) => {
     return (
         <div>
             {
-                posts ? posts.map(post => {
+                posts ? posts.map(group => {
+                    if(group.length === 0)
+                        return;
                     let postHandle = null;
                     let url = null;
-                    switch (post.handle) {
+                    const post = group[0]
+                      switch (post.handle) {
                         case "Reddit":
                             postHandle = RedditIcon;
                             url = `https://redd.it/${post.postId.slice(3)}`
@@ -101,6 +104,7 @@ const Feed = (props) => {
                             postSource={postHandle} 
                             bookmark = {post.bookmark}
                             url = {url}
+                            group = {group}
                         />
                     )
                 }) :
