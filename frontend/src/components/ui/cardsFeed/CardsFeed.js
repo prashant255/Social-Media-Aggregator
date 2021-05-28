@@ -176,7 +176,7 @@ const CardsFeed = (props) => {
                 getLikeStatus(`${baseUrl}/twitter/post/${props.postDetails.postId}/likeStatus`)
                 if (fetchFromCache(props.postDetails.postId))
                     break; //if true, then it was already present in cache
-                addToCache(`${baseUrl}twitter/post/${props.postDetails.postId}`)
+                addToCache(`${baseUrl}/twitter/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.REDDIT:
