@@ -41,7 +41,7 @@ router.post('/callback', authenticateUser, async (req, res) => {
 
 router.post('/allPosts/:userId', async (req, res) => {
     try{
-        redditPosts.getAllPosts(req.params.userId)
+        await redditPosts.getAllPosts(req.params.userId)
         res.send()
     } catch(e){
         res.status(500).send(e.message)

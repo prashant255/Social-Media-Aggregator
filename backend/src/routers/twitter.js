@@ -32,7 +32,7 @@ router.post('/unlink', authenticateUser, async (req, res) => {
 
 router.post('/allPosts/:userId', async (req, res) => {
 	try {
-		twitterPosts.getAllPosts(req.params.userId)
+		await twitterPosts.getAllPosts(req.params.userId)
 		res.send()
 	} catch (e) {
 		res.status(500).send(e.message)

@@ -76,99 +76,109 @@ const getPostById = async (userId, postId) => {
 }
 
 const getAllPosts = async (userId) => {
-    const endpoint = "https://oauth.reddit.com/best";
-    const tokens = await(Token.findOne({
-        where: {userId}
-    }))
-    const params = {
-        before: tokens.redditAnchorId,
-        limit: 1  //TODO: Change the limit in later stage of development to 100
-    }
-    const url = endpoint + common.formatParams(params);
-    try {
-        let groupId = null
-        const response = await axios.get(url, {
-            headers: {
-              Authorization: 'Bearer ' + tokens.redditAccessToken //the token is a variable which holds the token
-            }
-           })
-        response.data.data.children.map(async (post) => {
-            const element = post.data
-            const dbResponse = await PostDetails.findOrCreate({
-                where: {
-                    postId: element.name,
-                    handle: common.HANDLES.REDDIT
-                }
-            })
-            if (dbResponse[1]) {
-                //Pass to ML pipeline
-                let res = null
-                let resDuplicate = null;
-                try {
-                    console.log(element.name)
-                    console.log(element.title)
-                    console.log(element.selftext)
-                    if (element.post_hint === 'link')
-                        console.log(element.url)
-                    try{
-                        res = await axios.post("http://localhost:5000/catnwe", {text: element.title + " " + element.selftext})    
-                        let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
-                        const embeddings = await sequelize.query(query, 
-                            { 
-                                replacements: { 
-                                    category: res.data.category,
-                                    userId
-                                },
-                                type: QueryTypes.SELECT 
-                            })
-                          
-                            resDuplicate = await axios.post("http://localhost:5000/group", {
-                                postEmbedding: res.data.embedding,
-                                otherEmbedding: embeddings
-                            })
-                            groupId = resDuplicate.data.groupId;
-                            if(groupId === -1){
-                                let resFromGroups = await Groups.create({
-                                    category: res.data.category,
-                                    embedding: res.data.embedding
-                                })
-                                groupId = resFromGroups.dataValues.id
-                            }
-                    }catch (e) {
-                        console.log(e.message)
-                    } 
-                    
-                } catch (e) {
-                    throw new Error(e.message)
-                }
-            } else {
-                let responseFromDb = await Post.findOne({
-                    where: {
-                        lurkerPostId: dbResponse[0].dataValues.id
-                    },
-                    attributes: ['groupId']
-                })
-                groupId = responseFromDb.dataValues.groupId
-            }
-            //New entry in Post table.
-            await Post.create({
-                userId,
-                lurkerPostId: dbResponse[0].dataValues.id,
-                groupId
-            })
+    try{
+        const endpoint = "https://oauth.reddit.com/best";
+        const tokens = await(Token.findOne({
+            where: {userId}
+        }))
 
-        })
-        //Children[0] save as anchor id
-        const count = response.data.data.dist 
-        if (count > 0){
-            await Token.update({
-                    redditAnchorId: response.data.data.children[0].data.name
-                },
-                { where: { userId }}
-            )
+        if (!tokens)
+            throw new Error('No token for user');
+        else if (tokens.twitterAccessToken === null)
+            throw new Error('No access token found');
+
+        const params = {
+            before: tokens.redditAnchorId,
+            limit: 1  //TODO: Change the limit in later stage of development to 100
         }
-    } catch (e) {
-        throw new Error(e)
+        const url = endpoint + common.formatParams(params);
+        try {
+            let groupId = null
+            const response = await axios.get(url, {
+                headers: {
+                Authorization: 'Bearer ' + tokens.redditAccessToken //the token is a variable which holds the token
+                }
+            })
+            response.data.data.children.map(async (post) => {
+                const element = post.data
+                const dbResponse = await PostDetails.findOrCreate({
+                    where: {
+                        postId: element.name,
+                        handle: common.HANDLES.REDDIT
+                    }
+                })
+                if (dbResponse[1]) {
+                    //Pass to ML pipeline
+                    let res = null
+                    let resDuplicate = null;
+                    try {
+                        console.log(element.name)
+                        console.log(element.title)
+                        console.log(element.selftext)
+                        if (element.post_hint === 'link')
+                            console.log(element.url)
+                        try{
+                            res = await axios.post("http://localhost:5000/catnwe", {text: element.title + " " + element.selftext})    
+                            let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
+                            const embeddings = await sequelize.query(query, 
+                                { 
+                                    replacements: { 
+                                        category: res.data.category,
+                                        userId
+                                    },
+                                    type: QueryTypes.SELECT 
+                                })
+                            
+                                resDuplicate = await axios.post("http://localhost:5000/group", {
+                                    postEmbedding: res.data.embedding,
+                                    otherEmbedding: embeddings
+                                })
+                                groupId = resDuplicate.data.groupId;
+                                if(groupId === -1){
+                                    let resFromGroups = await Groups.create({
+                                        category: res.data.category,
+                                        embedding: res.data.embedding
+                                    })
+                                    groupId = resFromGroups.dataValues.id
+                                }
+                        }catch (e) {
+                            console.log(e.message)
+                        } 
+                        
+                    } catch (e) {
+                        throw new Error(e.message)
+                    }
+                } else {
+                    let responseFromDb = await Post.findOne({
+                        where: {
+                            lurkerPostId: dbResponse[0].dataValues.id
+                        },
+                        attributes: ['groupId']
+                    })
+                    groupId = responseFromDb.dataValues.groupId
+                }
+                //New entry in Post table.
+                await Post.create({
+                    userId,
+                    lurkerPostId: dbResponse[0].dataValues.id,
+                    groupId
+                })
+
+            })
+            //Children[0] save as anchor id
+            const count = response.data.data.dist 
+            if (count > 0){
+                await Token.update({
+                        redditAnchorId: response.data.data.children[0].data.name
+                    },
+                    { where: { userId }}
+                )
+            }
+        } catch (e) {
+            throw new Error(e.message)
+        }
+    } catch(e) {
+        throw new Error(e.message)
     }
 
 }
