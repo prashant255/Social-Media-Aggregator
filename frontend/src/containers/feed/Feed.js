@@ -10,8 +10,8 @@ import RedditIcon from '@material-ui/icons/Reddit';
 
 const Feed = (props) => {
 
-    const onScrollHandler = () => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    const onScrollHandler = (element) => {
+        if (element.scrollHeight - element.scrollTop === element.clientHeight && props.type !== null) {
             currentOffset += 5
             if (props.type === 'bookmark') {
                 axios.get(`/bookmark/${currentOffset}`, {
@@ -66,11 +66,14 @@ const Feed = (props) => {
     }, [props.selectedCategory])
 
     useEffect(() => {
-        window.addEventListener('scroll', onScrollHandler)
+        let ele = document.getElementsByClassName('Pane vertical Pane1')
+		for (let i = 0; i < ele.length; i++) {
+			ele[i].addEventListener("scroll", () => onScrollHandler(ele[i]));
+		}
         return () => {
             setPosts(null)
             currentOffset = 0
-            window.removeEventListener('scroll', onScrollHandler)
+            window.removeEventListener('scroll', () => onScrollHandler(ele[0]))
         }
     }, [props.selectedCategory])
 
