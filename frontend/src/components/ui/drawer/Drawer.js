@@ -6,8 +6,6 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import Feed from '../../../containers/feed/Feed'
 
 import axios from '../../../axios/lurkerBackend'
@@ -102,6 +100,41 @@ const LeftDrawer = () => {
 		setDuplicatePosts(groups)
 	} 
 
+	const getCategoryIcon = (category) => {
+		switch(category) {
+			case 'all':
+				return 'category'
+			case 'celebrity': 
+				return 'theater_comedy'
+			case 'entertainment':
+				return 'movie'
+			case 'gaming':
+				return 'sports_esports'
+			case 'travel':
+				return 'flight_takeoff'
+			case 'health':
+				return 'health_and_safety'
+			case 'motivation':
+				return 'self_improvement'
+			case 'promotions':
+				return 'ads_click'
+			case 'sport':
+				return 'sports_soccer'
+			case 'tech':
+				return 'devices'
+			case 'business':
+				return 'business'
+			case 'personal':
+				return 'people'
+			case 'finance':
+				return 'account_balance'
+			case 'news':
+				return 'article'
+			case 'politics':
+				return 'headphones'
+		}
+	}
+
 	let feed = <Feed selectedCategory={categoriesToDisplay} type={'layout'} duplicateHandler = {(groups) => onClickDuplicateHandler(groups)} isDuplicate = {false}/>
 	//Add duplicate part here.
 
@@ -132,8 +165,11 @@ const LeftDrawer = () => {
 				await history.push('/category')
 				return
 			}
-			else
-				setCategories(res.data.selectedCategory)
+			else{
+				let categoryToSet = res.data.selectedCategory
+				categoryToSet.unshift("all")
+				setCategories(categoryToSet)
+			}
 		} catch(e) {
 			console.log(e)
 		}
@@ -166,7 +202,11 @@ const LeftDrawer = () => {
 						{categories != null ? categories.map((text, index) => (
 							<ListItem button key={text}
 								onClick={() => categoryClickHandler(text)}>
-								<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+								<ListItemIcon>
+									<span class="material-icons">
+										{getCategoryIcon(text)}
+									</span>
+								</ListItemIcon>
 								<ListItemText primary={text} />
 							</ListItem>
 						)) : null}
@@ -177,7 +217,11 @@ const LeftDrawer = () => {
 						{/* Get the list of all non-selected categories. */}
 						{['Celebrity', 'Politics', 'Sports'].map((text, index) => (
 							<ListItem button key={text}>
-								<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+								<ListItemIcon>
+									<span class="material-icons">
+										{getCategoryIcon(text)}
+									</span>
+								</ListItemIcon>
 								<ListItemText primary={text} />
 							</ListItem>
 						))}
