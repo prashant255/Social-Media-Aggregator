@@ -15,8 +15,48 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import Aux from '../../../hoc/Aux/Aux';
+import styled from "styled-components";
+import SplitPane from "react-split-pane";
 
-const drawerWidth = "18%";
+const drawerWidth = "20%";
+
+const Wrapper = styled.div`
+  .Resizer {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background: #000;
+    opacity: 0.2;
+    z-index: 1;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding;
+    background-clip: padding-box;
+  }
+
+  .Resizer:hover {
+    -webkit-transition: all 2s ease;
+    transition: all 2s ease;
+  }
+
+  .Resizer.vertical {
+    width: 11px;
+    margin: 0 -5px;
+    border-left: 5px solid rgba(255, 255, 255, 0);
+    border-right: 5px solid rgba(255, 255, 255, 0);
+    cursor: col-resize;
+  }
+
+  .Resizer.vertical:hover {
+    border-left: 5px solid rgba(0, 0, 0, 0.5);
+    border-right: 5px solid rgba(0, 0, 0, 0.5);
+  }
+  .Pane1 {
+    overflow: scroll 
+  }
+  .Pane2 {
+    overflow: scroll
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -43,15 +83,32 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: theme.palette.background.default,
 		padding: theme.spacing(3),
 	},
+	splitView: {
+		marginLeft: '20%',
+		height: '85vh !important'
+	}
 }));
 
 const LeftDrawer = () => {
+
 	const classes = useStyles();
 	const jwtToken = useSelector(state => state.jwtToken)
 	const [categories, setCategories] = useState(null)
 	const [categoriesToDisplay, setCategoriesToDisplay] = useState('all')
 	const [displayDrawer, setDisplayDrawer] = useState(false)
-	let feed = <Feed selectedCategory={categoriesToDisplay} type={'layout'} />
+	const [duplicatePosts, setDuplicatePosts] = useState(null)
+
+	const onClickDuplicateHandler = (groups) => {
+		setDuplicatePosts(groups)
+	} 
+
+	let feed = <Feed selectedCategory={categoriesToDisplay} type={'layout'} duplicateHandler = {(groups) => onClickDuplicateHandler(groups)} isDuplicate = {false}/>
+	//Add duplicate part here.
+
+	let duplicate = null;
+	if(duplicatePosts !== null)
+		duplicate = <Feed selectedCategory={categoriesToDisplay} isDuplicate = {true} duplicatePosts = {duplicatePosts}/>
+
 	const history = useHistory();
 	let drawer = null;
 
@@ -100,7 +157,6 @@ const LeftDrawer = () => {
 					}}
 					anchor="left"
 				>
-					<div className={classes.toolbar} />
 					<h2 className={classes.drawerContentHeader}> Selected Categories </h2>
 					<List>
 						{/* TODO: 
@@ -128,8 +184,20 @@ const LeftDrawer = () => {
 					</List>
 				</Drawer>
 				<main className={classes.content}>
-					<div className={classes.toolbar} />
-					{feed}
+				<Wrapper>
+					<SplitPane
+					className = {classes.splitView}
+					split="vertical"
+					defaultSize="50%"   
+					>
+					<div>
+						{feed}
+					</div>
+					<div>
+						{duplicate}
+					</div>
+					</SplitPane>
+					</Wrapper>
 				</main>
 			</Aux>
 		)

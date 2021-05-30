@@ -20,7 +20,7 @@ const Feed = (props) => {
                     res => {
                         setPosts(prevPosts => prevPosts !== null ? [...prevPosts, ...res.data] : res.data)
                     }).catch(e => console.log(e))
-            } else {
+            } else if(props.type === 'layout'){
                 axios.get(`/posts/${props.selectedCategory}/${currentOffset}`, {
                     headers
                 }).then(
@@ -32,6 +32,8 @@ const Feed = (props) => {
     }
 
     const jwtToken = useSelector(state => state.jwtToken)
+    let postHandle = null;
+    let url = null;
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
     }
@@ -46,7 +48,7 @@ const Feed = (props) => {
                     if (JSON.stringify(res.data) !== JSON.stringify(posts))
                         setPosts(res.data)
                 }).catch(e => console.log(e))
-        } else {
+        } else if(props.type === 'layout') {
             axios.get(`/posts/${props.selectedCategory}/0`, {
                 headers
             }).then(
@@ -54,6 +56,8 @@ const Feed = (props) => {
                     if (JSON.stringify(res.data) !== JSON.stringify(posts))
                         setPosts(res.data)
                 }).catch(e => console.log(e))
+        } else {
+            setPosts(props.duplicatePosts)
         }
         return () => {
             setPosts(null)
@@ -70,33 +74,41 @@ const Feed = (props) => {
         }
     }, [props.selectedCategory])
 
+
+    const handleSelector = (post) => {
+        switch (post.handle) {
+            case "Reddit":
+                postHandle = RedditIcon;
+                url = `https://redd.it/${post.postId.slice(3)}`
+                break;
+            
+            case "Facebook":
+                postHandle = FacebookIcon;
+                break;
+            
+            case "Twitter":
+                postHandle = TwitterIcon;
+                url = `https://twitter.com/a/status/${post.postId}`
+                break;
+            
+            default:
+                console.log("Invalid Handle")
+        }
+    }
+
     return (
         <div>
             {
                 posts ? posts.map(group => {
                     if(group.length === 0)
                         return;
-                    let postHandle = null;
-                    let url = null;
-                    const post = group[0]
-                      switch (post.handle) {
-                        case "Reddit":
-                            postHandle = RedditIcon;
-                            url = `https://redd.it/${post.postId.slice(3)}`
-                            break;
-                        
-                        case "Facebook":
-                            postHandle = FacebookIcon;
-                            break;
-                        
-                        case "Twitter":
-                            postHandle = TwitterIcon;
-                            url = `https://twitter.com/a/status/${post.postId}`
-                            break;
-                        
-                        default:
-                            console.log("Invalid Handle")
-                    }
+                    let post = null;
+                    if(!props.isDuplicate)
+                        post = group[0]
+                    else
+                        post = group
+                    handleSelector(post)
+
                     return (
                         <CardsFeed 
                             key={post.lurkerPostId} 
@@ -104,7 +116,9 @@ const Feed = (props) => {
                             postSource={postHandle} 
                             bookmark = {post.bookmark}
                             url = {url}
-                            group = {group}
+                            group = {props.isDuplicate ? null:  group.slice(1)}
+                            duplicateHandler = {props.isDuplicate ? null: props.duplicateHandler}
+                            isDuplicate = {props.isDuplicate}
                         />
                     )
                 }) :

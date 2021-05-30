@@ -41,7 +41,6 @@ function Alert(props) {
 }
 
 const CardsFeed = (props) => {
-
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
     const [bookmarkSelected, setBookmarkSelected] = useState(props.bookmark)
@@ -111,7 +110,6 @@ const CardsFeed = (props) => {
     }
 
     const openInNewTab = () => {
-        console.log(props.url)
         const newWindow = window.open(props.url, '_blank', 'noopener,noreferrer')
         if (newWindow) newWindow.opener = null
     }
@@ -296,6 +294,14 @@ const CardsFeed = (props) => {
                             }
                         </Snackbar>
                     </IconButton>
+                    {/* TODO: Make changes in Card design to indicate duplicate exist below */}
+                            {/* If you want to show how many duplicate post exist use props.group.length */}
+                    {
+                    props.isDuplicate || !props.group.length ? null :
+                    <IconButton aria-label="share" onClick = {() => props.duplicateHandler(props.group)}>
+                        <ShareIcon />
+                    </IconButton>
+                    }
                 </CardActions>
             </Card>
         )
