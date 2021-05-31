@@ -204,7 +204,7 @@ const LeftDrawer = () => {
 							<ListItem button key={text}
 								onClick={() => categoryClickHandler(text)}>
 								<ListItemIcon>
-									<span class="material-icons">
+									<span className="material-icons">
 										{getCategoryIcon(text)}
 									</span>
 								</ListItemIcon>
@@ -219,7 +219,7 @@ const LeftDrawer = () => {
 						{(categories !== null && categories.length !== 15) ? allCategoriesList.filter( ( el ) => !categories.includes( el ) ).map((text, index) => (
 							<ListItem button key={text}>
 								<ListItemIcon>
-									<span class="material-icons">
+									<span className ="material-icons">
 										{getCategoryIcon(text)}
 									</span>
 								</ListItemIcon>

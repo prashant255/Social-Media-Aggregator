@@ -9,9 +9,8 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import RedditIcon from '@material-ui/icons/Reddit';
 
 const Feed = (props) => {
-
     const onScrollHandler = (element) => {
-        if (element.scrollHeight - element.scrollTop === element.clientHeight && props.type !== null) {
+        if (element.scrollHeight - element.scrollTop === element.clientHeight && props.type !== undefined) {
             currentOffset += 5
             if (props.type === 'bookmark') {
                 axios.get(`/bookmark/${currentOffset}`, {
@@ -63,7 +62,7 @@ const Feed = (props) => {
             setPosts(null)
             currentOffset = 0
         }
-    }, [props.selectedCategory])
+    }, [props.selectedCategory, props.duplicatePosts])
 
     useEffect(() => {
         let ele = document.getElementsByClassName('Pane vertical Pane1')
