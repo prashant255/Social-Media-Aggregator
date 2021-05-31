@@ -68,12 +68,14 @@ const useStyles = makeStyles((theme) => ({
 	drawerPaper: {
 		width: drawerWidth,
 		marginTop: '5%',
-		height: '100%',
 		zIndex: 0,
+		height: '85vh'
 	},
 	drawerContentHeader: {
 		marginLeft: 'auto',
 		marginRight: 'auto',
+		marginBottom: 0,
+		fontSize: 18,
 		color: '#999',
 	},
 	content: {
@@ -95,6 +97,7 @@ const LeftDrawer = () => {
 	const [categoriesToDisplay, setCategoriesToDisplay] = useState('all')
 	const [displayDrawer, setDisplayDrawer] = useState(false)
 	const [duplicatePosts, setDuplicatePosts] = useState(null)
+	const allCategoriesList = ['all', 'celebrity', 'entertainment', 'gaming','travel', 'health', 'motivation', 'promotions', 'sport', 'tech', 'business', 'personal', 'finance','news', 'politics'];
 
 	const onClickDuplicateHandler = (groups) => {
 		setDuplicatePosts(groups)
@@ -195,10 +198,7 @@ const LeftDrawer = () => {
 				>
 					<h2 className={classes.drawerContentHeader}> Selected Categories </h2>
 					<List>
-						{/* TODO: 
-            1. Change the icons or remove them if we don't wanna include it
-            2. Add All(All selected categories post to be diaplayed) in the categories list*/}
-
+						
 						{categories != null ? categories.map((text, index) => (
 							<ListItem button key={text}
 								onClick={() => categoryClickHandler(text)}>
@@ -215,7 +215,7 @@ const LeftDrawer = () => {
 					<h2 className={classes.drawerContentHeader}> Others </h2>
 					<List>
 						{/* Get the list of all non-selected categories. */}
-						{['Celebrity', 'Politics', 'Sports'].map((text, index) => (
+						{(categories !== null && categories.length !== 15) ? allCategoriesList.filter( ( el ) => !categories.includes( el ) ).map((text, index) => (
 							<ListItem button key={text}>
 								<ListItemIcon>
 									<span class="material-icons">
@@ -224,7 +224,7 @@ const LeftDrawer = () => {
 								</ListItemIcon>
 								<ListItemText primary={text} />
 							</ListItem>
-						))}
+						)): null}
 					</List>
 				</Drawer>
 				<main className={classes.content}>
