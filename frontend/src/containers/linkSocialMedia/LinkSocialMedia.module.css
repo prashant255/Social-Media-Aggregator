@@ -8,6 +8,7 @@
 }
 
 .background{
+    min-height: 92vh;
     background-color: rgb(223, 227, 252);
 }
 
@@ -27,4 +28,5 @@
 .removeAccess{
     color: gray;
     text-decoration: underline;
+    cursor: pointer;
 }

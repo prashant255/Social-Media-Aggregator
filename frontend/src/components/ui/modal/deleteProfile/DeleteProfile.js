@@ -13,12 +13,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     textAlign: 'center',
+    height: 250,
+    marginTop: 'auto',
+    marginBottom: 'auto'
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(4, 8, 3),
+    padding: theme.spacing(2, 12, 3),
   }
 
 }));

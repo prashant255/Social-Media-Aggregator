@@ -29,4 +29,13 @@ router.post('/allPosts/:userId', async (req, res) => {
     }
 })
 
+router.post('/unlink', authenticateUser, async (req, res) => {
+    try{
+        await facebookAuth.unlinkAccount(req.user.id)
+        res.send()
+    } catch(e) {
+        res.status(404).send(e.message)
+    }
+})
+
 module.exports = router

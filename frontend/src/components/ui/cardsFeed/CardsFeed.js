@@ -26,29 +26,92 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 import MobileStepper from '@material-ui/core/MobileStepper';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 var dayjs = require('dayjs')
 var relativeTime = require('dayjs/plugin/relativeTime')
 dayjs.extend(relativeTime)
 
-const CardsFeed = (props) => {
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
+const CardsFeed = (props) => {
     const jwtToken = useSelector(state => state.jwtToken)
     const [feedData, setFeedData] = useState(null)
     const [bookmarkSelected, setBookmarkSelected] = useState(props.bookmark)
+    const [likeStatus, setLikeStatus] = useState(null)
+    const [snackbarOpen, setSnackbarOpen] = useState(false)
     const dispatch = useDispatch()
     let posts = useSelector(state => state.posts)
-
     const headers = {
         'Authorization': `Bearer ${jwtToken}`
     }
     
-    const bookmarkClickHanlder = () => {
+    const bookmarkClickHandler = () => {
         axios.post(`/bookmark/${props.postDetails.lurkerPostId}`, {}, {
             headers
-        }).then(res => res.data !== '' ? setBookmarkSelected(res.data): setBookmarkSelected(null))    
+        }).then(res => {
+            if (res.data !== '') {
+                setSnackbarOpen(true)
+                setBookmarkSelected(res.data)
+            }
+            else {
+                setSnackbarOpen(true)
+                setBookmarkSelected(null)
+            }
+        })
+    }
+
+    const redditVote = () => {
+        const voteUrl = '/reddit/vote'
+        const data = {
+            id: props.postDetails.postId,
+            dir: likeStatus ? 0 : 1
+        }
+        return {voteUrl, data}
+    }
+
+    const twitterLike = () => {
+        let voteUrl = '', data = {}
+        if(likeStatus)
+            voteUrl = `/twitter/unlike/${props.postDetails.postId}`
+        else
+            voteUrl = `/twitter/like/${props.postDetails.postId}`
+        
+        return {voteUrl, data}
+    }
+
+    const voteClickHandler = () => {
+        
+        let voteUrl='', data = {}
+
+        switch(props.postDetails.handle){
+            case constants.HANDLES.TWITTER:
+                ({voteUrl, data} = twitterLike())
+                break;
+            case constants.HANDLES.REDDIT:
+                ({voteUrl, data} = redditVote());
+                break;
+            case constants.HANDLES.FACEBOOK:
+                return
+        }
+
+        axios.post(voteUrl, data, {
+            headers
+        }).then(() => {
+            if(likeStatus) setLikeStatus(null)
+            else setLikeStatus(true)
+        })
+    }
+
+    const openInNewTab = () => {
+        const newWindow = window.open(props.url, '_blank', 'noopener,noreferrer')
+        if (newWindow) newWindow.opener = null
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -82,7 +145,7 @@ const CardsFeed = (props) => {
         axios.get(url, { headers }).then(
             res => {
                 setFeedData(res.data)
-
+                
                 dispatch({
                     type: actionTypes.POSTS,
                     post: { ...res.data, id: props.postDetails.postId }
@@ -93,20 +156,31 @@ const CardsFeed = (props) => {
         )
     }
 
+    const getLikeStatus = (url) => {
+        axios.get(url, {headers}).then(status => {
+            if(status.data === 1)
+                setLikeStatus(true);
+        }).catch(e => console.log(e))
+    }
+
     useEffect(() => {
         //Switch Statement for Twitter, Reddit and Facebook
         //Add headers
 
-        if (fetchFromCache(props.postDetails.postId))
-            return; //if true, then it was already present in cache
+        const baseUrl = 'http://localhost:8080/api'
 
         switch (props.postDetails.handle) {
             case constants.HANDLES.TWITTER:
-                addToCache(`http://localhost:8080/api/twitter/post/${props.postDetails.postId}`)
+                getLikeStatus(`${baseUrl}/twitter/post/${props.postDetails.postId}/likeStatus`)
+                if (fetchFromCache(props.postDetails.postId))
+                    break; //if true, then it was already present in cache
+                addToCache(`${baseUrl}/twitter/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.REDDIT:
-                addToCache(`http://localhost:8080/api/reddit/post/${props.postDetails.postId}`)
+                getLikeStatus(`${baseUrl}/reddit/post/${props.postDetails.postId}/likeStatus`)
+                if (fetchFromCache(props.postDetails.postId)) break;
+                addToCache(`${baseUrl}/reddit/post/${props.postDetails.postId}`)
                 break;
 
             case constants.HANDLES.FACEBOOK:
@@ -182,7 +256,7 @@ const CardsFeed = (props) => {
                         <Avatar aria-label={feedData.senderName} className={classes.avatar} src={feedData.senderImage} />
                     }
                     action={
-                        <props.postSource />
+                            <props.postSource style={{cursor:'pointer'}} onClick = {openInNewTab}/>
                     }
                     title={feedData.senderName}
                     subheader={
@@ -198,16 +272,36 @@ const CardsFeed = (props) => {
                     </CardContent> : null
                 }
                 <CardActions>
-                    <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
+                    <IconButton aria-label="add to favorites" onClick = {voteClickHandler} >
+                    {likeStatus ? <FavoriteIcon style={{ color: "#fb3958" }} /> : <FavoriteBorderIcon />}
                     </IconButton>
                     <IconButton aria-label="share">
                         <ShareIcon />
                     </IconButton>
-                    <IconButton aria-label="bookmark" size="medium" onClick = {bookmarkClickHanlder}>
+                    <IconButton aria-label="bookmark" size="medium" onClick = {bookmarkClickHandler}>
                         {/* NOTE: unfilled bookmark icon to denote "not selected" also imported above */}
                         {bookmarkSelected !== null ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                        <Snackbar
+                            autoHideDuration={2000}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            open={snackbarOpen}
+                            onClose={() => setSnackbarOpen(false)}
+                        >
+                            {bookmarkSelected !== null ?
+                                <Alert onClose={() => setSnackbarOpen(false)} severity="success"> Bookmark Added </Alert>
+                                :
+                                <Alert onClose={() => setSnackbarOpen(false)} severity="error"> Bookmark Removed </Alert>
+                            }
+                        </Snackbar>
                     </IconButton>
+                    {/* TODO: Make changes in Card design to indicate duplicate exist below */}
+                            {/* If you want to show how many duplicate post exist use props.group.length */}
+                    {
+                    props.isDuplicate || !props.group.length ? null :
+                    <IconButton aria-label="share" onClick = {() => props.duplicateHandler(props.group)}>
+                        <ShareIcon />
+                    </IconButton>
+                    }
                 </CardActions>
             </Card>
         )

@@ -45,8 +45,6 @@ twitterCallback = (req, res) => {
 }
 
 const twitterRequest = (oauthAccessToken, oauthAccessTokenSecret, url) => {
-    console.log("Oauth Access Token", oauthAccessToken)
-    console.log("Oauth Secret", oauthAccessTokenSecret)
     console.log(url)
     return new Promise((resolve, reject) => {
         consumer().get(url, oauthAccessToken, oauthAccessTokenSecret, (error, data, response) => {
@@ -95,9 +93,9 @@ const saveToken = async (userId, {twitterAccessToken, twitterAccessTokenPwd}) =>
 }
 
 const unlinkAccount = async (userId) => {
+    const t = await sequelize.transaction();
     try{
         //Transaction is created to rollback in case account deletion fails.
-        const t = await sequelize.transaction();
         const token = await Token.findOne({where: { userId }})
         if(!token || token.twitterAccessToken === null)
             throw new Error('No account to unlink');

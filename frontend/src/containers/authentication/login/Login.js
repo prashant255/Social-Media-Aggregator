@@ -42,9 +42,9 @@ class Login extends Component {
 				touched: false
 			}
 		},
-		formIsValid: false
+		formIsValid: false,
+		errorMessage: null
 	}
-
 
 	loginHandler = async (event) => {
 		event.preventDefault()
@@ -58,7 +58,9 @@ class Login extends Component {
 			this.props.onSuccessfulLogin(response.data.dataValues.name, response.data.token)
 			this.props.history.push('/feed')
 		} catch (err) {
-			console.log(err.response)
+			this.setState({
+				errorMessage: err.response.data
+			})
 		}
 	}
 
@@ -96,10 +98,12 @@ class Login extends Component {
 				config: this.state.controls[key]
 			})
 		}
+
 		return (
 			<Typography>
 				<div className={classes.Login}>
 					<img src="./lurker-logo.png" className={classes.logo} alt={'Lurker'} />
+					<div className={classes.Error}>{this.state.errorMessage}</div>
 					<form onSubmit={this.loginHandler}>
 						{formElementsArray.map(formElement => (
 							<Input

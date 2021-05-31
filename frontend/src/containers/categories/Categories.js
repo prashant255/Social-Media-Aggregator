@@ -90,6 +90,21 @@ class Categories extends Component {
         selectedCount: 0
     }
 
+    componentDidMount = () => {
+        axios.get('/settings/categories', {
+            headers: {
+                'Authorization': `Bearer ${this.props.jwtToken}`
+            } 
+        }).then(res => {
+            if(res !== null){
+                res.data.selectedCategory.map(category => 
+                    this.categoryClickedHandler(category)
+                )
+                
+            }
+        })
+    }
+
     categoryClickedHandler = (id) => {
         let categories = {...this.state.categories}
         let selectedCount = this.state.selectedCount

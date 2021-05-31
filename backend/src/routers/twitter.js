@@ -32,7 +32,7 @@ router.post('/unlink', authenticateUser, async (req, res) => {
 
 router.post('/allPosts/:userId', async (req, res) => {
 	try {
-		twitterPosts.getAllPosts(req.params.userId)
+		await twitterPosts.getAllPosts(req.params.userId)
 		res.send()
 	} catch (e) {
 		res.status(500).send(e.message)
@@ -48,16 +48,37 @@ router.get('/post/:postId', authenticateUser, async (req, res) => {
 	}
 })
 
-router.post('/like/:postId', (req, res) => {
+router.post('/like/:postId', authenticateUser,(req, res) => {
 	twitterPosts.likePost(req.user.id, req.params.postId)
 	.then(() => res.send())
 	.catch(e => res.status(400).send(e))
 })
 
-router.post('/unlike/:postId',authenticateUser, (req, res) => {
+router.post('/unlike/:postId', authenticateUser, (req, res) => {
 	twitterPosts.unlikePost(req.user.id, req.params.postId)
 	.then(() => res.send())
 	.catch(e => res.status(400).send(e))
+})
+
+router.get('/post/:postId/likeStatus', authenticateUser, async (req,res) => {
+    try{
+        const response = await twitterPosts.getLikeStatus(req.user.id, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        console.log(e)
+        res.status(500).send(e.message)
+    }
+})
+
+//TODO: This is just to simulate NLP server, delete this after testing.
+router.post('/catnwe', (req, res) => {
+	console.log(req.body.text)
+	res.send({category: 'news', embedding: [18.4, 20.3, 45.1, 89.12, 78.34]})
+})
+
+//TODO: This is just to simulate NLP server, delete this after testing.
+router.post('/group', (req, res) => {
+	res.send({groupId: -1})
 })
 
 module.exports = router

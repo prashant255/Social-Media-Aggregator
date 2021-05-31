@@ -41,7 +41,7 @@ router.post('/callback', authenticateUser, async (req, res) => {
 
 router.post('/allPosts/:userId', async (req, res) => {
     try{
-        redditPosts.getAllPosts(req.params.userId)
+        await redditPosts.getAllPosts(req.params.userId)
         res.send()
     } catch(e){
         res.status(500).send(e.message)
@@ -57,12 +57,33 @@ router.post('/refresh/:userId', (req, res) => {
         });
 });
 
-router.post('/vote', (req,res) => {
-    try{
+router.post('/vote', async(req,res) => {
+    // try{
+    //     const {id, dir} = req.body;
+    //     console.log("id : ", id)
+    //     console.log("dir : ", dir)
 
-    } catch(e) {
-        
-    }
+    //     await redditPosts.vote(id,dir);
+    //     res.send();
+    // } catch(e) {
+    //     let statusCode=404
+    //     if(e.status) statusCode=e.status
+
+    //     res.status(statusCode).send(e);
+    // }
+    
+    const {id, dir} = req.body;
+
+    console.log('here3')
+    redditPosts.vote(id,dir).then(() => {
+        console.log('here2')
+        res.send()
+    }).catch(e => {
+        let statusCode=404
+        if(e.status) statusCode=e.status
+
+        res.status(statusCode).send(e);
+    })
 });
 
 router.get('/post/:postId', authenticateUser, async(req, res) => {
@@ -70,6 +91,16 @@ router.get('/post/:postId', authenticateUser, async(req, res) => {
         const response = await redditPosts.getPostById(req.user.id, req.params.postId)
         res.send(response)
     } catch(e) {
+        res.status(500).send(e.message)
+    }
+})
+
+router.get('/post/:postId/likeStatus', authenticateUser, async (req,res) => {
+    try{
+        const response = await redditPosts.getLikeStatus(req.user.id, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        console.log(e)
         res.status(500).send(e.message)
     }
 })
