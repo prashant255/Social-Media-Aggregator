@@ -181,6 +181,7 @@ const LeftDrawer = () => {
 
 	const categoryClickHandler = (category) => {
 		feed = null
+		setDuplicatePosts(null)
 		setCategoriesToDisplay(category)
 	}
 
