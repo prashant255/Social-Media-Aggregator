@@ -1,0 +1,82 @@
+.aboutUs {
+    margin-top: 2%;
+    text-align: center;
+}
+
+.imageAboutUs {
+    width: 30%;
+    height: auto;
+}
+
+.heading {
+    padding: 2%;
+    color: rgb(113, 128, 233);
+    text-align: center;
+    font-size: 24px;
+}
+
+.featureHolder {
+    text-align: center;
+}
+
+.featureImage {
+    width: 15%;
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.featureTitle {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.description {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.resourceImage {
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+/* 
+
+.imageFeatures {
+    display: inline-block;
+    margin-right: 100px;
+    margin-left: 100px;
+    width: 15%;
+}
+
+.wordInfo {
+    margin-right: 100px;
+    margin-left: 100px;
+}
+
+
+.headingInfo {
+    font-size: 32px;
+    text-align: center;
+    font-style: inherit;
+    
+    font-weight: bold;
+    padding: 10px;
+}
+ 
+.descriptionWhyLurker{
+    font-size: 24px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: justify;   
+} 
+
+.imageLogo {
+    display: inline-block;
+    margin-right: 70px;
+    height: 150px;
+    width: 150px;
+} 
+*/
