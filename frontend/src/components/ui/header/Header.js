@@ -123,6 +123,11 @@ const Header = () => {
 		history.push('/category')
 	}
 
+	const aboutClickHandler = () => {
+		handleClose()
+		history.push('/about')
+	}
+
 	return (
 		<div className={classes.root}>
 			{showLogoutComponent ? <Logout /> : null}
@@ -149,7 +154,7 @@ const Header = () => {
 						>
 
 
-							<StyledMenuItem>
+							<StyledMenuItem onClick={aboutClickHandler}>
 								<ListItemIcon>
 									<InfoIcon fontSize="small" />
 								</ListItemIcon>
