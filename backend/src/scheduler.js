@@ -22,7 +22,6 @@ const updateRedditToken = async () => {
 
 const getNewPost = async () => {
     const userList = await getUserList()
-    console.log(userList)
     userList.map(async user => {
         try {
             await axios.post(`http://localhost:8080/api/twitter/allPosts/${user.dataValues.id}`)
