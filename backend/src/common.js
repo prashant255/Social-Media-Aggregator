@@ -24,11 +24,11 @@ const formatParams = (params) => {
 }
 
 const convertPostFormat = (posts) => {
-    
+
     let res = []
-    posts.map( ele => {
+    posts.map(ele => {
         let groupedPost = []
-        ele["array_agg"].map( eleOfGroup => {
+        ele["array_agg"].map(eleOfGroup => {
             groupedPost.push({
                 "lurkerPostId": eleOfGroup[0],
                 "postId": eleOfGroup[1],
@@ -41,7 +41,25 @@ const convertPostFormat = (posts) => {
     return res;
 }
 
-module.exports = { 
+const convertToFloat = (embeddings) => {
+    let newEmbeddings = []
+    embeddings.map(ele => {
+
+        let integerEmbedding = []
+        ele.embedding.map((e) => {
+            integerEmbedding.push(parseFloat(e))
+        })
+
+        newEmbeddings.push({
+            ...ele,
+            embedding: integerEmbedding
+        })
+    })
+    return newEmbeddings
+}
+
+module.exports = {
+    convertToFloat,
     convertPostFormat,
     formatParams,
     ALL_HANDLES,

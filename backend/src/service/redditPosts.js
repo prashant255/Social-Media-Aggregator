@@ -131,7 +131,7 @@ const getAllPosts = async (userId) => {
                             
                                 resDuplicate = await axios.post("http://localhost:5000/group", {
                                     postEmbedding: res.data.embedding,
-                                    otherEmbedding: embeddings
+                                    otherEmbedding: common.convertToFloat(embeddings)
                                 })
                                 groupId = resDuplicate.data.groupId;
                                 if(groupId === -1){
