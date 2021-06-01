@@ -130,7 +130,7 @@ const Header = () => {
 			<AppBar position="fixed">
 				<Toolbar className={classes.headerColor}>
 					<div className={classes.title}>
-						<img src="./lurker-logo-small.png" className={classes.logo} alt={'Lurker'} />
+						<img src="/lurker-logo-small.png" className={classes.logo} alt={'Lurker'} />
 					</div>
 
 					<Typography>

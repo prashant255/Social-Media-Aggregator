@@ -6,6 +6,7 @@ import Page404 from '../page404/Page404'
 import Cards from '../../containers/categories/Categories'
 import SuccessCallback from './SuccessCallback'
 import LinkSocialMedia from '../../containers/linkSocialMedia/LinkSocialMedia'
+import About from '../../containers/about/About'
 import Aux from '../../hoc/Aux/Aux'
 import Layout from '../layout/Layout'
 
@@ -34,6 +35,7 @@ const Routing = () => {
     if(isAuthenticated) {
         routes = (
             <Switch>
+                <Route path = "/about" component = {About} />
                 <Route path = "/register" component = {Signup} />
                 <Route path = "/login" component  = {Login} />
                 <Route path = "/category" component  = {Cards} />
