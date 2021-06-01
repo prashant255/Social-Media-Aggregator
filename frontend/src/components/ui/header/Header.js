@@ -128,13 +128,18 @@ const Header = () => {
 		history.push('/about')
 	}
 
+	const logoClickHandler = () => {
+		handleClose()
+		history.push('/feed')
+	}
+
 	return (
 		<div className={classes.root}>
 			{showLogoutComponent ? <Logout /> : null}
 			<DeleteProfileModal open={deleteProfileOpen} handleModal={handleOpenModal} />
 			<AppBar position="fixed">
 				<Toolbar className={classes.headerColor}>
-					<div className={classes.title}>
+					<div className={classes.title} onClick={logoClickHandler}>
 						<img src="/lurker-logo-small.png" className={classes.logo} alt={'Lurker'} />
 					</div>
 
