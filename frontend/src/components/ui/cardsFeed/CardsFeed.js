@@ -295,8 +295,6 @@ const CardsFeed = (props) => {
                             }
                         </Snackbar>
                     </IconButton>
-                    {/* TODO: Make changes in Card design to indicate duplicate exist below */}
-                            {/* If you want to show how many duplicate post exist use props.group.length */}
                     {
                     props.isDuplicate || !props.group.length ? null :
                     <IconButton aria-label="share" onClick = {() => props.duplicateHandler(props.group)}>
