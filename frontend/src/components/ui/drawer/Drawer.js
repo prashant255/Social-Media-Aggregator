@@ -185,6 +185,14 @@ const LeftDrawer = (props) => {
 		setCategoriesToDisplay(category)
 	}
 
+	const getAutoFocusValue = (category) => {
+		console.log(category)
+		console.log(categoriesToDisplay)
+		if(category === categoriesToDisplay)
+			return true;
+		return false;
+	}
+
 	if (displayDrawer) {
 		drawer = (
 			<Aux>
@@ -201,7 +209,7 @@ const LeftDrawer = (props) => {
 					<List>
 						
 						{categories != null ? categories.map((text, index) => (
-							<ListItem button key={text}
+							<ListItem button key={text} selected = {getAutoFocusValue(text)}
 								onClick={() => categoryClickHandler(text)}>
 								<ListItemIcon>
 									<span className="material-icons">
