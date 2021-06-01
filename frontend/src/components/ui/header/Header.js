@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	logo: {
 		width: '10%',
+		cursor: 'pointer',
 	},
 	offset: theme.mixins.toolbar,
 }));
