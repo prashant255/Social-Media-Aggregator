@@ -27,6 +27,7 @@ import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import DuplicateIcon from '@material-ui/icons/ControlPointDuplicate';
 
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -294,12 +295,10 @@ const CardsFeed = (props) => {
                             }
                         </Snackbar>
                     </IconButton>
-                    {/* TODO: Make changes in Card design to indicate duplicate exist below */}
-                            {/* If you want to show how many duplicate post exist use props.group.length */}
                     {
                     props.isDuplicate || !props.group.length ? null :
                     <IconButton aria-label="share" onClick = {() => props.duplicateHandler(props.group)}>
-                        <ShareIcon />
+                        <DuplicateIcon />
                     </IconButton>
                     }
                 </CardActions>
