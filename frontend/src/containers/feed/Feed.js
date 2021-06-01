@@ -12,15 +12,8 @@ const Feed = (props) => {
     const onScrollHandler = (element) => {
         if (element.scrollHeight - element.scrollTop === element.clientHeight && props.type !== undefined) {
             currentOffset += 5
-            if (props.type === 'bookmark') {
-                axios.get(`/bookmark/${currentOffset}`, {
-                    headers
-                }).then(
-                    res => {
-                        setPosts(prevPosts => prevPosts !== null ? [...prevPosts, ...res.data] : res.data)
-                    }).catch(e => console.log(e))
-            } else if(props.type === 'layout'){
-                axios.get(`/posts/${props.selectedCategory}/${currentOffset}`, {
+            if (props.type) {
+                axios.get(`/${props.type}/${props.selectedCategory}/${currentOffset}`, {
                     headers
                 }).then(
                     res => {
@@ -39,16 +32,8 @@ const Feed = (props) => {
     const [posts, setPosts] = useState(null)
     let currentOffset = 0
     useEffect(() => {
-        if (props.type === 'bookmark') {
-            axios.get(`/bookmark/0`, {
-                headers
-            }).then(
-                res => {
-                    if (JSON.stringify(res.data) !== JSON.stringify(posts))
-                        setPosts(res.data)
-                }).catch(e => console.log(e))
-        } else if(props.type === 'layout') {
-            axios.get(`/posts/${props.selectedCategory}/0`, {
+        if (props.type) {
+            axios.get(`/${props.type}/${props.selectedCategory}/0`, {
                 headers
             }).then(
                 res => {

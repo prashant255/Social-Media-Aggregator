@@ -2,18 +2,17 @@ import React from 'react'
 import Header from '../ui/header/Header'
 import Footer from '../ui/footer/Footer'
 import Drawer from '../ui/drawer/Drawer'
-import Bookmark from '../bookmark/bookmark'
 
 const layout = (props) => {
 
     let mainContent = null
     switch(props.content) {
         case 'drawer': 
-            mainContent = <Drawer />
+            mainContent = <Drawer type = "posts"/>
             break
         case 'bookmark':
             console.log("Inside")
-            mainContent = <Bookmark />
+            mainContent = <Drawer type = "bookmark"/>
             break
         default:
             mainContent = null

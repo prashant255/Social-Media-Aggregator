@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const LeftDrawer = () => {
+const LeftDrawer = (props) => {
 
 	const classes = useStyles();
 	const jwtToken = useSelector(state => state.jwtToken)
@@ -138,7 +138,7 @@ const LeftDrawer = () => {
 		}
 	}
 
-	let feed = <Feed selectedCategory={categoriesToDisplay} type={'layout'} duplicateHandler = {(groups) => onClickDuplicateHandler(groups)} isDuplicate = {false}/>
+	let feed = <Feed selectedCategory={categoriesToDisplay} type={props.type} duplicateHandler = {(groups) => onClickDuplicateHandler(groups)} isDuplicate = {false}/>
 	//Add duplicate part here.
 
 	let duplicate = null;
