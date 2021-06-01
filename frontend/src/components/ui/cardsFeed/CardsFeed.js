@@ -27,6 +27,7 @@ import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import DuplicateIcon from '@material-ui/icons/ControlPointDuplicate';
 
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -299,7 +300,7 @@ const CardsFeed = (props) => {
                     {
                     props.isDuplicate || !props.group.length ? null :
                     <IconButton aria-label="share" onClick = {() => props.duplicateHandler(props.group)}>
-                        <ShareIcon />
+                        <DuplicateIcon />
                     </IconButton>
                     }
                 </CardActions>
