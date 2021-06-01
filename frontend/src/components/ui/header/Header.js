@@ -152,6 +152,7 @@ const Header = () => {
 
 					<div className={classes.menuButton}>
 						<StyledMenu
+							disableAutoFocusItem = {true} 
 							anchorEl={anchorEl}
 							keepMounted
 							open={Boolean(anchorEl)}
