@@ -22,29 +22,29 @@ const getFriends = (accessToken, facebookUserId) => {
 }
 
 const getAllPosts = async (userId) => {
-    
-    try{
-        const token = await Token.findOne({where: { userId }});
-        
-        if(!token)
+
+    try {
+        const token = await Token.findOne({ where: { userId } });
+
+        if (!token)
             throw new Error('Token not found');
-        else if(!token.facebookUserId || !token.facebookAccessToken)
+        else if (!token.facebookUserId || !token.facebookAccessToken)
             throw new Error('No userId/token found for FB user');
-            
-        const {facebookAccessToken, facebookUserId} = token;
+
+        const { facebookAccessToken, facebookUserId } = token;
         const params = {
             access_token: facebookAccessToken
         }
-        if(token.facebookAnchorId)
+        if (token.facebookAnchorId)
             params['since'] = token.facebookAnchorId;
 
         const friends = await getFriends(facebookAccessToken, facebookUserId);
 
         friends.data.map(async (friend) => {
-            const endpoint = "https://graph.facebook.com/v9.0/"+ friend.id +"/feed";
+            const endpoint = "https://graph.facebook.com/v9.0/" + friend.id + "/feed";
 
             const url = endpoint + common.formatParams(params);
-            axios.get(url).then(async(response) => {
+            axios.get(url).then(async (response) => {
 
                 response.data.data.forEach(async (post) => {
 
@@ -74,17 +74,46 @@ const getAllPosts = async (userId) => {
         });
 
         // Update facebookAnchorId
-        const now = Math.floor(Date.now()/1000).toString()
+        const now = Math.floor(Date.now() / 1000).toString()
         await Token.upsert({
             userId,
             facebookAnchorId: now
         })
-    } catch(e){
+    } catch (e) {
         throw new Error(e);
     }
 
 }
 
+const getLikeStatus = async (userId, postId) => {
+    // Voting convention similar to reddit is followed
+    // 1 -> upvote
+    // 0 -> no vote
+    // NOTE: Even though string '1' or '0' is returned, the API actually gives a number
+
+    let endpoint = `https://graph.facebook.com/v10.0/${postId}`
+    try {
+        const tokens = await (Token.findOne({
+            where: { userId }
+        }))
+        const params = {
+            access_token: tokens.facebookAccessToken,
+            fields:'reactions.summary(viewer_reaction)'
+        }
+        const url = endpoint + common.formatParams(params);
+        const postResponse = await axios.get(url)
+        let likeStatus = '0'
+        if(postResponse.data.reactions.summary.viewer_reaction !== 'NONE')
+            likeStatus = '1'
+        console.log(likeStatus)
+        return likeStatus
+
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}
+
 module.exports = {
-    getAllPosts
+    getAllPosts,
+    getLikeStatus
 }

@@ -38,4 +38,14 @@ router.post('/unlink', authenticateUser, async (req, res) => {
     }
 })
 
+router.get('/post/:postId/likeStatus', authenticateUser, async (req,res) => {
+    try{
+        const response = await facebookPosts.getLikeStatus(req.user.id, req.params.postId)
+        res.send(response)
+    } catch(e) {
+        console.log(e)
+        res.status(500).send(e.message)
+    }
+})
+
 module.exports = router
