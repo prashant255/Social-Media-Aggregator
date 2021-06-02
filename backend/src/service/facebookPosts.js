@@ -6,6 +6,7 @@ const { response } = require('express');
 const PostDetails = require('../models/postDetails');
 const Token = require('../models/tokens');
 const Post = require('../models/posts')
+const { QueryTypes } = require('sequelize')
 
 const getFriends = (accessToken, facebookUserId) => {
     return new Promise((resolve, reject) => {
@@ -33,7 +34,8 @@ const getAllPosts = async (userId) => {
 
         const { facebookAccessToken, facebookUserId } = token;
         const params = {
-            access_token: facebookAccessToken
+            access_token: facebookAccessToken,
+            limit: 1
         }
         if (token.facebookAnchorId)
             params['since'] = token.facebookAnchorId;
@@ -41,6 +43,7 @@ const getAllPosts = async (userId) => {
         const friends = await getFriends(facebookAccessToken, facebookUserId);
 
         friends.data.map(async (friend) => {
+            let groupId = null;
             const endpoint = "https://graph.facebook.com/v9.0/" + friend.id + "/feed";
 
             const url = endpoint + common.formatParams(params);
@@ -54,36 +57,127 @@ const getAllPosts = async (userId) => {
                             handle: common.HANDLES.FACEBOOK
                         }
                     })
+
                     if (dbResponse[1]) {
-                        //@TODO: Pass to ML pipeline
-                        // console.log(element.name)
-                        // console.log(element.title)
-                        // console.log(element.selftext)
-                        // if (element.post_hint === 'link')
-                        //     console.log(element.url)
+
+                        let res = null;
+                        let resDuplicate = null;
+                        let text = post.message
+                        if (!text)
+                            text = "No text available"
+                        res = await axios.post("http://localhost:5000/catnwe", { text })
+                        let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
+                        const embeddings = await sequelize.query(query,
+                            {
+                                replacements: {
+                                    category: res.data.category,
+                                    userId
+                                },
+                                type: QueryTypes.SELECT
+                            })
+
+                        resDuplicate = await axios.post("http://localhost:5000/group", {
+                            postEmbedding: res.data.embedding,
+                            otherEmbedding: common.convertToFloat(embeddings)
+                        })
+                        groupId = resDuplicate.data.groupId;
+                        if (groupId === -1) {
+                            let resFromGroups = await Groups.create({
+                                category: res.data.category,
+                                embedding: res.data.embedding
+                            })
+                            groupId = resFromGroups.dataValues.id
+                        }
+                    } else {
+                        let responseFromDb = await Post.findOne({
+                            where: {
+                                lurkerPostId: dbResponse[0].dataValues.id
+                            },
+                            attributes: ['groupId']
+                        })
+                        groupId = responseFromDb.dataValues.groupId
                     }
 
                     //New entry in Post table, wont add since it follows time stamp
                     await Post.create({
                         userId,
-                        lurkerPostId: dbResponse[0].dataValues.id
+                        lurkerPostId: dbResponse[0].dataValues.id,
+                        groupId
                     })
                 });
+
+                // Update facebookAnchorId
+                if (response.data.data.length > 0) {
+
+                    const now = Math.floor(Date.now()/1000).toString()
+                    await Token.update({
+                        facebookAnchorId: now
+                    }, { where: { userId }
+                    })
+                }
 
             }).catch(e => console.log(e));
         });
 
-        // Update facebookAnchorId
-        const now = Math.floor(Date.now() / 1000).toString()
-        await Token.upsert({
-            userId,
-            facebookAnchorId: now
-        })
     } catch (e) {
         throw new Error(e);
     }
 
 }
+
+const getUrl = (endpoint, params) => {
+    return endpoint + common.formatParams(params)
+}
+
+const getPostById = async (userId, postId) => {
+
+    try {
+
+        let endpoint = `https://graph.facebook.com/v10.0/${postId}`
+        let attachmentEndpoint = `${endpoint}/attachments`
+        let nameEndpoint = `https://graph.facebook.com/v10.0/${postId.slice(0,15)}`
+        let profilePictureEndpoint = `${nameEndpoint}/picture`
+
+        const tokens = await (Token.findOne({
+            where: { userId }
+        }))
+        const params = {
+            access_token: tokens.facebookAccessToken
+        }
+        const postResponse = await axios.get(getUrl(endpoint, params))
+        const attachmentResponse = await axios.get(getUrl(attachmentEndpoint, params))
+        const nameResponse = await axios.get(getUrl(nameEndpoint, params))
+        
+        let images = []
+        let videos = null
+        if (attachmentResponse.data.data.length > 0) {
+
+            let media = attachmentResponse.data.data[0]
+            if(media.media.source) {
+                videos = media.media.source
+            } else if (media.subattachments) {
+                media.subattachments.data.map(m => {
+                        images.push(m.media.image.src)
+                    })
+            } else {
+                let mediaFromResponse = media.media.image.src
+                images.push(mediaFromResponse)
+            }
+        }
+
+        const responseToSend = {
+            senderName: nameResponse.data.name,
+            text: postResponse.data.message,
+            createdAt: new Date(postResponse.data.created_time),
+            senderImage: getUrl(profilePictureEndpoint, params),
+            images,
+            videos
+        }
+        return responseToSend
+    } catch (e) {
+        throw new Error(e.message)
+    }
+} 
 
 const getLikeStatus = async (userId, postId) => {
     // Voting convention similar to reddit is followed
@@ -98,12 +192,12 @@ const getLikeStatus = async (userId, postId) => {
         }))
         const params = {
             access_token: tokens.facebookAccessToken,
-            fields:'reactions.summary(viewer_reaction)'
+            fields: 'reactions.summary(viewer_reaction)'
         }
         const url = endpoint + common.formatParams(params);
         const postResponse = await axios.get(url)
         let likeStatus = '0'
-        if(postResponse.data.reactions.summary.viewer_reaction !== 'NONE')
+        if (postResponse.data.reactions.summary.viewer_reaction !== 'NONE')
             likeStatus = '1'
         console.log(likeStatus)
         return likeStatus
@@ -114,6 +208,7 @@ const getLikeStatus = async (userId, postId) => {
 }
 
 module.exports = {
+    getPostById,
     getAllPosts,
     getLikeStatus
 }
