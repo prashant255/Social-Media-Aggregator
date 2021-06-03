@@ -30,7 +30,7 @@ import spacy
 
 # trax
 import trax.layers as tl
-from trax.fastmath import numpy as fastnp
+from trax.math import numpy as fastnp # trax.fastmath
 
 # duplicate
 import json
@@ -108,6 +108,7 @@ class Duplicates():
             config = pickle.load(file)
         self.max_len = config['MAX_LEN']
         self.threshold = config['THRESHOLD']
+        self.emd_dim = 128
 
         # tokeniser
         with open('./duplicates_model/tokenizer.json') as file:
@@ -125,6 +126,9 @@ class Duplicates():
         text = self.tok.texts_to_sequences([text])
         text = pad_sequences(text, maxlen=self.max_len, padding='post')
         return text
+
+    def random_we(self):
+        return np.random.rand(self.emd_dim)
 
     def get_word_embeddings(self, text):
         text = self.preprocess_duplicate(text)
@@ -151,21 +155,26 @@ def categorise(text):
 def group(postEmbedding, otherEmbedding):
     return duplicate_obj.get_group_id(postEmbedding, otherEmbedding)
 
+def random_embeddings():
+    return duplicate_obj.random_we().tolist()
+
 from datetime import date
 
 # routing the application
 @app.route('/catnwe', methods=["POST"])
 def cat():
-    if request.json and 'text' in request.json:
+    if request.json and 'text' in request.json and len(request.json['text']) > 0:
         ip = request.json['text']
         cat = categorise(ip)
         we = word_embeddings(ip).squeeze().tolist()
-        # # save result in logs
-        # with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
-        #     ip = ip.replace('"', '\"')
-        #     f.write(f'"{ip}","{res}"\n')
-        return jsonify(category=(cat), embedding=(we))
-    return "Hungry for text!"
+    else: 
+        cat = "personal"
+        we = random_embeddings()
+    # # save result in logs
+    # with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
+    #     ip = ip.replace('"', '\"')
+    #     f.write(f'"{ip}","{res}"\n')
+    return jsonify(category=(cat), embedding=(we))
 
 @app.route('/group', methods=['POST'])
 def dd():
