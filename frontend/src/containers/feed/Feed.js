@@ -37,6 +37,7 @@ const Feed = (props) => {
                 headers
             }).then(
                 res => {
+                    setPosts([])
                     if (JSON.stringify(res.data) !== JSON.stringify(posts))
                         setPosts(res.data)
                 }).catch(e => console.log(e))
@@ -51,9 +52,9 @@ const Feed = (props) => {
 
     useEffect(() => {
         let ele = document.getElementsByClassName('Pane vertical Pane1')
-		for (let i = 0; i < ele.length; i++) {
-			ele[i].addEventListener("scroll", () => onScrollHandler(ele[i]));
-		}
+        for (let i = 0; i < ele.length; i++) {
+            ele[i].addEventListener("scroll", () => onScrollHandler(ele[i]));
+        }
         return () => {
             setPosts(null)
             currentOffset = 0
@@ -68,48 +69,56 @@ const Feed = (props) => {
                 postHandle = RedditIcon;
                 url = `https://redd.it/${post.postId.slice(3)}`
                 break;
-            
+
             case "Facebook":
                 postHandle = FacebookIcon;
+                url = `https://www.facebook.com/${post.postId.slice(0, 15)}/posts/${post.postId.slice(16)}`
                 break;
-            
+
             case "Twitter":
                 postHandle = TwitterIcon;
                 url = `https://twitter.com/a/status/${post.postId}`
                 break;
-            
+
             default:
                 console.log("Invalid Handle")
         }
+    }
+    
+    let postToRender = <h1>No post to display</h1>
+    if (posts && posts.length > 0) {
+        postToRender = posts.map(group => {
+            if (group.length === 0)
+                return;
+            let post = null;
+            if (!props.isDuplicate)
+                post = group[0]
+            else
+                post = group
+            handleSelector(post)
+
+            return (
+                <CardsFeed
+                    key={post.lurkerPostId}
+                    postDetails={post}
+                    postSource={postHandle}
+                    bookmark={post.bookmark}
+                    url={url}
+                    group={props.isDuplicate ? null : group.slice(1)}
+                    duplicateHandler={props.isDuplicate ? null : props.duplicateHandler}
+                    isDuplicate={props.isDuplicate}
+                />
+            )
+        })
+    } else {
+        console.log("here")
+        postToRender = <h1>No post to display</h1>
     }
 
     return (
         <div>
             {
-                posts ? posts.map(group => {
-                    if(group.length === 0)
-                        return;
-                    let post = null;
-                    if(!props.isDuplicate)
-                        post = group[0]
-                    else
-                        post = group
-                    handleSelector(post)
-
-                    return (
-                        <CardsFeed 
-                            key={post.lurkerPostId} 
-                            postDetails={post} 
-                            postSource={postHandle} 
-                            bookmark = {post.bookmark}
-                            url = {url}
-                            group = {props.isDuplicate ? null:  group.slice(1)}
-                            duplicateHandler = {props.isDuplicate ? null: props.duplicateHandler}
-                            isDuplicate = {props.isDuplicate}
-                        />
-                    )
-                }) :
-                    <h1>No post to display</h1>
+                posts ? postToRender : []
             }
         </div>
     )
