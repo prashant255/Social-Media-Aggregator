@@ -26,6 +26,7 @@ const getNewPost = async () => {
         try {
             await axios.post(`http://localhost:8080/api/twitter/allPosts/${user.dataValues.id}`)
             await axios.post(`http://localhost:8080/api/reddit/allPosts/${user.dataValues.id}`)
+            await axios.post(`http://localhost:8080/api/facebook/allPosts/${user.dataValues.id}`)
         } catch(e) {
             console.log(e.message)
         }
@@ -33,4 +34,4 @@ const getNewPost = async () => {
 } 
 
 cron.schedule('0 * * * *', updateRedditToken)
-cron.schedule('*/5 * * * *', getNewPost)
+// cron.schedule('*/5 * * * *', getNewPost)

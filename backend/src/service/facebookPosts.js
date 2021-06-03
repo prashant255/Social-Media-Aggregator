@@ -63,8 +63,6 @@ const getAllPosts = async (userId) => {
                         let res = null;
                         let resDuplicate = null;
                         let text = post.message
-                        if (!text)
-                            text = "No text available"
                         res = await axios.post("http://localhost:5000/catnwe", { text })
                         let query = `select distinct(id), embedding from groups g inner join posts p on p."groupId" = g.id where p."userId" = :userId and category = :category`
                         const embeddings = await sequelize.query(query,

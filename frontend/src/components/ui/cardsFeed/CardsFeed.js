@@ -99,7 +99,11 @@ const CardsFeed = (props) => {
                 ({voteUrl, data} = redditVote());
                 break;
             case constants.HANDLES.FACEBOOK:
+                if(likeStatus) setLikeStatus(null)
+                else setLikeStatus(true)
                 return
+            default:
+                console.log("Invalid Handle")
         }
 
         axios.post(voteUrl, data, {
@@ -185,7 +189,9 @@ const CardsFeed = (props) => {
                 break;
 
             case constants.HANDLES.FACEBOOK:
-                console.log("Facebook")
+                getLikeStatus(`${baseUrl}/facebook/post/${props.postDetails.postId}/likeStatus`)
+                if (fetchFromCache(props.postDetails.postId)) break;
+                addToCache(`${baseUrl}/facebook/post/${props.postDetails.postId}`)
                 break;
             default:
                 console.log("Invalid Handle")
