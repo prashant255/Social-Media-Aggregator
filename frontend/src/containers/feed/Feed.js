@@ -112,7 +112,7 @@ const Feed = (props) => {
         })
     } else {
         console.log("here")
-        postToRender = <h1>No post to display</h1>
+        postToRender = <div style={{textAlign: 'center'}}><img src="./noposts.png"/></div>
     }
 
     return (
