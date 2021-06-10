@@ -35,7 +35,7 @@ const getAllPosts = async (userId) => {
         const { facebookAccessToken, facebookUserId } = token;
         const params = {
             access_token: facebookAccessToken,
-            limit: 1
+            limit: 5
         }
         if (token.facebookAnchorId)
             params['since'] = token.facebookAnchorId;

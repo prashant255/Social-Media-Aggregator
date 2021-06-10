@@ -9,18 +9,22 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import RedditIcon from '@material-ui/icons/Reddit';
 
 const Feed = (props) => {
-    const onScrollHandler = (element) => {
+    
+    let ele = document.getElementsByClassName('Pane1')
+        
+    const onScrollHandler = () => {
+        let element = ele[0]
         if (element.scrollHeight - element.scrollTop === element.clientHeight && props.type !== undefined) {
-            currentOffset += 5
-            if (props.type) {
-                axios.get(`/${props.type}/${props.selectedCategory}/${currentOffset}`, {
-                    headers
-                }).then(
-                    res => {
-                        setPosts(prevPosts => prevPosts !== null ? [...prevPosts, ...res.data] : res.data)
-                    }).catch(e => console.log(e))
+                currentOffset += 5
+                if (props.type) {
+                    axios.get(`/${props.type}/${props.selectedCategory}/${currentOffset}`, {
+                        headers
+                    }).then(
+                        res => {
+                            setPosts(prevPosts => prevPosts !== null ? [...prevPosts, ...res.data] : res.data)
+                        }).catch(e => console.log(e))
+                }
             }
-        }
     }
 
     const jwtToken = useSelector(state => state.jwtToken)
@@ -31,6 +35,7 @@ const Feed = (props) => {
     }
     const [posts, setPosts] = useState(null)
     let currentOffset = 0
+
     useEffect(() => {
         if (props.type) {
             axios.get(`/${props.type}/${props.selectedCategory}/0`, {
@@ -51,14 +56,14 @@ const Feed = (props) => {
     }, [props.selectedCategory, props.duplicatePosts])
 
     useEffect(() => {
-        let ele = document.getElementsByClassName('Pane vertical Pane1')
-        for (let i = 0; i < ele.length; i++) {
-            ele[i].addEventListener("scroll", () => onScrollHandler(ele[i]));
-        }
+        let ele = document.getElementsByClassName('Pane1')
+        for (let i = 0; i < ele.length; i++) 
+            ele[i].addEventListener("scroll", onScrollHandler, false);
+    
         return () => {
             setPosts(null)
             currentOffset = 0
-            window.removeEventListener('scroll', () => onScrollHandler(ele[0]))
+            ele[0].removeEventListener("scroll", onScrollHandler, false);
         }
     }, [props.selectedCategory])
 
@@ -111,7 +116,6 @@ const Feed = (props) => {
             )
         })
     } else {
-        console.log("here")
         postToRender = <h1>No post to display</h1>
     }
 

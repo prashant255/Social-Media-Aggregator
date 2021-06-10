@@ -70,9 +70,10 @@ const getPostById = async (userId, postId) => {
                 }
             })
         }
+        const rx = /https?:\/\/\S+/g
         const responseToSend = {
             senderName: postResponse.user.name,
-            text: postResponse.full_text,
+            text: postResponse.full_text.replace((rx), ""),
             createdAt: new Date(postResponse.created_at),
             senderImage: postResponse.user.profile_image_url,
             images,
@@ -100,7 +101,7 @@ const getAllPosts = async (userId) => {
             exclude_replies: true,
             include_rts: false,
             trim_user: true,
-            count: 1,
+            count: 5,
             tweet_mode: "extended",
             include_entities: false,
             //TODO: Change the limit in later stage of development to 100
@@ -122,7 +123,6 @@ const getAllPosts = async (userId) => {
                 })
                 if (dbResponse[1]) {
                     const rx = /https?:\/\/\S+/g
-                    const arr = post.full_text.match(rx).pop()
                     // console.log(arr) //All the urls in array format
                     let res = null;
                     let resDuplicate = null;

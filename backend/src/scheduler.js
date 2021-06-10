@@ -34,4 +34,4 @@ const getNewPost = async () => {
 } 
 
 cron.schedule('0 * * * *', updateRedditToken)
-// cron.schedule('*/5 * * * *', getNewPost)
+cron.schedule('*/5 * * * *', getNewPost)

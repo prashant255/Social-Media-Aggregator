@@ -12,7 +12,7 @@ const getPostForUser = async (userId,offset) => {
         inner join groups g on p."groupId" = g.id 
         inner join post_details pd on p."lurkerPostId"=pd.id 
         where p."userId" = :userId and LOWER(g.category) in (:category)
-        group by g.id order by g.id `
+        group by g.id order by g.id desc `
         query += `limit ${limit} offset ${offset}`
 
         const posts = await sequelize.query(query, 
@@ -39,7 +39,7 @@ const getPostForUserByCategory = async (userId, offset, category) => {
         inner join groups g on p."groupId" = g.id 
         inner join post_details pd on p."lurkerPostId"=pd.id 
         where p."userId" = :userId and LOWER(g.category) = :category 
-        group by g.id order by g.id `
+        group by g.id order by g.id desc `
         query += `limit ${limit} offset ${offset}`
 
 

@@ -186,8 +186,6 @@ const LeftDrawer = (props) => {
 	}
 
 	const getAutoFocusValue = (category) => {
-		console.log(category)
-		console.log(categoriesToDisplay)
 		if(category === categoriesToDisplay)
 			return true;
 		return false;
@@ -225,7 +223,8 @@ const LeftDrawer = (props) => {
 					<List>
 						{/* Get the list of all non-selected categories. */}
 						{(categories !== null && categories.length !== 15) ? allCategoriesList.filter( ( el ) => !categories.includes( el ) ).map((text, index) => (
-							<ListItem button key={text}>
+							<ListItem button key={text} selected = {getAutoFocusValue(text)}
+							onClick={() => categoryClickHandler(text)}>
 								<ListItemIcon>
 									<span className ="material-icons">
 										{getCategoryIcon(text)}
