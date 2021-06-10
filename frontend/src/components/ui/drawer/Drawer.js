@@ -144,7 +144,9 @@ const LeftDrawer = (props) => {
 	let duplicate = null;
 	if(duplicatePosts !== null)
 		duplicate = <Feed selectedCategory={categoriesToDisplay} isDuplicate = {true} duplicatePosts = {duplicatePosts}/>
-
+	else 
+		duplicate = <div style={{textAlign: 'center', padding: '2%'}}><h3>Duplicates if found, will be displayed here. Look for a ((+) icon!</h3></div>
+		
 	const history = useHistory();
 	let drawer = null;
 

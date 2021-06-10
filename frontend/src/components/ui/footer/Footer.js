@@ -32,7 +32,9 @@ const Footer = () =>{
 				<div className = {classes.root}>
 					<AppBar className={classes.appBar}>
 						<Toolbar align = "center" justify = "center" >
-							Copyright © {now}
+							<span> Copyright © {now} </span>
+                            <span style={{flex: 1}}></span>
+                            <span><a href='https://www.freepik.com/vectors/people'>All images created by pch vector</a></span>
 						</Toolbar>
 					</AppBar>
 				</div>
