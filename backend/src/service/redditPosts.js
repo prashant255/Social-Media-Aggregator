@@ -64,7 +64,7 @@ const getPostById = async (userId, postId) => {
         const responseToSend = {
             senderName: postResponse.subreddit_name_prefixed,
             text: postResponse.selftext_html,
-            createdAt: new Date(postResponse.created*1000),
+            createdAt: new Date(postResponse.created_utc*1000),
             senderImage: subRedditResponse.data.data.icon_img,
             images,
             videos
@@ -89,7 +89,7 @@ const getAllPosts = async (userId) => {
 
         const params = {
             before: tokens.redditAnchorId,
-            limit: 1  //TODO: Change the limit in later stage of development to 100
+            limit: 5  //TODO: Change the limit in later stage of development to 100
         }
         const url = endpoint + common.formatParams(params);
         try {
