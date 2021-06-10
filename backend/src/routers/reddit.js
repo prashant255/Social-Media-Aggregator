@@ -57,26 +57,11 @@ router.post('/refresh/:userId', (req, res) => {
         });
 });
 
-router.post('/vote', async(req,res) => {
-    // try{
-    //     const {id, dir} = req.body;
-    //     console.log("id : ", id)
-    //     console.log("dir : ", dir)
+router.post('/vote', authenticateUser, async(req,res) => {
 
-    //     await redditPosts.vote(id,dir);
-    //     res.send();
-    // } catch(e) {
-    //     let statusCode=404
-    //     if(e.status) statusCode=e.status
-
-    //     res.status(statusCode).send(e);
-    // }
-    
     const {id, dir} = req.body;
 
-    console.log('here3')
     redditPosts.vote(id,dir).then(() => {
-        console.log('here2')
         res.send()
     }).catch(e => {
         let statusCode=404
