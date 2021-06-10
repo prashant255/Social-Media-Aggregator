@@ -28,10 +28,6 @@ from nltk.corpus import stopwords
 import spacy
 # spacy.cli.download('en_core_web_sm')
 
-# trax
-import trax.layers as tl
-from trax.math import numpy as fastnp # trax.fastmath
-
 # duplicate
 import json
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
@@ -50,7 +46,7 @@ class Categorise():
         self.label_encoder.classes_ = info['label_encoder'] 
 
         # model
-        self.model = load_model("./categorise_model/keras_checkpoint")
+        self.model = load_model("./categorise_model/model")
 
     def preprocess(self, text):
         url_remove = re.compile(r'https?://\S+|www\.\S+')
@@ -90,15 +86,6 @@ class Categorise():
         cat_max_ind = np.argmax(cat_vect)
         category = label_encoder.inverse_transform([cat_max_ind])
         return str(np.squeeze(category))
-
-# def get_model(vocab_size):
-#     return tl.Serial(
-#         tl.Embedding(vocab_size, 128),
-#         tl.LSTM(128),
-#         tl.Mean(axis=1),
-#         tl.Dense(12),
-#         tl.LogSoftmax()
-#     )
 
 # dupicate detection
 class Duplicates():
@@ -170,10 +157,10 @@ def cat():
     else: 
         cat = "personal"
         we = random_embeddings()
-    # # save result in logs
-    # with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
-    #     ip = ip.replace('"', '\"')
-    #     f.write(f'"{ip}","{res}"\n')
+    # save result in logs
+    with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
+        ip = ip.replace('"', '\"')
+        f.write(f'"{ip}","{cat}"\n')
     return jsonify(category=(cat), embedding=(we))
 
 @app.route('/group', methods=['POST'])
