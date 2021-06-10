@@ -63,7 +63,8 @@ const Feed = (props) => {
         return () => {
             setPosts(null)
             currentOffset = 0
-            ele[0].removeEventListener("scroll", onScrollHandler, false);
+            for (let i = 0; i < ele.length; i++) 
+                ele[i].removeEventListener("scroll", onScrollHandler, false);
         }
     }, [props.selectedCategory])
 
