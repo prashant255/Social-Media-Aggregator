@@ -97,7 +97,7 @@ const LeftDrawer = (props) => {
 	const [categoriesToDisplay, setCategoriesToDisplay] = useState('all')
 	const [displayDrawer, setDisplayDrawer] = useState(false)
 	const [duplicatePosts, setDuplicatePosts] = useState(null)
-	const allCategoriesList = ['all', 'celebrity', 'entertainment', 'gaming','travel', 'health', 'motivation', 'promotions', 'sport', 'tech', 'business', 'personal', 'finance','news', 'politics'];
+	const allCategoriesList = ['all', 'celebrity', 'entertainment', 'gaming','travel', 'health', 'motivation', 'promotions', 'sport', 'tech', 'business', 'miscellaneous', 'finance','news', 'politics'];
 
 	const onClickDuplicateHandler = (groups) => {
 		setDuplicatePosts(groups)
@@ -127,8 +127,8 @@ const LeftDrawer = (props) => {
 				return 'devices'
 			case 'business':
 				return 'business'
-			case 'personal':
-				return 'people'
+			case 'miscellaneous':
+				return 'summarize'
 			case 'finance':
 				return 'account_balance'
 			case 'news':

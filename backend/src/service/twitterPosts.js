@@ -101,7 +101,7 @@ const getAllPosts = async (userId) => {
             exclude_replies: true,
             include_rts: false,
             trim_user: true,
-            count: 5,
+            count: 10,
             tweet_mode: "extended",
             include_entities: false,
             //TODO: Change the limit in later stage of development to 100

@@ -82,8 +82,8 @@ class Categories extends Component {
                 selected: false    
             },
             personal: {
-                displayName: "Personal",
-                imageSource: "personal.png",
+                displayName: "Miscellaneous",
+                imageSource: "miscellaneous.png",
                 selected: false    
             }
         },

@@ -89,7 +89,7 @@ const getAllPosts = async (userId) => {
 
         const params = {
             before: tokens.redditAnchorId,
-            limit: 5  //TODO: Change the limit in later stage of development to 100
+            limit: 10  //TODO: Change the limit in later stage of development to 100
         }
         const url = endpoint + common.formatParams(params);
         try {
