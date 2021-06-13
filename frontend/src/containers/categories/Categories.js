@@ -81,7 +81,7 @@ class Categories extends Component {
                 imageSource: "news.png",
                 selected: false    
             },
-            personal: {
+            miscellaneous: {
                 displayName: "Miscellaneous",
                 imageSource: "miscellaneous.png",
                 selected: false    
@@ -96,11 +96,10 @@ class Categories extends Component {
                 'Authorization': `Bearer ${this.props.jwtToken}`
             } 
         }).then(res => {
-            if(res !== null){
+            if(res !== null && res.data.selectedCategory !== undefined){
                 res.data.selectedCategory.map(category => 
                     this.categoryClickedHandler(category)
                 )
-                
             }
         })
     }
