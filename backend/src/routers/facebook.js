@@ -22,8 +22,8 @@ router.post('/callback', authenticateUser, (req, res) => {
 router.post('/allPosts/:userId', async (req, res) => {
 
     try{
-        facebookPosts.getAllPosts(req.params.userId);
-        res.send('Added FB posts');
+        await facebookPosts.getAllPosts(req.params.userId);
+        res.send();
     } catch(e) {
         res.status(500).send(e.message);
     }
