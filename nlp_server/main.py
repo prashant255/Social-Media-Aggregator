@@ -1,4 +1,3 @@
-# import pandas as pd
 import numpy as np
 import re
 import contractions
@@ -6,11 +5,10 @@ import pickle
 from sklearn.preprocessing import LabelEncoder
 import json
 
-# import tensorflow as tf
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 from tensorflow.keras.models import load_model
-# import tensorflow.keras.backend as K
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.utils import to_categorical
 
 # for web application
 import flask
@@ -18,19 +16,6 @@ from flask import request
 from flask import jsonify
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-
-# # nltk 
-# import nltk
-# # nltk.download('punkt')
-# # nltk.download('stopwords')
-# # nltk.download('wordnet')
-# from nltk import word_tokenize
-# from nltk.corpus import stopwords
-# # from nltk.stem import WordNetLemmatizer
-
-# # spaCy
-# import spacy
-# # spacy.cli.download('en_core_web_sm')
 
 
 class Vectorise():
@@ -70,54 +55,19 @@ class Categorise():
         # model
         self.model = load_model("./categorise_model/model")
 
-    # def preprocess(self, text):
-    #     url_remove = re.compile(r'https?://\S+|www\.\S+')
-    #     text = url_remove.sub(r'', text)
-    #     text = text.lower()
-    #     text = re.sub(r'@\w+', '', text)
-    #     text = re.sub(r'#\w+', '', text)
-    #     text = re.sub(r'[^\w\s\d]', '', text)
-    #     text = contractions.fix(text)
-    #     text = word_tokenize(text)
-    #     STOPWORDS = set(stopwords.words('english'))
-    #     text = [word for word in text if word not in STOPWORDS]
-    #     sp = spacy.load('en_core_web_sm')
-    #     text = [word.lemma_ for word in sp(" ".join(text))]
-    #     return text
-
-    # def preprocess(self, text):
-    #     url = re.compile(r'https?://\S+|www\.\S+')
-    #     text = url.sub('<url>', text)
-    #     text = re.sub(r'\d+', ' <number> ', text)
-    #     text = re.sub(r'#\w+', '<hashtag>', text)
-    #     text = re.sub(r'@\w+', '<user>', text)
-    #     text = contractions.fix(text)
-    #     text = ''.join(c for c in text if ord(c) < 128)
-    #     return text
-
-    # def text_to_vector(self, text, pad_token="__PAD__", num_token="__NUM__", unk_token="__UNK__"):
-    #     max_len = self.max_len
-    #     vocab = self.vocab
-    #     vector = []
-    #     if len(text) > max_len: text = text[:max_len]
-    #     for word in text:
-    #         if word.isnumeric(): vector.append(vocab[num_token])
-    #         elif word in vocab: vector.append(vocab[word])
-    #         else: vector.append(vocab[unk_token])
-    #     # padding the tweet
-    #     pad = [vocab[pad_token]] * (max_len - len(vector))
-    #     vector += pad
-    #     vector = np.array([vector])
-    #     return vector
-
     def categorise(self, vector):
-        # text = self.preprocess(text)
-        # vector = self.tok.texts_to_sequences([text])
-        # vector = pad_sequences(vector, maxlen=self.max_len, padding='post')
         cat_vect = self.model.predict(vector)
         cat_max_ind = np.argmax(cat_vect)
         category = self.label_encoder.inverse_transform([cat_max_ind])
         return str(np.squeeze(category))
+
+    def train(self, vector, cat):
+        cat = self.label_encoder.transform([cat])
+        cat = np.asarray(to_categorical(cat, num_classes=len(self.label_encoder.classes_))).astype(np.float32)
+        self.model.fit(np.array(vector), np.array(cat), epochs=5)
+
+        # save the model
+        self.model.save('./categorise_model/model')
 
 # dupicate detection
 class Duplicates():
@@ -129,22 +79,12 @@ class Duplicates():
         self.emd_dim = 128
 
         # model
-        self.model = load_model('./duplicates_model/model/') #, custom_objects={'normalise': self.normalise}
-
-    # def normalise(self, x):
-    #     return x / K.sqrt(K.sum(x * x, axis=-1, keepdims=True))
-
-    # def preprocess_duplicate(self, text):
-    #     text = ''.join(c for c in text if ord(c) < 128)
-    #     text = self.tok.texts_to_sequences([text])
-    #     text = pad_sequences(text, maxlen=self.max_len, padding='post')
-    #     return text
+        self.model = load_model('./duplicates_model/model/')
 
     def random_we(self):
         return np.random.rand(self.emd_dim)
 
     def get_word_embeddings(self, vector):
-        # text = self.preprocess_duplicate(text)
         o1, _ = self.model.predict((vector, vector))
         return o1.squeeze().tolist()
 
@@ -166,17 +106,15 @@ def cat_n_we(text):
     we = duplicate_obj.get_word_embeddings(vector)
     return cat, we
 
-# def word_embeddings(text):
-#     return duplicate_obj.get_word_embeddings(text)
-
-# def categorise(text):
-#     return categorise_obj.categorise(text)
-
 def group(postEmbedding, otherEmbedding):
     return duplicate_obj.get_group_id(postEmbedding, otherEmbedding)
 
 def random_embeddings():
     return duplicate_obj.random_we().tolist()
+
+def train(text, cat):
+    vector = vectorise_obj.vectorise(text)
+    categorise_obj.train(vector, cat)
 
 from datetime import date
 
@@ -186,7 +124,6 @@ def cat():
     if request.json and 'text' in request.json and len(request.json['text']) > 0:
         ip = request.json['text']
         cat, we = cat_n_we(ip)
-        print(type(cat), type(we))
     else: 
         cat = "personal"
         we = random_embeddings()
@@ -204,5 +141,13 @@ def dd():
         groupId = group(postEmbedding, otherEmbedding)
         return jsonify(groupId=(groupId))
     return "Hey get the embeddings!"
+
+@app.route('/train', methods=['POST'])
+def tc():
+    if request.json and 'text' in request.json and 'category' in request.json:
+        text, cat = request.json['text'], request.json['category']
+        train(text, cat)
+        return "success"
+    return "Wheres text and category?"
     
 app.run()
