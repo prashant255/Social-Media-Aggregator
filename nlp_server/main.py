@@ -5,6 +5,7 @@ import pickle
 from sklearn.preprocessing import LabelEncoder
 import json
 
+import tensorflow as tf
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -88,6 +89,11 @@ class Duplicates():
         o1, _ = self.model.predict((vector, vector))
         return o1.squeeze().tolist()
 
+    def get_avg_word_embeddings(self, vector):
+        emb = self.model.get_layer(index=0)
+        we = tf.reduce_mean(emb(vector), axis=-2)
+        return we.numpy().squeeze().tolist()
+
     def get_group_id(self, postEmbedding, otherEmbedding):
         for grp in otherEmbedding:
             if np.dot(postEmbedding, grp['embedding']) > self.threshold:
@@ -103,7 +109,8 @@ categorise_obj = Categorise()
 def cat_n_we(text):
     vector = vectorise_obj.vectorise(text)
     cat = categorise_obj.categorise(vector)
-    we = duplicate_obj.get_word_embeddings(vector)
+    # we = duplicate_obj.get_word_embeddings(vector)
+    we = duplicate_obj.get_avg_word_embeddings(vector)
     return cat, we
 
 def group(postEmbedding, otherEmbedding):
