@@ -60,8 +60,8 @@ router.post('/refresh/:userId', (req, res) => {
 router.post('/vote', authenticateUser, async(req,res) => {
 
     const {id, dir} = req.body;
-
-    redditPosts.vote(id,dir).then(() => {
+    
+    redditPosts.vote(id, dir, req.user.id).then(() => {
         res.send()
     }).catch(e => {
         let statusCode=404

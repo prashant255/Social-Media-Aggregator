@@ -84,7 +84,7 @@ const getAllPosts = async (userId) => {
 
         if (!tokens)
             throw new Error('No token for user');
-        else if (tokens.twitterAccessToken === null)
+        else if (tokens.redditAccessToken === null)
             throw new Error('No access token found');
 
         const params = {
@@ -183,11 +183,11 @@ const getAllPosts = async (userId) => {
 
 }
 
-const vote = async (id, dir) => {
+const vote = async (id, dir, userId) => {
     return new Promise(async (resolve,reject) => {
         const USER_AGENT = 'Lurker App by (by /u/swapmarkh )';
         const tokens = await(Token.findOne({
-            where: {userId: 1}
+            where: {userId}
         }))
         const token = tokens.redditAccessToken
 
