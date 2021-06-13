@@ -121,11 +121,11 @@ from datetime import date
 # routing the application
 @app.route('/catnwe', methods=["POST"])
 def cat():
-    if request.json and 'text' in request.json and len(request.json['text']) > 0:
+    if request.json and 'text' in request.json and len(request.json['text']) > 4:
         ip = request.json['text']
         cat, we = cat_n_we(ip)
     else: 
-        cat = "personal"
+        cat = "miscellaneous"
         we = random_embeddings()
     # save result in logs
     with open(f'./logs/predictions_{date.today().strftime("%d_%m_%y")}.csv', 'a') as f:
