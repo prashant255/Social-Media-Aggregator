@@ -109,8 +109,8 @@ categorise_obj = Categorise()
 def cat_n_we(text):
     vector = vectorise_obj.vectorise(text)
     cat = categorise_obj.categorise(vector)
-    # we = duplicate_obj.get_word_embeddings(vector)
-    we = duplicate_obj.get_avg_word_embeddings(vector)
+    we = duplicate_obj.get_word_embeddings(vector)
+    # we = duplicate_obj.get_avg_word_embeddings(vector)
     return cat, we
 
 def group(postEmbedding, otherEmbedding):
